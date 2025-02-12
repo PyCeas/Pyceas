@@ -5,6 +5,7 @@ import pygame.freetype
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
 TILE_SIZE = 16
+FPS = 60
 
 
 if not getattr(pygame, "IS_CE", False):

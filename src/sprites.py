@@ -1,29 +1,64 @@
 """custom sprites classes"""
 
 import pygame
-from src.settings import TILE_SIZE
-from src.GUI.inventory import Inventory
+from pygame import FRect
+from src.settings import TILE_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH
+from src.inventory import Inventory
 
 
-class Player:
-    """move tile by tile"""
+# class Entity(pygame.sprite.Sprite):
+"""Will be later used on all entities, classes as Player will inherit from this class"""
+#     def __init__(self, pos, surf, groups):
+#         super().__init__(groups)
+
+#         self.image = surf
+#         self.rect = self.image.get_frect(center=pos)
+
+
+class AllSprites(pygame.sprite.Group):
+    """A sprite group that handles every sprite and handles the camera logic"""
 
     def __init__(self):
+        super().__init__()
+
+        self.display_surface = pygame.display.get_surface()
+        if not self.display_surface:
+            raise ValueError("Display surface is not initialized")
+        self.offset = pygame.math.Vector2()
+
+    def draw(self, player_center, player_preview, player_preview_rect):
+        self.offset.x = -(player_center[0] - SCREEN_WIDTH / 2)
+        self.offset.y = -(player_center[1] - SCREEN_HEIGHT / 2)
+
+        for sprite in self:
+            self.display_surface.blit(sprite.image, sprite.rect.topleft + self.offset)
+
+        self.display_surface.blit(
+            player_preview, player_preview_rect.topleft + self.offset
+        )
+
+
+class Player(pygame.sprite.Sprite):
+    """move tile by tile"""
+
+    rect: FRect
+
+    def __init__(self, pos, groups):
+        super().__init__(groups)
         # TODO: replace with actual images
-        self.image = pygame.Surface(size=(TILE_SIZE, TILE_SIZE))
-        self.image.fill("#ff0000")
+
+        self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
+        self.image.fill("red")
+        self.rect = self.image.get_frect(center=pos)
+
+        # ghost preview
         self.player_preview = self.image.copy()
         self.player_preview.set_alpha(128)
 
         self.inventory = Inventory()
-
-        self.rect: pygame.Rect = self.image.get_rect()
-        # keep track of the transparent preview of the next move
-        self.player_preview_rect = self.rect.copy()
-        # this is used to only move once when the mouse is pressed
         self.mouse_have_been_pressed: bool = False
 
-    def update(self) -> None:
+    def input(self) -> None:
         """move the player and show a ghost to preview the move"""
 
         # gost preview
@@ -92,10 +127,9 @@ class Player:
 
         return None
 
-    def render(self, surface: pygame.Surface) -> None:
-        """blit player image  and gost preview to a given surface"""
-        surface.blit(source=self.player_preview, dest=self.player_preview_rect)
-        surface.blit(source=self.image, dest=self.rect)
+    def update(self) -> None:
+        """blit player image and gost preview to a given surface"""
+        self.input()
 
 
 class Tile(pygame.sprite.Sprite):
@@ -121,7 +155,7 @@ class Tile(pygame.sprite.Sprite):
             There is a known typing error related to missing type parameters for the generic type 'Group' in pygame.
             You may see warnings like:
             - src\\sprites.py:107: error: Missing type parameters for generic type 'Group' [type-arg]
-            - src\\GUI\\gameloop.py:45: error: Missing type parameters for generic type 'SpriteGroup' [type-arg]
+            - src\\GUI\\game_manager.py:45: error: Missing type parameters for generic type 'SpriteGroup' [type-arg]
 
             These errors can be ignored for now, as they are related to type annotations in pygame's codebase.
         """

@@ -169,5 +169,6 @@ In short, the AGPL aligns perfectly with our commitments to openness, community 
 
 ## Relevant Links
 - [Project Task List](https://github.com/users/ultimateownsz/projects/15)
+- [GitHub discussions](https://github.com/ultimateownsz/PySeas/discussions)
 - [Pyseas's Discord Server](https://discord.gg/MZ5MHqDnGW)
 - [Pygame's Community Discord](https://discord.gg/pygame)

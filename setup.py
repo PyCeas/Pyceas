@@ -1,4 +1,7 @@
-"""Could be usefull if we ever make the decision to create a pip package for this project, as for now it is commented out."""
+"""
+Could be usefull if we ever make the decision to create a pip package for this project,
+as for now it is commented out.
+"""
 
 # from setuptools import setup
 

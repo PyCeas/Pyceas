@@ -1,0 +1,10 @@
+{
+    "inventory": {
+        "add_success": "Successfully added {quantity} {item}(s) to your inventory.",
+        "add_fail": "Failed to add {item} to your inventory.",
+        "remove_success": "Successfully removed {quantity} {item}(s) from your inventory.",
+        "remove_fail": "Cannot remove {quantity} {item}(s), insufficient quantity.",
+        "use_success": "You used {item}.",
+        "use_fail": "You dont' have {item} in your inventory."
+    }
+}
