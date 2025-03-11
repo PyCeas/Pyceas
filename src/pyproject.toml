@@ -25,5 +25,5 @@ disallow_untyped_defs = true  # Disallow defining functions without type annotat
 check_untyped_defs = true     # Check the bodies of untyped functions
 
 # Suppresses errors for missing type stubs in the pygame package.
-[mypy-pygame.*]
+["mypy-pygame.*"]
 ignore_missing_imports = true
