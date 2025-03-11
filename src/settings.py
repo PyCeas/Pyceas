@@ -11,6 +11,7 @@ WORLD_LAYERS = {"water": 0, "bg": 1, "main": 2, "top": 3}
 FPS = 60
 
 
+# For some imports like pygame.freetype, Mypy can't infer the type of this attribute, so we suppress the error.
 if not getattr(pygame, "IS_CE", False):
     raise ImportError(
         "The game requires Pygame CE to function. "
