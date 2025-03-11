@@ -2,7 +2,13 @@
 
 import pygame
 from pygame import FRect
-from src.settings import TILE_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, ANIMATION_SPEED, WORLD_LAYERS
+from src.settings import (
+    TILE_SIZE,
+    SCREEN_HEIGHT,
+    SCREEN_WIDTH,
+    ANIMATION_SPEED,
+    WORLD_LAYERS,
+)
 from src.inventory import Inventory
 
 
@@ -23,7 +29,7 @@ class Entity(pygame.sprite.Sprite):
         self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
         self.image.fill("red")
         # self.image = self.frames[self.get_state()][self.frame_index]
-        self.rect = self.image.get_frect(center = pos)
+        self.rect = self.image.get_frect(center=pos)
 
     def animate(self, dt):
         self.frame_index += ANIMATION_SPEED * dt
@@ -48,7 +54,7 @@ class AllSprites(pygame.sprite.Group):
         self.display_surface = pygame.display.get_surface()
         if not self.display_surface:
             raise ValueError("Display surface is not initialized")
-        
+
         self.offset = pygame.math.Vector2()
         self.scale = 2.0
 
@@ -56,21 +62,35 @@ class AllSprites(pygame.sprite.Group):
         self.offset.x = -(player_center[0] * self.scale - SCREEN_WIDTH / 2)
         self.offset.y = -(player_center[1] * self.scale - SCREEN_HEIGHT / 2)
 
-        background_sprites = [sprite for sprite in self if sprite.z < WORLD_LAYERS["main"]]
+        background_sprites = [
+            sprite for sprite in self if sprite.z < WORLD_LAYERS["main"]
+        ]
         main_sprites = [sprite for sprite in self if sprite.z == WORLD_LAYERS["main"]]
-        foreground_sprites = [sprite for sprite in self if sprite.z > WORLD_LAYERS["main"]]
+        foreground_sprites = [
+            sprite for sprite in self if sprite.z > WORLD_LAYERS["main"]
+        ]
 
         for layer in (background_sprites, main_sprites, foreground_sprites):
             for sprite in layer:
-                scaled_image = pygame.transform.scale(sprite.image, 
-                                (int(sprite.rect.width * self.scale), int(sprite.rect.height * self.scale)))
-                scaled_rect = scaled_image.get_rect(center=(sprite.rect.center[0] * self.scale, sprite.rect.center[1] * self.scale))
+                scaled_image = pygame.transform.scale(
+                    sprite.image,
+                    (
+                        int(sprite.rect.width * self.scale),
+                        int(sprite.rect.height * self.scale),
+                    ),
+                )
+                scaled_rect = scaled_image.get_rect(
+                    center=(
+                        sprite.rect.center[0] * self.scale,
+                        sprite.rect.center[1] * self.scale,
+                    )
+                )
                 scaled_rect.topleft += self.offset
 
                 self.display_surface.blit(scaled_image, scaled_rect.topleft)
 
             # scaling of the ghost preview
-            # scaled_preview = pygame.transform.scale(player_preview, 
+            # scaled_preview = pygame.transform.scale(player_preview,
             #                 (int(player_preview_rect.width * self.scale), int(player_preview_rect.height * self.scale)))
             # scaled_preview_rect = scaled_preview.get_rect(center=(player_preview_rect.center[0] * self.scale, player_preview_rect.center[1] * self.scale))
             # scaled_preview_rect.topleft += self.offset
@@ -217,7 +237,7 @@ class Tile(pygame.sprite.Sprite):
 
 
 class Sprite(pygame.sprite.Sprite):
-    def __init__(self, pos, surf, groups, z = WORLD_LAYERS["main"]):
+    def __init__(self, pos, surf, groups, z=WORLD_LAYERS["main"]):
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_frect(topleft=pos)
@@ -225,7 +245,7 @@ class Sprite(pygame.sprite.Sprite):
 
 
 class AnimatedSprites(Sprite):
-    def __init__(self, pos, frames, groups, z = WORLD_LAYERS["main"]):
+    def __init__(self, pos, frames, groups, z=WORLD_LAYERS["main"]):
         self.frame_index, self.frames = 0, frames
         super().__init__(pos, frames[self.frame_index], groups, z)
 
