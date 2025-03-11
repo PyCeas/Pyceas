@@ -6,9 +6,6 @@ select = ["E", "F", "I"] # Specifies the linting rules to enable:
                          # - "F": pyflakes errors (e.g., undefined variables).
                          # - "I": import-related rules (e.g., sorting, unused imports).
 
-ignore = ["W503"]        # Disables specific linting rules:
-                         # - "W503": Ignore line break before a binary operator (PEP 8 allows both styles).
-
 fixable = ["F", "I"]     # Specifies which issues Ruff can automatically fix:
                          # - "F": pyflakes fixes (e.g., unused variables).
                          # - "I": import fixes (e.g., sorting, removing unused imports).
@@ -18,17 +15,14 @@ exclude = ["build/",     # Directories to exclude from linting:
            ".venv/"]     # - ".venv/": Virtual environment directory.
 
 # Mypy Configuration: This section configures the Mypy type checker
+
 [tool.mypy]
-python_version = "3.12"      # Specifies the Python version used in the project for type checking.
-strict = true                # Enables "strict mode," which applies several stricter type-checking rules:
-                             # - Disallows untyped function definitions and calls.
-                             # - Enforces type annotations more rigorously.
+python_version = "3.12"      # Use Python 3.12 for type checking
+strict = true                # Enable strict type checking
+ignore_missing_imports = true # Ignore missing stubs (e.g., for pygame)
+disallow_untyped_calls = true # Disallow calling untyped functions
+disallow_untyped_defs = true  # Disallow defining functions without type annotations
+check_untyped_defs = true     # Check the bodies of untyped functions
 
-ignore_missing_imports = true # Suppresses errors for missing type stubs in third-party libraries.
-                              # (e.g., when libraries like `pygame` lack official type annotations).
+[mypy-pygame.*]  # Suppresses errors for missing type stubs in the pygame package.
 
-disallow_untyped_calls = true # Prohibits calls to functions without type annotations.
-
-disallow_untyped_defs = true  # Prohibits defining functions without type annotations.
-
-check_untyped_defs = true     # Checks the bodies of functions that lack type annotations for type errors.
