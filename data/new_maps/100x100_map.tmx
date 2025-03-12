@@ -950,6 +950,9 @@
  </objectgroup>
  <objectgroup id="17" name="Buildings">
   <object id="284" name="Shop" x="800" y="160">
+   <properties>
+    <property name="pos" value="top_mid_island"/>
+   </properties>
    <point/>
   </object>
  </objectgroup>
