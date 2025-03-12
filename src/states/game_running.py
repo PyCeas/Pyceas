@@ -43,6 +43,7 @@ class GameRunning(BaseState):
         self.setup(player_start_pos="top_left_island")
 
         self.font = pygame.font.Font(None, 36)
+        self.shop_window = pygame.Surface((800, 600))
 
     def setup(self, player_start_pos):
         """
@@ -139,5 +140,7 @@ class GameRunning(BaseState):
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
                 print("Sick boots x 5")
+                self.shop_window.fill((0, 0, 0))
+                screen.blit(self.shop_window, (260, 40))
 
         pygame.display.update()
