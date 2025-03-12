@@ -10,7 +10,6 @@ from pytmx.util_pygame import load_pygame  # type: ignore
 from src.states.base_state import BaseState
 from src.states.paused import Paused
 from src.inventory import Inventory
-from src.inventory_gui import InventoryGUI
 from src.support import import_folder, coast_importer, all_character_import
 from src.sprites import AnimatedSprites
 
