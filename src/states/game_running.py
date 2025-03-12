@@ -13,7 +13,6 @@ from src.states.paused import Paused
 from src.inventory import Inventory
 from src.support import import_folder, coast_importer, all_character_import
 from src.sprites import AnimatedSprites
-from src.shop import Shop
 
 from src.settings import TILE_SIZE, WORLD_LAYERS
 import src.sprites
@@ -72,9 +71,9 @@ class GameRunning(BaseState):
             src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
 
         # buildings
-        for obj in self.tmx_map["map"].get_layer_by_name("Buildings"):
-            if obj.name == "Shop":
-                src.shop.Shop((obj.x * TILE_SIZE, obj.y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
+        for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
+            src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"])
+            print(x, y)
 
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
