@@ -42,6 +42,8 @@ class GameRunning(BaseState):
         # The start positions will be one of the 4 islands in the corners of the board
         self.setup(player_start_pos="top_left_island")
 
+        self.font = pygame.font.Font(None, 36)
+
     def setup(self, player_start_pos):
         """
         setup the map and player from the tiled file
@@ -127,9 +129,11 @@ class GameRunning(BaseState):
             self.player.rect.center
         )
 
+        self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
         point = self.shop.rect
         collide = self.player.rect.colliderect(point)
         if collide:
-            print("Welcome to the shop!") 
+            print("Welcome to the shop!")
+            screen.blit(self.welcome_message, (155, 155))
 
         pygame.display.update()
