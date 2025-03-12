@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="284">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="285">
  <tileset firstgid="1" source="../tilesets/Water and Island tiles.tsx"/>
  <tileset firstgid="217" source="../tilesets/Ships tiles.tsx"/>
  <tileset firstgid="2107" source="../tilesets/Water+.tsx"/>
@@ -945,6 +945,11 @@
     <property name="direction" value="bottom"/>
     <property name="pos" value="top_right_island"/>
    </properties>
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="17" name="Buildings">
+  <object id="284" name="Shop" x="800" y="160">
    <point/>
   </object>
  </objectgroup>

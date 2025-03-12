@@ -69,6 +69,11 @@ class GameRunning(BaseState):
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles():
             src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
 
+        # buildings
+        for obj in self.tmx_map["map"].get_layer_by_name("Buildings"):
+            if obj.name == "Shop":
+                src.sprites.Sprite((obj.x * TILE_SIZE, obj.y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
+
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
