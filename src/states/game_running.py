@@ -10,6 +10,7 @@ from pytmx.util_pygame import load_pygame  # type: ignore
 from src.states.base_state import BaseState
 from src.states.paused import Paused
 from src.inventory import Inventory
+from src.inventory_gui import InventoryGUI
 from src.support import import_folder, coast_importer, all_character_import
 from src.sprites import AnimatedSprites
 
@@ -32,8 +33,10 @@ class GameRunning(BaseState):
         super().__init__(game_state_manager)
 
         # Initialize player inventory
+        self.screen = pygame.display.get_surface()
         self.clock = pygame.Clock()
         self.player_inventory = Inventory()
+        self.draw_inventory = InventoryGUI(self.screen, self.player_inventory)
         self.load_inventory_from_json("data/inventory.json")
 
         self.all_sprites = src.sprites.AllSprites()
@@ -120,5 +123,7 @@ class GameRunning(BaseState):
         self.all_sprites.draw(
             self.player.rect.center
         )
+        self.draw_inventory.draw()
+        self.draw_inventory.draw_buttons(64, 0, "Hello")
 
         pygame.display.update()
