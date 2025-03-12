@@ -72,7 +72,7 @@ class GameRunning(BaseState):
 
         # buildings
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
-            src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"])
+            self.shop = src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"])
             print(x, y)
 
         # Islands
@@ -126,5 +126,10 @@ class GameRunning(BaseState):
         self.all_sprites.draw(
             self.player.rect.center
         )
+
+        point = self.shop.rect
+        collide = self.player.rect.colliderect(point)
+        if collide:
+            print("Welcome to the shop!") 
 
         pygame.display.update()
