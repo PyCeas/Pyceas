@@ -123,7 +123,5 @@ class GameRunning(BaseState):
         self.all_sprites.draw(
             self.player.rect.center
         )
-        self.draw_inventory.draw()
-        self.draw_inventory.draw_buttons(64, 0, "Hello")
 
         pygame.display.update()
