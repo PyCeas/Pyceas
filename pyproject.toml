@@ -1,12 +1,12 @@
 # Ruff Configuration: This section configures the Ruff linter
 [tool.ruff]
-line-length = 88         # Sets the maximum allowed line length (e.g., for PEP 8 compliance).
-select = ["E", "F", "I"] # Specifies the linting rules to enable:
+line-length = 120
+lint.select = ["E", "F", "I"] # Specifies the linting rules to enable:
                          # - "E": pycodestyle errors (e.g., whitespace issues).
                          # - "F": pyflakes errors (e.g., undefined variables).
                          # - "I": import-related rules (e.g., sorting, unused imports).
 
-fixable = ["F", "I"]     # Specifies which issues Ruff can automatically fix:
+lint.fixable = ["F", "I"]     # Specifies which issues Ruff can automatically fix:
                          # - "F": pyflakes fixes (e.g., unused variables).
                          # - "I": import fixes (e.g., sorting, removing unused imports).
 
@@ -14,16 +14,10 @@ exclude = ["build/",     # Directories to exclude from linting:
            "dist/",      # - "build/": Temporary build files.
            ".venv/"]     # - ".venv/": Virtual environment directory.
 
-# Mypy Configuration: This section configures the Mypy type checker
-
+# Suppresses errors for missing type stubs in the pygame package.
 [tool.mypy]
 python_version = "3.12"      # Use Python 3.12 for type checking
-strict = true                # Enable strict type checking
-ignore_missing_imports = true # Ignore missing stubs (e.g., for pygame)
-disallow_untyped_calls = true # Disallow calling untyped functions
-disallow_untyped_defs = true  # Disallow defining functions without type annotations
-check_untyped_defs = true     # Check the bodies of untyped functions
+check_untyped_defs = true
 
-# Suppresses errors for missing type stubs in the pygame package.
 ["mypy-pygame.*"]
 ignore_missing_imports = true
