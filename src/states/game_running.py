@@ -33,10 +33,8 @@ class GameRunning(BaseState):
         super().__init__(game_state_manager)
 
         # Initialize player inventory
-        self.screen = pygame.display.get_surface()
         self.clock = pygame.Clock()
         self.player_inventory = Inventory()
-        self.draw_inventory = InventoryGUI(self.screen, self.player_inventory)
         self.load_inventory_from_json("data/inventory.json")
 
         self.all_sprites = src.sprites.AllSprites()
