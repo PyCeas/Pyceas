@@ -1,23 +1,13 @@
-# Ruff Configuration: This section configures the Ruff linter
 [tool.ruff]
 line-length = 120
-lint.select = ["E", "F", "I"] # Specifies the linting rules to enable:
-                         # - "E": pycodestyle errors (e.g., whitespace issues).
-                         # - "F": pyflakes errors (e.g., undefined variables).
-                         # - "I": import-related rules (e.g., sorting, unused imports).
+lint.select = ["E", "F", "I"]
+lint.fixable = ["F", "I"]
+exclude = ["build/", "dist/", ".venv/"]
 
-lint.fixable = ["F", "I"]     # Specifies which issues Ruff can automatically fix:
-                         # - "F": pyflakes fixes (e.g., unused variables).
-                         # - "I": import fixes (e.g., sorting, removing unused imports).
-
-exclude = ["build/",     # Directories to exclude from linting:
-           "dist/",      # - "build/": Temporary build files.
-           ".venv/"]     # - ".venv/": Virtual environment directory.
-
-# Suppresses errors for missing type stubs in the pygame package.
 [tool.mypy]
-python_version = "3.12"      # Use Python 3.12 for type checking
+python_version = "3.12"
 check_untyped_defs = true
+ignore_missing_imports = true
 
 ["mypy-pygame.*"]
 ignore_missing_imports = true
