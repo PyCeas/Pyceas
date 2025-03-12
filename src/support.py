@@ -1,17 +1,15 @@
-import pygame
-from os.path import join
 from os import walk
+from os.path import join
+
+import pygame
+
 # from pytmx.util_pygame import load_pygame
 
 
 # imports
 def import_image(*path, alpha=True, format="png"):
     full_path = join(*path) + f".{format}"
-    surf = (
-        pygame.image.load(full_path).convert_alpha()
-        if alpha
-        else pygame.image.load(full_path).convert()
-    )
+    surf = pygame.image.load(full_path).convert_alpha() if alpha else pygame.image.load(full_path).convert()
     return surf
 
 
@@ -50,9 +48,7 @@ def import_tilemap(cols, rows, *path):
     cell_width, cell_height = surf.get_width() / cols, surf.get_height() / rows
     for col in range(cols):
         for row in range(rows):
-            cutout_rect = pygame.Rect(
-                col * cell_width, row * cell_height, cell_width, cell_height
-            )
+            cutout_rect = pygame.Rect(col * cell_width, row * cell_height, cell_width, cell_height)
             cutout_surf = pygame.Surface((cell_width, cell_height))
             cutout_surf.fill("green")
             cutout_surf.set_colorkey("green")
@@ -63,7 +59,7 @@ def import_tilemap(cols, rows, *path):
 
 def coast_importer(cols, rows, *path):
     frame_dict = import_tilemap(cols, rows, *path)
-    new_dict = {}
+    new_dict: dict[str, dict] = {}
     terrains = ["sand"]
     sides = {
         "topleft": (0, 0),
@@ -78,10 +74,7 @@ def coast_importer(cols, rows, *path):
     for index, terrain in enumerate(terrains):
         new_dict[terrain] = {}
         for key, pos in sides.items():
-            new_dict[terrain][key] = [
-                frame_dict[(pos[0] + index * 3, pos[1] + row)]
-                for row in range(0, rows, 3)
-            ]
+            new_dict[terrain][key] = [frame_dict[(pos[0] + index * 3, pos[1] + row)] for row in range(0, rows, 3)]
     return new_dict
 
 

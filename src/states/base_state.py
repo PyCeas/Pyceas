@@ -6,6 +6,7 @@ Each state must implement:
 """
 
 from abc import ABC, abstractmethod
+
 import pygame
 
 

@@ -2,14 +2,15 @@
 
 import pygame
 from pygame import FRect
+
+from src.inventory import Inventory
 from src.settings import (
-    TILE_SIZE,
+    ANIMATION_SPEED,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
-    ANIMATION_SPEED,
+    TILE_SIZE,
     WORLD_LAYERS,
 )
-from src.inventory import Inventory
 
 
 class Entity(pygame.sprite.Sprite):
@@ -42,7 +43,7 @@ class Entity(pygame.sprite.Sprite):
                 self.facing_direction = "right" if self.direction.x > 0 else "left"
             if self.direction.y != 0:
                 self.facing_direction = "down" if self.direction.x > 0 else "up"
-        return f"{self.facing_direction}{"" if moving else "_idle"}"
+        return f"{self.facing_direction}{'' if moving else '_idle'}"
 
 
 class AllSprites(pygame.sprite.Group):
@@ -59,19 +60,19 @@ class AllSprites(pygame.sprite.Group):
         self.scale = 2.0
 
     def draw(self, player_center):
+        # Calculate offsets
         self.offset.x = -(player_center[0] * self.scale - SCREEN_WIDTH / 2)
         self.offset.y = -(player_center[1] * self.scale - SCREEN_HEIGHT / 2)
 
-        background_sprites = [
-            sprite for sprite in self if sprite.z < WORLD_LAYERS["main"]
-        ]
+        # Separate sprites into layers
+        background_sprites = [sprite for sprite in self if sprite.z < WORLD_LAYERS["main"]]
         main_sprites = [sprite for sprite in self if sprite.z == WORLD_LAYERS["main"]]
-        foreground_sprites = [
-            sprite for sprite in self if sprite.z > WORLD_LAYERS["main"]
-        ]
+        foreground_sprites = [sprite for sprite in self if sprite.z > WORLD_LAYERS["main"]]
 
+        # Render each layer
         for layer in (background_sprites, main_sprites, foreground_sprites):
             for sprite in layer:
+                # Scale the image
                 scaled_image = pygame.transform.scale(
                     sprite.image,
                     (
@@ -79,20 +80,31 @@ class AllSprites(pygame.sprite.Group):
                         int(sprite.rect.height * self.scale),
                     ),
                 )
+
+                # Adjust the rect to the new scale
                 scaled_rect = scaled_image.get_rect(
                     center=(
-                        sprite.rect.center[0] * self.scale,
-                        sprite.rect.center[1] * self.scale,
+                        int(sprite.rect.center[0] * self.scale),
+                        int(sprite.rect.center[1] * self.scale),
                     )
                 )
-                scaled_rect.topleft += self.offset
 
+                # Add offset to the rect position
+                scaled_rect.topleft = (
+                    scaled_rect.topleft[0] + int(self.offset.x),
+                    scaled_rect.topleft[1] + int(self.offset.y),
+                )
+
+                # Ensure display_surface is valid before blitting
+                if self.display_surface is None:
+                    raise ValueError("self.display_surface cannot be None")
                 self.display_surface.blit(scaled_image, scaled_rect.topleft)
 
             # scaling of the ghost preview
             # scaled_preview = pygame.transform.scale(player_preview,
-            #                 (int(player_preview_rect.width * self.scale), int(player_preview_rect.height * self.scale)))
-            # scaled_preview_rect = scaled_preview.get_rect(center=(player_preview_rect.center[0] * self.scale, player_preview_rect.center[1] * self.scale))
+            # (int(player_preview_rect.width * self.scale), int(player_preview_rect.height * self.scale)))
+            # scaled_preview_rect = scaled_preview.get_rect(center=(
+            # player_preview_rect.center[0] * self.scale, player_preview_rect.center[1] * self.scale))
             # scaled_preview_rect.topleft += self.offset
 
             # self.display_surface.blit(scaled_preview, scaled_preview_rect.topleft)
@@ -110,13 +122,16 @@ class Player(Entity):
     def __init__(self, pos, frames, groups):
         super().__init__(pos, frames, groups)
 
+        # Ensure self.image is not None
+        if self.image is None:
+            raise ValueError("self.image cannot be None")
+
         # ghost preview
         self.player_preview = self.image.copy()
         self.player_preview.set_alpha(128)
 
         self.inventory = Inventory()
         self.mouse_have_been_pressed: bool = False
-
         self.draggin = False
         self.offset_x = 0
         self.offset_y = 0
@@ -228,16 +243,14 @@ class Tile(pygame.sprite.Sprite):
         self.image: pygame.Surface = self.surf
         self.rect: pygame.FRect = self.image.get_frect(topleft=self.pos)
 
-    def draw(
-        self, display_surface: pygame.Surface, offset: tuple[float, float] = (0, 0)
-    ) -> None:
+    def draw(self, display_surface: pygame.Surface, offset: tuple[float, float] = (0, 0)) -> None:
         """Could be useful for a camera?"""
         offset_rect = self.rect.move(offset)
         display_surface.blit(self.image, offset_rect)
 
 
 class Sprite(pygame.sprite.Sprite):
-    def __init__(self, pos, surf, groups, z=WORLD_LAYERS["main"]):
+    def __init__(self, pos: tuple[int, int], surf: pygame.Surface, groups, z=WORLD_LAYERS["main"]):
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_frect(topleft=pos)

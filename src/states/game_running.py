@@ -2,19 +2,19 @@
 Represents the GameRunning state, where the player controls a ship and interacts with the game world.
 """
 
-import os
 import json
+import os
+
 import pygame
 from pytmx.util_pygame import load_pygame  # type: ignore
 
+import src.sprites
+from src.inventory import Inventory
+from src.settings import TILE_SIZE, WORLD_LAYERS
+from src.sprites import AnimatedSprites
 from src.states.base_state import BaseState
 from src.states.paused import Paused
-from src.inventory import Inventory
-from src.support import import_folder, coast_importer, all_character_import
-from src.sprites import AnimatedSprites
-
-from src.settings import TILE_SIZE, WORLD_LAYERS
-import src.sprites
+from src.support import all_character_import, coast_importer, import_folder
 
 
 class GameRunning(BaseState):
@@ -45,9 +45,7 @@ class GameRunning(BaseState):
         """
         setup the map and player from the tiled file
         """
-        self.tmx_map = {
-            "map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))
-        }
+        self.tmx_map = {"map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))}
 
         self.world_frames = {
             "water": import_folder(".", "images", "tilesets", "temporary_water"),
@@ -76,9 +74,7 @@ class GameRunning(BaseState):
                     )
 
         # Shallow water
-        for x, y, surface in (
-            self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles()
-        ):
+        for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles():
             src.sprites.Sprite(
                 (x * TILE_SIZE, y * TILE_SIZE),
                 surface,
@@ -138,9 +134,7 @@ class GameRunning(BaseState):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:  # Toggle inventory with "I" key
-                    self.game_state_manager.enter_state(
-                        Paused(self.game_state_manager, self.player_inventory)
-                    )
+                    self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
