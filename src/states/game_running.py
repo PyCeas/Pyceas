@@ -5,7 +5,7 @@ Represents the GameRunning state, where the player controls a ship and interacts
 import json
 import os
 
-import pygame
+import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
 import src.sprites

@@ -1,6 +1,6 @@
 """custom sprites classes"""
 
-import pygame
+import pygame  # type: ignore
 from pygame import FRect
 
 from src.inventory import Inventory

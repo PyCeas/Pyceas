@@ -5,7 +5,7 @@ structure of the game, using a stack of states
 
 import sys
 
-import pygame
+import pygame  # type: ignore
 
 from src.settings import FPS, SCREEN_HEIGHT, SCREEN_WIDTH
 

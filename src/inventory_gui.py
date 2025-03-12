@@ -1,6 +1,6 @@
 from typing import Dict, Tuple
 
-import pygame
+import pygame  # type: ignore
 
 from src.inventory import Inventory
 

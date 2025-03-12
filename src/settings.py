@@ -1,8 +1,8 @@
 import sys
 import warnings
 
-import pygame
-import pygame.freetype
+import pygame  # type: ignore
+import pygame.freetype  # type: ignore
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
 TILE_SIZE = 16

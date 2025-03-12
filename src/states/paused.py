@@ -5,7 +5,7 @@ holding the inventory
 
 from typing import Dict, Tuple
 
-import pygame
+import pygame  # type: ignore
 
 from src.inventory import Inventory  # for typehints
 from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH

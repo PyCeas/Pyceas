@@ -1,7 +1,7 @@
 from os import walk
 from os.path import join
 
-import pygame
+import pygame  # type: ignore
 
 # from pytmx.util_pygame import load_pygame
 
