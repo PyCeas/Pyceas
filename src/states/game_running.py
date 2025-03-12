@@ -133,7 +133,11 @@ class GameRunning(BaseState):
         point = self.shop.rect
         collide = self.player.rect.colliderect(point)
         if collide:
-            print("Welcome to the shop!")
+            # print("Welcome to the shop!")
             screen.blit(self.welcome_message, (155, 155))
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_e]:
+                print("Sick boots x 5")
 
         pygame.display.update()
