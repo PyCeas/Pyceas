@@ -44,6 +44,7 @@ class GameRunning(BaseState):
 
         self.font = pygame.font.Font(None, 36)
         self.shop_window = pygame.Surface((800, 600))
+        self.in_shop = False
 
     def setup(self, player_start_pos):
         """
@@ -137,10 +138,17 @@ class GameRunning(BaseState):
             # print("Welcome to the shop!")
             screen.blit(self.welcome_message, (155, 155))
 
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_e]:
-                print("Sick boots x 5")
-                self.shop_window.fill((0, 0, 0))
-                screen.blit(self.shop_window, (260, 40))
+        keys = pygame.key.get_pressed()
+        if collide and keys[pygame.K_e]:
+            self.in_shop = True
+            
+        if self.in_shop:
+            print("Sick boots x 5")
+            self.shop_window.fill((0, 0, 0))
+            screen.blit(self.shop_window, (260, 40))
+
+            if keys[pygame.K_q]:
+                self.in_shop = False
+                print("Exiting shop")
 
         pygame.display.update()

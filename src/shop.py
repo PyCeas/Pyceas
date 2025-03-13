@@ -1,6 +1,7 @@
 import pygame
 
 from src.settings import WORLD_LAYERS
+# from src.states.base_state import BaseState
 
 class ShowShop(pygame.sprite.Sprite):
     def __init__(self, pos, surface, groups, z = WORLD_LAYERS["main"]):
