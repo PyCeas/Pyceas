@@ -1,11 +1,12 @@
-import sys
 import os
+import sys
 
 # Add the project root to sys.path to allow imports to work when running tests directly with `python`.
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import unittest
-from src.GUI.inventory import Inventory, Chest, Quest
+
+from src.inventory import Chest, Inventory, Quest
 
 
 class TestInventory(unittest.TestCase):
@@ -33,9 +34,7 @@ class TestInventory(unittest.TestCase):
         self.inventory.add_item("Potion", 3)
         result = self.inventory.remove_item("Potion", 2)
         self.assertEqual(self.inventory.items, {"Potion": 1})
-        self.assertEqual(
-            result, "Successfully removed 2 Potion(s) from your inventory."
-        )
+        self.assertEqual(result, "Successfully removed 2 Potion(s) from your inventory.")
 
     def test_remove_item_fail(self):
         """Test failing to remove an item not in inventory or insufficient quantity."""

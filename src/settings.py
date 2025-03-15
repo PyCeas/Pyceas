@@ -1,25 +1,21 @@
 import sys
 import warnings
-import pygame
-import pygame.freetype
+
+import pygame  # type: ignore
+import pygame.freetype  # type: ignore
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
 TILE_SIZE = 16
 ANIMATION_SPEED = 4
 
-WORLD_LAYERS = {
-    "water": 0,
-    "bg": 1,
-    "main": 2,
-    "top": 3
-}
+WORLD_LAYERS = {"water": 0, "bg": 1, "main": 2, "top": 3}
 FPS = 60
 
 
+# For some imports like pygame.freetype, Mypy can't infer the type of this attribute, so we suppress the error.
 if not getattr(pygame, "IS_CE", False):
     raise ImportError(
-        "The game requires Pygame CE to function. "
-        "(hint: type pip uninstall pygame and then pip install pygame-ce)"
+        "The game requires Pygame CE to function. (hint: type pip uninstall pygame and then pip install pygame-ce)"
     )
 
 if sys.version_info < (3, 12):
