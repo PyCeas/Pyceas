@@ -5,7 +5,7 @@ from src.states.base_state import BaseState
 from src.inventory import Inventory
 from typing import Tuple, Dict
 
-class ShowShop(pygame.sprite.Sprite, BaseState):
+class ShowShop(pygame.sprite.Sprite):
     def __init__(self, pos, surface, groups, z = WORLD_LAYERS["main"]):
         super().__init__(groups)
 
@@ -16,27 +16,40 @@ class ShowShop(pygame.sprite.Sprite, BaseState):
 
 
 class WindowShop(BaseState):
-    def __init__(self, game_state_manager):
+    def __init__(self, game_state_manager, player, show_shop):
         super().__init__(game_state_manager)
         self.font = pygame.font.Font(None, 36)
         self.screen = pygame.Surface((800, 600))
 
         self.button_width = 100
         self.button_height = 50
+        self.scroll_offset = 0
 
         self.button_actions: Dict[str, Tuple[pygame.Rect, pygame.Rect]] = {}
         self.inventory = Inventory()
-        self.max_visible_items = 10
+        self.show_shop = show_shop
+        self.player = player
 
+        self.max_visible_items = 10
         self.in_shop = False
-        self.collide = player.rect.colliderect(self.rect)
+        self.collide = False
+
+        self.message = ""
+        self.message_end_time = 0
 
     def update(self, events):
+        self.collide = self.player.rect.colliderect(self.show_shop.rect)
+
         for event in events:
             match event.type:
                 case pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
+                    if event.key == pygame.K_q and self.in_shop:
+                        self.in_shop = False
                         self.game_state_manager.exit_state()
+
+                    if event.key == pygame.K_e and self.collide:
+                        self.in_shop = True
+
                 case pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         self.handle_mouse_clicks(event.pos)
@@ -49,9 +62,6 @@ class WindowShop(BaseState):
         if self.collide:
             welcome_message = self.font.render("Press 'E' to enter the shop!", True, (0, 0, 0))
             screen.blit(welcome_message, (155, 155))
-
-        if self.collide and pygame.K_e:
-            self.in_shop = True
 
         if self.in_shop:
             screen.fill((0, 0, 0))

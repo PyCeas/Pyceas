@@ -82,6 +82,10 @@ class GameRunning(BaseState):
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles():
             src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
 
+        # buildings
+        for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
+            self.shop = src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"])
+            print(x, y)
 
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
@@ -101,11 +105,6 @@ class GameRunning(BaseState):
                     frames=self.world_frames["ships"]["player_test_ship"],
                     groups=self.all_sprites,
                 )
-
-        # buildings
-        for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
-            self.shop = src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, self.game_state_manager, self.player, WORLD_LAYERS["main"])
-            print(x, y)
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
@@ -142,8 +141,7 @@ class GameRunning(BaseState):
                 if event.key == pygame.K_i:  # Toggle inventory with "I" key
                     self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
                 if event.key == pygame.K_e:
-                    for x, y, surf in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
-                        self.game_state_manager.enter_state(src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites, self.game_state_manager, self.player, WORLD_LAYERS["main"]))
+                    self.game_state_manager.enter_state(src.shop.WindowShop(self.game_state_manager, self.player, self.shop))
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
