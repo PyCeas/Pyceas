@@ -2,6 +2,7 @@ import pygame
 
 from src.settings import WORLD_LAYERS
 from src.states.base_state import BaseState
+from src.inventory import Inventory
 from typing import Tuple, Dict
 
 class ShowShop(pygame.sprite.Sprite, BaseState):
@@ -18,11 +19,23 @@ class ShowShop(pygame.sprite.Sprite, BaseState):
         self.button_width = 100
         self.button_height = 50
 
+        self.button_actions: Dict[str, Tuple[pygame.Rect, pygame.Rect]] = {}
+        self.inventory = Inventory()
+
     def update(self, *args, **kwargs):
         return super().update(*args, **kwargs)
     
     def render(self, screen):
         return super().render(screen)
+    
+    def handle_mouse_clicks(self, mouse_pos):
+        for item, (use_button, discard_button) in self.button_actions.items():
+            if use_button.collidepoint(mouse_pos):
+                self.message = self.inventory.use_item(item)  # `self.message` stores strings
+                self.message_end_time = pygame.time.get_ticks() + 3000  # 3 seconds
+            elif discard_button.collidepoint(mouse_pos):
+                self.message = self.inventory.remove_item(item, 1)
+                self.message_end_time = pygame.time.get_ticks() + 4000  # 4 seconds
     
     def draw_buttons(self, x: int, y: int, item: str) -> Tuple[pygame.Rect, pygame.Rect]:
         use_button = pygame.Rect(x, y, self.button_width, self.button_height)
