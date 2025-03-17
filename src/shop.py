@@ -13,6 +13,11 @@ class ShowShop(pygame.sprite.Sprite, BaseState):
         self.image.fill("white")
         self.rect = self.image.get_frect(topleft = pos)
         self.z = z
+
+
+class WindowShop(BaseState):
+    def __init__(self, game_state_manager):
+        super().__init__(game_state_manager)
         self.font = pygame.font.Font(None, 36)
         self.screen = pygame.Surface((800, 600))
 
@@ -23,11 +28,14 @@ class ShowShop(pygame.sprite.Sprite, BaseState):
         self.inventory = Inventory()
         self.max_visible_items = 10
 
+        self.in_shop = False
+        self.collide = player.rect.colliderect(self.rect)
+
     def update(self, events):
         for event in events:
             match event.type:
                 case pygame.KEYDOWN:
-                    if event.key == pygame.K_i:
+                    if event.key == pygame.K_q:
                         self.game_state_manager.exit_state()
                 case pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
@@ -38,59 +46,68 @@ class ShowShop(pygame.sprite.Sprite, BaseState):
                     self.scroll_offset = min(self.scroll_offset, max_offset)
     
     def render(self, screen: pygame.Surface):
-        
-        self.button_actions = {}
+        if self.collide:
+            welcome_message = self.font.render("Press 'E' to enter the shop!", True, (0, 0, 0))
+            screen.blit(welcome_message, (155, 155))
 
-        items = list(self.inventory.get_items().items())
-        visible_items = items[self.scroll_offset : self.scroll_offset + self.max_visible_items]
-        y_offset = 50
+        if self.collide and pygame.K_e:
+            self.in_shop = True
 
-        for item, quantity in visible_items:
-            # if item in self.ic
+        if self.in_shop:
+            screen.fill((0, 0, 0))
+            
+            self.button_actions = {}
 
-            quantity_text = self.font.render(f"x{quantity}", True, (255, 255, 255))
-            self.screen.blit(quantity_text, (100, y_offset + 5))
+            items = list(self.inventory.get_items().items())
+            visible_items = items[self.scroll_offset : self.scroll_offset + self.max_visible_items]
+            y_offset = 50
 
-            text = self.font.render(item, True, (255, 255, 255))
-            self.screen.blit(text, (100, y_offset + 5))
+            for item, quantity in visible_items:
+                # if item in self.ic
 
-            use_button, discard_button = self.draw_buttons(400, y_offset, item)
+                quantity_text = self.font.render(f"x{quantity}", True, (255, 255, 255))
+                self.screen.blit(quantity_text, (100, y_offset + 5))
 
-            self.button_actions[item] = (use_button, discard_button)
-            y_offset += 60
+                text = self.font.render(item, True, (255, 255, 255))
+                self.screen.blit(text, (100, y_offset + 5))
 
-        hint_text = self.font.render("Press Q to quit the shop!", True, (200, 200, 200))
-        self.screen.blit(hint_text, (50, self.screen.get_height() - 60))
+                use_button, discard_button = self.draw_buttons(400, y_offset, item)
 
-        if self.message and pygame.time.get_ticks() < self.message_end_time:
-            # Render the message text
-            message_text = self.font.render(self.message, True, (255, 255, 0))  # Yellow
+                self.button_actions[item] = (use_button, discard_button)
+                y_offset += 60
 
-            # Measure the message text size
-            text_width, text_height = message_text.get_size()
+            hint_text = self.font.render("Press Q to quit the shop!", True, (200, 200, 200))
+            self.screen.blit(hint_text, (50, self.screen.get_height() - 60))
 
-            # Message background
-            message_bg_x = 40
-            message_bg_y = self.screen.get_height() - 120
-            message_bg_width = text_width + 20  # Add padding
-            message_bg_height = text_height + 10  # Add padding
+            if self.message and pygame.time.get_ticks() < self.message_end_time:
+                # Render the message text
+                message_text = self.font.render(self.message, True, (255, 255, 0))  # Yellow
 
-            # Draw background rectangle for the message
-            pygame.draw.rect(
-                self.screen,
-                (0, 0, 0),  # Black background
-                (message_bg_x, message_bg_y, message_bg_width, message_bg_height),
-            )
+                # Measure the message text size
+                text_width, text_height = message_text.get_size()
 
-            # Draw the message text on top of the background
-            self.screen.blit(
-                message_text,
-                (message_bg_x + 10, message_bg_y + 5),  # Position text with padding
-            )
+                # Message background
+                message_bg_x = 40
+                message_bg_y = self.screen.get_height() - 120
+                message_bg_width = text_width + 20  # Add padding
+                message_bg_height = text_height + 10  # Add padding
 
-        # blit tmp self.screen to the actual display (screen form the argument)
-        screen.blit(self.screen, dest=(0, 0))
-        pygame.display.flip()  # Update the display
+                # Draw background rectangle for the message
+                pygame.draw.rect(
+                    self.screen,
+                    (0, 0, 0),  # Black background
+                    (message_bg_x, message_bg_y, message_bg_width, message_bg_height),
+                )
+
+                # Draw the message text on top of the background
+                self.screen.blit(
+                    message_text,
+                    (message_bg_x + 10, message_bg_y + 5),  # Position text with padding
+                )
+
+            # blit tmp self.screen to the actual display (screen form the argument)
+            screen.blit(self.screen, dest=(0, 0))
+            pygame.display.flip()  # Update the display
 
     
     def handle_mouse_clicks(self, mouse_pos):

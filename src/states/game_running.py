@@ -82,10 +82,6 @@ class GameRunning(BaseState):
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles():
             src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
 
-        # buildings
-        for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
-            self.shop = src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"])
-            print(x, y)
 
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
@@ -105,6 +101,11 @@ class GameRunning(BaseState):
                     frames=self.world_frames["ships"]["player_test_ship"],
                     groups=self.all_sprites,
                 )
+
+        # buildings
+        for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
+            self.shop = src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, self.game_state_manager, self.player, WORLD_LAYERS["main"])
+            print(x, y)
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
@@ -140,6 +141,9 @@ class GameRunning(BaseState):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:  # Toggle inventory with "I" key
                     self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
+                if event.key == pygame.K_e:
+                    for x, y, surf in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
+                        self.game_state_manager.enter_state(src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surf, self.all_sprites, self.game_state_manager, self.player, WORLD_LAYERS["main"]))
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
@@ -148,22 +152,22 @@ class GameRunning(BaseState):
             self.player.rect.center
         )
 
-        self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
-        point = self.shop.rect
-        collide = self.player.rect.colliderect(point)
-        if collide:
-            screen.blit(self.welcome_message, (155, 155))
+        # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
+        # point = self.shop.rect
+        # collide = self.player.rect.colliderect(point)
+        # if collide:
+        #     screen.blit(self.welcome_message, (155, 155))
 
-        keys = pygame.key.get_pressed()
-        if collide and keys[pygame.K_e]:
-            self.in_shop = True
+        # keys = pygame.key.get_pressed()
+        # if collide and keys[pygame.K_e]:
+        #     self.in_shop = True
 
-        if self.in_shop:
-            self.shop_window.fill((0, 0, 0))
-            screen.blit(self.shop_window, (260, 40))
+        # if self.in_shop:
+        #     self.shop_window.fill((0, 0, 0))
+        #     screen.blit(self.shop_window, (260, 40))
 
-            if keys[pygame.K_q]:
-                self.in_shop = False
-                print("Exiting shop")
+        #     if keys[pygame.K_q]:
+        #         self.in_shop = False
+        #         print("Exiting shop")
 
         pygame.display.update()
