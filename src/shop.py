@@ -1,17 +1,19 @@
+from typing import Dict, Tuple
+
 import pygame
 
+from src.inventory import Inventory
 from src.settings import WORLD_LAYERS
 from src.states.base_state import BaseState
-from src.inventory import Inventory
-from typing import Tuple, Dict
+
 
 class ShowShop(pygame.sprite.Sprite):
-    def __init__(self, pos, surface, groups, z = WORLD_LAYERS["main"]):
+    def __init__(self, pos, surface, groups, z=WORLD_LAYERS["main"]):
         super().__init__(groups)
 
-        self.image  = pygame.Surface((32, 32))
+        self.image = pygame.Surface((32, 32))
         self.image.fill("white")
-        self.rect = self.image.get_frect(topleft = pos)
+        self.rect = self.image.get_frect(topleft=pos)
         self.z = z
 
 
@@ -29,6 +31,7 @@ class WindowShop(BaseState):
         self.inventory = inventory
         self.show_shop = show_shop
         self.player = player
+        self.big_screen = pygame.Surface((1280, 720))
 
         self.max_visible_items = 5
         self.in_shop = False
@@ -57,15 +60,15 @@ class WindowShop(BaseState):
                     self.scroll_offset = max(0, self.scroll_offset - event.y)
                     max_offset = max(0, len(self.inventory.get_items()) - self.max_visible_items)
                     self.scroll_offset = min(self.scroll_offset, max_offset)
-    
+
     def render(self, screen: pygame.Surface):
         if self.collide:
             welcome_message = self.font.render("Press 'E' to enter the shop!", True, (0, 0, 0))
-            self.screen.blit(welcome_message, (50, self.screen.get_height() - 60))
+            self.big_screen.blit(welcome_message, (50, self.screen.get_height() - 60))
 
         if self.in_shop:
             self.screen.fill((0, 0, 0))
-            
+
             self.button_actions = {}
 
             items = list(self.inventory.get_items().items())
@@ -119,7 +122,6 @@ class WindowShop(BaseState):
             screen.blit(self.screen, dest=(0, 0))
             pygame.display.flip()  # Update the display
 
-    
     def handle_mouse_clicks(self, mouse_pos):
         for item, (use_button, discard_button) in self.button_actions.items():
             if use_button.collidepoint(mouse_pos):
@@ -128,7 +130,7 @@ class WindowShop(BaseState):
             elif discard_button.collidepoint(mouse_pos):
                 self.message = self.inventory.remove_item(item, 1)
                 self.message_end_time = pygame.time.get_ticks() + 4000  # 4 seconds
-    
+
     def draw_buttons(self, x: int, y: int, item: str) -> Tuple[pygame.Rect, pygame.Rect]:
         use_button = pygame.Rect(x, y, self.button_width, self.button_height)
         discard_button = pygame.Rect(x + self.button_width + 10, y, self.button_width, self.button_height)

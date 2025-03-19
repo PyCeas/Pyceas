@@ -84,7 +84,9 @@ class GameRunning(BaseState):
 
         # buildings
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
-            self.shop = src.shop.ShowShop((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"])
+            self.shop = src.shop.ShowShop(
+                (x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"]
+            )
             print(x, y)
 
         # Islands
@@ -141,14 +143,14 @@ class GameRunning(BaseState):
                 if event.key == pygame.K_i:  # Toggle inventory with "I" key
                     self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
                 if event.key == pygame.K_e:
-                    self.game_state_manager.enter_state(src.shop.WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory))
+                    self.game_state_manager.enter_state(
+                        src.shop.WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
+                    )
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
         screen.fill("#000000")
-        self.all_sprites.draw(
-            self.player.rect.center
-        )
+        self.all_sprites.draw(self.player.rect.center)
 
         # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
         # point = self.shop.rect
