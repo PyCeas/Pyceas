@@ -40,6 +40,51 @@ class WindowShop(BaseState):
         self.message = ""
         self.message_end_time = 0
 
+        self.sprite_sheet = pygame.image.load("images/tilesets/Treasure+.png").convert_alpha()
+        self.icons = {
+            "Gold Coin": self.extract_icon(0, 0),
+            "Silver Coin": self.extract_icon(16, 0),
+            "Coin Stack (1)": self.extract_icon(32, 0),
+            "Coin Stack (2)": self.extract_icon(48, 0),
+            "Circular Gem": self.extract_icon(64, 0),
+            "Single Gold Bar": self.extract_icon(0, 16),
+            "Gold Bar Stack": self.extract_icon(16, 16),
+            "Treasure Block": self.extract_icon(32, 16),
+            "Golden Crown": self.extract_icon(0, 32),
+            "Ornate Cup": self.extract_icon(16, 32),
+            "Golden Figurine": self.extract_icon(32, 32),
+            "Simple Sword": self.extract_icon(0, 48),
+            "Ornate Sword": self.extract_icon(16, 48),
+            "Double-Bladed Axe": self.extract_icon(32, 48),
+            "Spear": self.extract_icon(48, 48),
+            "Circular Shield": self.extract_icon(64, 48),
+            "Golden Trophy": self.extract_icon(0, 64),
+            "Candelabra": self.extract_icon(16, 64),
+            "Potion (Red)": self.extract_icon(0, 80),
+            "Potion (Blue)": self.extract_icon(16, 80),
+            "Potion (Green)": self.extract_icon(32, 80),
+            "Square Jar": self.extract_icon(48, 80),
+            "Cake": self.extract_icon(0, 96),
+            "Donut": self.extract_icon(16, 96),
+            "Bread": self.extract_icon(32, 96),
+            "Rug Tile": self.extract_icon(0, 112),
+            "Geometric Pattern": self.extract_icon(16, 112),
+            "Glowing Orb (Blue)": self.extract_icon(0, 128),
+            "Glowing Orb (Red)": self.extract_icon(16, 128),
+            "Glowing Orb (Green)": self.extract_icon(32, 128),
+            "Golden Ring": self.extract_icon(48, 128),
+            "Amulet": self.extract_icon(64, 128),
+            "Scroll": self.extract_icon(0, 144),
+            "Key": self.extract_icon(16, 144),
+            "Tool": self.extract_icon(32, 144),
+            "Dragon (Red)": self.extract_icon(0, 160),
+            "Dragon (Green)": self.extract_icon(16, 160),
+            "Dragon (Black)": self.extract_icon(32, 160),
+            "Dragon (White)": self.extract_icon(48, 160),
+            "Gem Cluster": self.extract_icon(0, 176),
+            "Glowing Crystal": self.extract_icon(16, 176),
+        }
+
     def update(self, events):
         self.collide = self.player.rect.colliderect(self.show_shop.rect)
 
@@ -125,6 +170,9 @@ class WindowShop(BaseState):
             elif discard_button.collidepoint(mouse_pos):
                 self.message = self.inventory.sell_item(item, 1)
                 self.message_end_time = pygame.time.get_ticks() + 4000  # 4 seconds
+
+    def extract_icon(self, x, y, size=16):
+        return self.sprite_sheet.subsurface((x, y, size))
 
     def draw_buttons(self, x: int, y: int, item: str) -> Tuple[pygame.Rect, pygame.Rect]:
         use_button = pygame.Rect(x, y, self.button_width, self.button_height)
