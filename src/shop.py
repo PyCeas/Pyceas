@@ -118,6 +118,8 @@ class WindowShop(BaseState):
             y_offset = 50
 
             for item, quantity in visible_items:
+                if item in self.icons:
+                    self.screen.blit(self.icons[item], (50, y_offset))
                 quantity_text = self.font.render(f"x{quantity}", True, (255, 255, 255))
                 self.screen.blit(quantity_text, (100, y_offset + 5))
 
@@ -172,7 +174,7 @@ class WindowShop(BaseState):
                 self.message_end_time = pygame.time.get_ticks() + 4000  # 4 seconds
 
     def extract_icon(self, x, y, size=16):
-        return self.sprite_sheet.subsurface((x, y, size))
+        return self.sprite_sheet.subsurface((x, y, size, size))
 
     def draw_buttons(self, x: int, y: int, item: str) -> Tuple[pygame.Rect, pygame.Rect]:
         use_button = pygame.Rect(x, y, self.button_width, self.button_height)
