@@ -34,7 +34,7 @@ class WindowShop(BaseState):
         self.big_screen = pygame.Surface((1280, 720))
 
         self.max_visible_items = 5
-        self.in_shop = False
+        self.in_shop = True
         self.collide = False
 
         self.message = ""
@@ -50,8 +50,8 @@ class WindowShop(BaseState):
                         self.in_shop = False
                         self.game_state_manager.exit_state()
 
-                    if event.key == pygame.K_e and self.collide:
-                        self.in_shop = True
+                    # if event.key == pygame.K_e and self.collide:
+                    #     self.in_shop = True
 
                 case pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
