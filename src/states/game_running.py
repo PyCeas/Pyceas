@@ -141,7 +141,7 @@ class GameRunning(BaseState):
                 if event.key == pygame.K_i:  # Toggle inventory with "I" key
                     self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
                 if event.key == pygame.K_e:
-                    self.game_state_manager.enter_state(src.shop.WindowShop(self.game_state_manager, self.player, self.shop))
+                    self.game_state_manager.enter_state(src.shop.WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory))
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""

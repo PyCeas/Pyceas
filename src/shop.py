@@ -16,7 +16,7 @@ class ShowShop(pygame.sprite.Sprite):
 
 
 class WindowShop(BaseState):
-    def __init__(self, game_state_manager, player, show_shop):
+    def __init__(self, game_state_manager, player, show_shop, inventory: Inventory):
         super().__init__(game_state_manager)
         self.font = pygame.font.Font(None, 36)
         self.screen = pygame.Surface((800, 600))
@@ -26,7 +26,7 @@ class WindowShop(BaseState):
         self.scroll_offset = 0
 
         self.button_actions: Dict[str, Tuple[pygame.Rect, pygame.Rect]] = {}
-        self.inventory = Inventory()
+        self.inventory = inventory
         self.show_shop = show_shop
         self.player = player
 
@@ -61,10 +61,10 @@ class WindowShop(BaseState):
     def render(self, screen: pygame.Surface):
         if self.collide:
             welcome_message = self.font.render("Press 'E' to enter the shop!", True, (0, 0, 0))
-            screen.blit(welcome_message, (155, 155))
+            self.screen.blit(welcome_message, (50, self.screen.get_height() - 60))
 
         if self.in_shop:
-            screen.fill((0, 0, 0))
+            self.screen.fill((0, 0, 0))
             
             self.button_actions = {}
 
