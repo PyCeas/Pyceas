@@ -120,11 +120,12 @@ class WindowShop(BaseState):
             for item, quantity in visible_items:
                 if item in self.icons:
                     self.screen.blit(self.icons[item], (50, y_offset))
+                
                 quantity_text = self.font.render(f"x{quantity}", True, (255, 255, 255))
                 self.screen.blit(quantity_text, (100, y_offset + 5))
 
                 text = self.font.render(item, True, (255, 255, 255))
-                self.screen.blit(text, (100, y_offset + 5))
+                self.screen.blit(text, (150, y_offset))
 
                 use_button, discard_button = self.draw_buttons(400, y_offset, item)
 
