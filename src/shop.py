@@ -30,7 +30,7 @@ class WindowShop(BaseState):
         self.show_shop = show_shop
         self.player = player
 
-        self.max_visible_items = 10
+        self.max_visible_items = 5
         self.in_shop = False
         self.collide = False
 
