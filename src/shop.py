@@ -120,10 +120,10 @@ class WindowShop(BaseState):
     def handle_mouse_clicks(self, mouse_pos):
         for item, (use_button, discard_button) in self.button_actions.items():
             if use_button.collidepoint(mouse_pos):
-                self.message = self.inventory.use_item(item)  # `self.message` stores strings
+                self.message = self.inventory.buy_item(item, 1)  # `self.message` stores strings
                 self.message_end_time = pygame.time.get_ticks() + 3000  # 3 seconds
             elif discard_button.collidepoint(mouse_pos):
-                self.message = self.inventory.remove_item(item, 1)
+                self.message = self.inventory.sell_item(item, 1)
                 self.message_end_time = pygame.time.get_ticks() + 4000  # 4 seconds
 
     def draw_buttons(self, x: int, y: int, item: str) -> Tuple[pygame.Rect, pygame.Rect]:
