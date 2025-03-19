@@ -2,19 +2,19 @@
 Represents the GameRunning state, where the player controls a ship and interacts with the game world.
 """
 
-import os
 import json
-import pygame
+import os
+
+import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
+import src.sprites
+from src.inventory import Inventory
+from src.settings import TILE_SIZE, WORLD_LAYERS
+from src.sprites import AnimatedSprites
 from src.states.base_state import BaseState
 from src.states.paused import Paused
-from src.inventory import Inventory
-from src.support import import_folder, coast_importer, all_character_import
-from src.sprites import AnimatedSprites
-
-from src.settings import TILE_SIZE, WORLD_LAYERS
-import src.sprites
+from src.support import all_character_import, coast_importer, import_folder
 
 
 class GameRunning(BaseState):
@@ -45,48 +45,72 @@ class GameRunning(BaseState):
         """
         setup the map and player from the tiled file
         """
-        self.tmx_map = {
-            "map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))
-        }
+        self.tmx_map = {"map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))}
 
         self.world_frames = {
             "water": import_folder(".", "images", "tilesets", "temporary_water"),
             "coast": coast_importer(6, 6, ".", "images", "tilesets", "coast"),
-            "ships": all_character_import(".", "images", "tilesets", "ships")
+            "ships": all_character_import(".", "images", "tilesets", "ships"),
         }
 
         # Sea
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Sea").tiles():
-            src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
+            src.sprites.Sprite(
+                (x * TILE_SIZE, y * TILE_SIZE),
+                surface,
+                self.all_sprites,
+                WORLD_LAYERS["bg"],
+            )
 
         # Water animated
         for obj in self.tmx_map["map"].get_layer_by_name("Water"):
             for x in range(int(obj.x), int(obj.x + obj.width), TILE_SIZE):
                 for y in range(int(obj.y), int(obj.y + obj.height), TILE_SIZE):
-                    AnimatedSprites((x, y), self.world_frames["water"], self.all_sprites, WORLD_LAYERS["water"])
+                    AnimatedSprites(
+                        (x, y),
+                        self.world_frames["water"],
+                        self.all_sprites,
+                        WORLD_LAYERS["water"],
+                    )
 
         # Shallow water
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles():
-            src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
+            src.sprites.Sprite(
+                (x * TILE_SIZE, y * TILE_SIZE),
+                surface,
+                self.all_sprites,
+                WORLD_LAYERS["bg"],
+            )
 
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
-            src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
+            src.sprites.Sprite(
+                (x * TILE_SIZE, y * TILE_SIZE),
+                surface,
+                self.all_sprites,
+                WORLD_LAYERS["bg"],
+            )
 
         # Enitites
         for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
             if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
                 self.player = src.sprites.Player(
-                    pos = (obj.x, obj.y), 
-                    frames = self.world_frames["ships"]["player_test_ship"], 
-                    groups = self.all_sprites)
+                    pos=(obj.x, obj.y),
+                    frames=self.world_frames["ships"]["player_test_ship"],
+                    groups=self.all_sprites,
+                )
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
             terrain = obj.properties["terrain"]
             side = obj.properties["side"]
-            AnimatedSprites((obj.x, obj.y), self.world_frames["coast"][terrain][side], self.all_sprites, WORLD_LAYERS["bg"])
+            AnimatedSprites(
+                (obj.x, obj.y),
+                self.world_frames["coast"][terrain][side],
+                self.all_sprites,
+                WORLD_LAYERS["bg"],
+            )
 
     def load_inventory_from_json(self, file_path: str):
         """Load initial inventory items from JSON file."""
@@ -110,15 +134,11 @@ class GameRunning(BaseState):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:  # Toggle inventory with "I" key
-                    self.game_state_manager.enter_state(
-                        Paused(self.game_state_manager, self.player_inventory)
-                    )
+                    self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
         screen.fill("#000000")
-        self.all_sprites.draw(
-            self.player.rect.center
-        )
+        self.all_sprites.draw(self.player.rect.center)
 
         pygame.display.update()

@@ -24,7 +24,6 @@ Pygame Version: 0.0.1"""
 # import Pygame specific objects, functions and functionality
 from src.game_manager import GameStateManager
 
-
 if __name__ == "__main__":
     game = GameStateManager()
     game.run()

@@ -1,0 +1,16 @@
+name: Lint and Typehints
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  lint_and_typehints:
+    uses: PyCeas/.github/.github/workflows/lint_and_test.yml@main
+    with:
+      requirements_path: 'requirements_dev.txt'  # Optional: Path to requirements file
+    secrets:
+      repo_token: ${{ secrets.GITHUB_TOKEN }}
