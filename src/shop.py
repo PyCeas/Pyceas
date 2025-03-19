@@ -50,9 +50,6 @@ class WindowShop(BaseState):
                         self.in_shop = False
                         self.game_state_manager.exit_state()
 
-                    # if event.key == pygame.K_e and self.collide:
-                    #     self.in_shop = True
-
                 case pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         self.handle_mouse_clicks(event.pos)
