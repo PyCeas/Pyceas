@@ -73,8 +73,6 @@ class WindowShop(BaseState):
             y_offset = 50
 
             for item, quantity in visible_items:
-                # if item in self.ic
-
                 quantity_text = self.font.render(f"x{quantity}", True, (255, 255, 255))
                 self.screen.blit(quantity_text, (100, y_offset + 5))
 
@@ -135,8 +133,8 @@ class WindowShop(BaseState):
         pygame.draw.rect(self.screen, (0, 255, 0), use_button)  # Green
         pygame.draw.rect(self.screen, (150, 75, 0), discard_button)  # Brown
 
-        use_text = self.font.render("Use", True, (0, 0, 0))  # Black
-        discard_text = self.font.render("Discard", True, (0, 0, 0))
+        use_text = self.font.render("Buy", True, (0, 0, 0))  # Black
+        discard_text = self.font.render("Sell", True, (0, 0, 0))
 
         self.screen.blit(use_text, (x + 10, y + 10))
         self.screen.blit(discard_text, (x + self.button_width + 20, y + 10))
