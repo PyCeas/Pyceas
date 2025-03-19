@@ -134,6 +134,7 @@ class GameRunning(BaseState):
         """
         update each sprites and handle events
         """
+        collide = self.player.rect.colliderect(self.shop.rect)
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
 
@@ -142,7 +143,7 @@ class GameRunning(BaseState):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:  # Toggle inventory with "I" key
                     self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
-                if event.key == pygame.K_e:
+                if collide and event.key == pygame.K_e:
                     self.game_state_manager.enter_state(
                         src.shop.WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
