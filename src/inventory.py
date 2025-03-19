@@ -58,6 +58,22 @@ class Inventory:
         if self.remove_item(item_name, 1) == get_message("inventory", "remove_success", item=item_name, quantity=1):
             return get_message("inventory", "use_success", item=item_name)
         return get_message("inventory", "use_fail", item=item_name)
+    
+    def buy_item(self, item_name, quantity):
+        if item_name in self.items:
+            self.items[item_name] += quantity
+            return get_message("shop_inventory", "buy_success", item=item_name, quantity=quantity)
+        else:
+            self.items[item_name] = quantity
+            return get_message("shop_inventory", "buy_success", item=item_name, quantity=quantity)
+
+    def sell_item(self, item_name, quantity):
+        if item_name in self.items and self.items[item_name] >= quantity:
+            self.items[item_name] -= quantity
+            if self.items[item_name] == 0:
+                del self.items[item_name]
+            return get_message("shop_inventory", "sell_success", item=item_name, quantity=quantity)
+        return get_message("shop_inventory", "sell_fail", item=item_name, quantity=quantity)
 
     def get_items(self) -> dict[str, int]:
         """Return a copy of the items dictionary."""

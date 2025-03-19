@@ -6,5 +6,12 @@
         "remove_fail": "Cannot remove {quantity} {item}(s), insufficient quantity.",
         "use_success": "You used {item}.",
         "use_fail": "You dont' have {item} in your inventory."
+    },
+    
+    "shop_inventory": {
+        "buy_success": "Succesfully bought {quantity} {item}.",
+        "buy_fail": "Failed to buy {quantity} {item}",
+        "sell_success": "Succesfully sold {quantity} {item}(s) to the shopkeeper.",
+        "sell_fail": "Failed to sell {quantity} {item} to the shopkeeper."
     }
 }
