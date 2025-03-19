@@ -87,7 +87,6 @@ class GameRunning(BaseState):
             self.shop = src.shop.ShowShop(
                 (x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"]
             )
-            print(x, y)
 
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
