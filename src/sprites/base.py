@@ -17,13 +17,12 @@ class Entity(pygame.sprite.Sprite):
     def __init__(self, pos, frames, groups):
         super().__init__(groups)
         self.z = WORLD_LAYERS["main"]
-
         # graphics
         self.frame_index, self.frames = 0, frames
         self.facing_direction = "down"
 
         # movement
-        self.direction = pygame.math.Vector2()
+        self.direction = pygame.math.Vector3()
         # self.speed = 250
 
         # sprite setup
@@ -109,7 +108,7 @@ class AllSprites(pygame.sprite.Group):
 
             # self.display_surface.blit(scaled_preview, scaled_preview_rect.topleft)
 
-    # method for zooming (might be usefull later?)
+    # method for zooming (might be useful later?)
     # def set_scale(self, scale):
     #     self.scale = max(scale, 0.1)
 
@@ -141,19 +140,19 @@ class Player(Entity):
         # Reset direction
         self.direction = pygame.math.Vector2(0, 0)
 
-        # gost preview
+        # ghost preview
         mouse_pos = pygame.mouse.get_pos()
 
         # get the relative pos of the player from the mouse
-        # to know on wich axis the player will move
+        # to know on which axis the player will move
         delta_x = abs(self.rect.centerx - mouse_pos[0])
         delta_y = abs(self.rect.centery - mouse_pos[1])
 
-        # #  move the gost on the x axis
+        # #  move the ghost on the x axis
         # self.player_preview_rect = self.rect.copy()
         # if delta_x > delta_y:
         #     if delta_x < (TILE_SIZE / 2):
-        #         # don't move the gost if the mouse is on the player hitbox
+        #         # don't move the ghost if the mouse is on the player hit box
         #         self.player_preview_rect.x = self.rect.x
         #     elif mouse_pos[0] > self.rect.centerx:
         #         # go right
@@ -161,7 +160,7 @@ class Player(Entity):
         #     else:
         #         # go left
         #         self.player_preview_rect.x = self.rect.x - TILE_SIZE
-        # # move the gost on the y axis
+        # # move the ghost on the y axis
         # else:
         #     if delta_y < (TILE_SIZE / 2):
         #         # don't move if the mouse is on the player hitbox
@@ -202,7 +201,7 @@ class Player(Entity):
         # return None
 
     def update(self, dt) -> None:
-        """blit player image and gost preview to a given surface"""
+        """blit player image and ghost preview to a given surface"""
         self.input()
         self.animate(dt)
 
@@ -229,7 +228,7 @@ class Tile(pygame.sprite.Sprite):
         Note:
             There is a known typing error related to missing type parameters for the generic type 'Group' in pygame.
             You may see warnings like:
-            - src\\sprites.py:107: error: Missing type parameters for generic type 'Group' [type-arg]
+            - src\\base.py:107: error: Missing type parameters for generic type 'Group' [type-arg]
             - src\\GUI\\game_manager.py:45: error: Missing type parameters for generic type 'SpriteGroup' [type-arg]
 
             These errors can be ignored for now, as they are related to type annotations in pygame's codebase.
