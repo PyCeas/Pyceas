@@ -15,6 +15,7 @@ from src.settings import TILE_SIZE, WORLD_LAYERS
 from src.sprites import AnimatedSprites
 from src.states.base_state import BaseState
 from src.states.paused import Paused
+from src.states.player_gui import Player_gui
 from src.support import all_character_import, coast_importer, import_folder
 
 
@@ -151,6 +152,8 @@ class GameRunning(BaseState):
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(self.player.rect.center)
+        player_gui = Player_gui(screen)
+        player_gui.draw_gui(screen)
 
         # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
         # point = self.shop.rect
