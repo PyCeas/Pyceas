@@ -25,7 +25,7 @@ class Inventory:
 
     def __init__(self) -> None:
         # Currency
-        self.money: int = 0
+        self.money: int = 10000
 
         # Item management
         self.items: dict[str, int] = {}  # name: quantity
@@ -78,6 +78,9 @@ class Inventory:
     def get_items(self) -> dict[str, int]:
         """Return a copy of the items dictionary."""
         return self.items.copy()
+    
+    def get_money(self):
+        return self.money
 
     # Methods for Chest and Quest
     def add_chest(self, chest: Chest) -> None:
