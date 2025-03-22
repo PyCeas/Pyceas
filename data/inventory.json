@@ -1,5 +1,5 @@
 {
-    "Gold Coin": {"type": "currency", "effect": "collect", "quantity": 1},
+    "Gold Coin": {"type": "currency", "effect": "collect", "quantity": 1, "price": 23},
     "Silver Coin": {"type": "currency", "effect": "collect", "quantity": 1},
     "Coin Stack (1)": {"type": "currency", "effect": "collect", "quantity": 3},
     "Coin Stack (2)": {"type": "currency", "effect": "collect", "quantity": 5},
