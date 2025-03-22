@@ -62,6 +62,7 @@ class Inventory:
     def buy_item(self, item_name, quantity):
         if item_name in self.items:
             self.items[item_name] += quantity
+            self.money -= 10
             return get_message("shop_inventory", "buy_success", item=item_name, quantity=quantity)
         else:
             self.items[item_name] = quantity
@@ -70,6 +71,7 @@ class Inventory:
     def sell_item(self, item_name, quantity):
         if item_name in self.items and self.items[item_name] >= quantity:
             self.items[item_name] -= quantity
+            self.money += 15
             if self.items[item_name] == 0:
                 del self.items[item_name]
             return get_message("shop_inventory", "sell_success", item=item_name, quantity=quantity)
