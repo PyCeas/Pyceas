@@ -152,7 +152,7 @@ class GameRunning(BaseState):
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(self.player.rect.center)
-        player_gui = Player_gui(screen, self.player_inventory)
+        player_gui = Player_gui(screen)
         player_gui.draw_gui(screen)
 
         # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
