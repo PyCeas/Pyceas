@@ -4,6 +4,7 @@ import pygame
 
 from src.states.base_state import BaseState
 from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.utils.currency import load_wallet
 
 
 class Player_gui():
@@ -11,11 +12,12 @@ class Player_gui():
         self.font = pygame.font.Font(None, 36)
         self.screen = screen
         self.margin = 20
-        self.wallet = inventory.get_money()
+        self.wallet = load_wallet()
+        self.player_wallet = self.wallet["player_wallet"]["quantity"]
 
     def draw_gui(self, screen: pygame.Surface):
         # for quantity in self.wallet:
-        player_money = self.font.render(f"Gold: {self.wallet}", True, (255, 255, 255))
+        player_money = self.font.render(f"Gold: {self.player_wallet}", True, (255, 255, 255))
 
         text_wdith, text_height = player_money.get_size()
         x_pos = screen.get_width() - text_wdith - self.margin

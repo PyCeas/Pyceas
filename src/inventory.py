@@ -4,6 +4,7 @@ this file contain types of items, like Chest
 """
 
 from src.utils.messaging import get_message
+from src.utils.currency import load_inventory, load_wallet, save_wallet
 
 
 class Chest:
@@ -26,6 +27,9 @@ class Inventory:
     def __init__(self) -> None:
         # Currency
         self.money: int = 0
+        self.wallet = load_wallet()
+        self.price = load_inventory()
+        self.player_wallet = self.wallet["player_wallet"]["quantity"]
 
         # Item management
         self.items: dict[str, int] = {}  # name: quantity
@@ -62,7 +66,8 @@ class Inventory:
     def buy_item(self, item_name, quantity):
         if item_name in self.items:
             self.items[item_name] += quantity
-            self.money -= 50
+            self.player_wallet -= 50
+            self.save_gold = save_wallet(self.player_wallet)
             return get_message("shop_inventory", "buy_success", item=item_name, quantity=quantity)
         else:
             self.items[item_name] = quantity
@@ -70,11 +75,14 @@ class Inventory:
 
     def sell_item(self, item_name, quantity):
         if item_name in self.items and self.items[item_name] >= quantity:
-            self.items[item_name] -= quantity
-            self.money += 60
-            if self.items[item_name] == 0:
-                del self.items[item_name]
-            return get_message("shop_inventory", "sell_success", item=item_name, quantity=quantity)
+            if "price" in self.price.get(item_name, {}):
+                self.item_price = self.price[item_name]["price"]
+                self.items[item_name] -= quantity
+                self.player_wallet += self.item_price
+                self.save_gold = save_wallet(self.player_wallet)
+                if self.items[item_name] == 0:
+                    del self.items[item_name]
+                return get_message("shop_inventory", "sell_success", item=item_name, quantity=quantity)
         return get_message("shop_inventory", "sell_fail", item=item_name, quantity=quantity)
 
     def get_items(self) -> dict[str, int]:
