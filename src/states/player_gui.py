@@ -1,14 +1,10 @@
-from typing import Dict, Tuple
-
 import pygame
 
-from src.states.base_state import BaseState
-from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from src.utils.currency import load_wallet
 
 
 class Player_gui():
-    def __init__(self, screen, inventory):
+    def __init__(self, screen):
         self.font = pygame.font.Font(None, 36)
         self.screen = screen
         self.margin = 20
@@ -16,7 +12,6 @@ class Player_gui():
         self.player_wallet = self.wallet["player_wallet"]["quantity"]
 
     def draw_gui(self, screen: pygame.Surface):
-        # for quantity in self.wallet:
         player_money = self.font.render(f"Gold: {self.player_wallet}", True, (255, 255, 255))
 
         text_wdith, text_height = player_money.get_size()
