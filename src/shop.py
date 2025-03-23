@@ -1,5 +1,3 @@
-from typing import Dict, Tuple
-
 import pygame
 
 from src.inventory import Inventory
@@ -9,7 +7,7 @@ from src.states.base_state import BaseState
 
 class ShowShop(pygame.sprite.Sprite):
     def __init__(self, pos, surface, groups, z=WORLD_LAYERS["main"]):
-        super().__init__(groups)
+        super().__init__(*groups)
 
         self.image = pygame.Surface((32, 32))
         self.image.fill("white")
@@ -27,7 +25,7 @@ class WindowShop(BaseState):
         self.button_height = 50
         self.scroll_offset = 0
 
-        self.button_actions: Dict[str, Tuple[pygame.Rect, pygame.Rect]] = {}
+        self.button_actions: dict[str, tuple[pygame.Rect, pygame.Rect]] = {}
         self.inventory = inventory
         self.show_shop = show_shop
         self.player = player
@@ -177,7 +175,7 @@ class WindowShop(BaseState):
     def extract_icon(self, x, y, size=16):
         return self.sprite_sheet.subsurface((x, y, size, size))
 
-    def draw_buttons(self, x: int, y: int, item: str) -> Tuple[pygame.Rect, pygame.Rect]:
+    def draw_buttons(self, x: int, y: int, item: str) -> tuple[pygame.Rect, pygame.Rect]:
         use_button = pygame.Rect(x, y, self.button_width, self.button_height)
         discard_button = pygame.Rect(x + self.button_width + 10, y, self.button_width, self.button_height)
 
