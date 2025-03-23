@@ -66,8 +66,11 @@ class Inventory:
     def buy_item(self, item_name, quantity):
         if item_name in self.items:
             self.items[item_name] += quantity
-            self.player_wallet -= 50
-            self.save_gold = save_wallet(self.player_wallet)
+            if "price" in self.price.get(item_name, {}):
+                self.item_price = self.price[item_name]["price"]
+                if self.player_wallet >= self.item_price:
+                    self.player_wallet -= self.item_price
+                    self.save_gold = save_wallet(self.player_wallet)
             return get_message("shop_inventory", "buy_success", item=item_name, quantity=quantity)
         else:
             self.items[item_name] = quantity
