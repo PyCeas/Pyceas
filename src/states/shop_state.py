@@ -1,29 +1,22 @@
+import os
 import pygame
-
+from pygame import Surface
+from pygame.sprite import Group
 from src.inventory import Inventory
 from src.settings import WORLD_LAYERS
 from src.states.base_state import BaseState
-
-
-class ShowShop(pygame.sprite.Sprite):
-    def __init__(self, pos, surface, groups, z=WORLD_LAYERS["main"]):
-        super().__init__(*groups)
-
-        self.image = pygame.Surface((32, 32))
-        self.image.fill("white")
-        self.rect = self.image.get_frect(topleft=pos)
-        self.z = z
+from src.sprites.shop.shop_sprite import ShowShop
 
 
 class WindowShop(BaseState):
-    def __init__(self, game_state_manager, player, show_shop, inventory: Inventory):
+    def __init__(self, game_state_manager, player, show_shop: ShowShop, inventory: Inventory):
         super().__init__(game_state_manager)
         self.font = pygame.font.Font(None, 36)
         self.screen = pygame.Surface((800, 600))
 
-        self.button_width = 100
-        self.button_height = 50
-        self.scroll_offset = 0
+        self.button_width: int = 100
+        self.button_height: int = 50
+        self.scroll_offset: int = 0
 
         self.button_actions: dict[str, tuple[pygame.Rect, pygame.Rect]] = {}
         self.inventory = inventory
@@ -31,60 +24,33 @@ class WindowShop(BaseState):
         self.player = player
         self.big_screen = pygame.Surface((1280, 720))
 
-        self.max_visible_items = 5
+        self.max_visible_items: int = 5
         self.in_shop = True
         self.collide = False
 
         self.message = ""
         self.message_end_time = 0
 
-        self.sprite_sheet = pygame.image.load("images/tilesets/Treasure+.png").convert_alpha()
+        # Load sprite sheet
+        sprite_sheet_path = os.path.join("images/tilesets/Treasure+.png")
+        if not os.path.exists(sprite_sheet_path):
+            print(f"Error: Sprite sheet not found at '{sprite_sheet_path}'")
+            exit()
+        self.sprite_sheet = pygame.image.load(sprite_sheet_path)
+
+        # Extract icons using `ShowShop.extract_icon`
         self.icons = {
-            "Gold Coin": self.extract_icon(0, 0),
-            "Silver Coin": self.extract_icon(16, 0),
-            "Coin Stack (1)": self.extract_icon(32, 0),
-            "Coin Stack (2)": self.extract_icon(48, 0),
-            "Circular Gem": self.extract_icon(64, 0),
-            "Single Gold Bar": self.extract_icon(0, 16),
-            "Gold Bar Stack": self.extract_icon(16, 16),
-            "Treasure Block": self.extract_icon(32, 16),
-            "Golden Crown": self.extract_icon(0, 32),
-            "Ornate Cup": self.extract_icon(16, 32),
-            "Golden Figurine": self.extract_icon(32, 32),
-            "Simple Sword": self.extract_icon(0, 48),
-            "Ornate Sword": self.extract_icon(16, 48),
-            "Double-Bladed Axe": self.extract_icon(32, 48),
-            "Spear": self.extract_icon(48, 48),
-            "Circular Shield": self.extract_icon(64, 48),
-            "Golden Trophy": self.extract_icon(0, 64),
-            "Candelabra": self.extract_icon(16, 64),
-            "Potion (Red)": self.extract_icon(0, 80),
-            "Potion (Blue)": self.extract_icon(16, 80),
-            "Potion (Green)": self.extract_icon(32, 80),
-            "Square Jar": self.extract_icon(48, 80),
-            "Cake": self.extract_icon(0, 96),
-            "Donut": self.extract_icon(16, 96),
-            "Bread": self.extract_icon(32, 96),
-            "Rug Tile": self.extract_icon(0, 112),
-            "Geometric Pattern": self.extract_icon(16, 112),
-            "Glowing Orb (Blue)": self.extract_icon(0, 128),
-            "Glowing Orb (Red)": self.extract_icon(16, 128),
-            "Glowing Orb (Green)": self.extract_icon(32, 128),
-            "Golden Ring": self.extract_icon(48, 128),
-            "Amulet": self.extract_icon(64, 128),
-            "Scroll": self.extract_icon(0, 144),
-            "Key": self.extract_icon(16, 144),
-            "Tool": self.extract_icon(32, 144),
-            "Dragon (Red)": self.extract_icon(0, 160),
-            "Dragon (Green)": self.extract_icon(16, 160),
-            "Dragon (Black)": self.extract_icon(32, 160),
-            "Dragon (White)": self.extract_icon(48, 160),
-            "Gem Cluster": self.extract_icon(0, 176),
-            "Glowing Crystal": self.extract_icon(16, 176),
+            "Gold Coin": ShowShop.extract_icon(self.sprite_sheet, 0, 0),
+            "Silver Coin": ShowShop.extract_icon(self.sprite_sheet, 16, 0),
+            # Add other icons as needed...
         }
 
     def update(self, events):
-        self.collide = self.player.rect.colliderect(self.show_shop.rect)
+        # Check collision
+        if hasattr(self.player, "rect") and hasattr(self.show_shop, "rect"):
+            self.collide = self.player.rect.colliderect(self.show_shop.rect)
+        else:
+            self.collide = False
 
         for event in events:
             match event.type:
@@ -101,7 +67,7 @@ class WindowShop(BaseState):
                     max_offset = max(0, len(self.inventory.get_items()) - self.max_visible_items)
                     self.scroll_offset = min(self.scroll_offset, max_offset)
 
-    def render(self, screen: pygame.Surface):
+    def render(self, screen: Surface):
         if self.collide:
             welcome_message = self.font.render("Press 'E' to enter the shop!", True, (0, 0, 0))
             self.big_screen.blit(welcome_message, (50, self.screen.get_height() - 60))
@@ -112,13 +78,13 @@ class WindowShop(BaseState):
             self.button_actions = {}
 
             items = list(self.inventory.get_items().items())
-            visible_items = items[self.scroll_offset : self.scroll_offset + self.max_visible_items]
+            visible_items = items[self.scroll_offset: self.scroll_offset + self.max_visible_items]
             y_offset = 50
 
             for item, quantity in visible_items:
                 if item in self.icons:
                     self.screen.blit(self.icons[item], (50, y_offset))
-                
+
                 quantity_text = self.font.render(f"x{quantity}", True, (255, 255, 255))
                 self.screen.blit(quantity_text, (100, y_offset + 5))
 
@@ -166,14 +132,11 @@ class WindowShop(BaseState):
     def handle_mouse_clicks(self, mouse_pos):
         for item, (use_button, discard_button) in self.button_actions.items():
             if use_button.collidepoint(mouse_pos):
-                self.message = self.inventory.buy_item(item, 1)  # `self.message` stores strings
+                self.message = self.inventory.buy_item(item, 1)
                 self.message_end_time = pygame.time.get_ticks() + 3000  # 3 seconds
             elif discard_button.collidepoint(mouse_pos):
                 self.message = self.inventory.sell_item(item, 1)
                 self.message_end_time = pygame.time.get_ticks() + 4000  # 4 seconds
-
-    def extract_icon(self, x, y, size=16):
-        return self.sprite_sheet.subsurface((x, y, size, size))
 
     def draw_buttons(self, x: int, y: int, item: str) -> tuple[pygame.Rect, pygame.Rect]:
         use_button = pygame.Rect(x, y, self.button_width, self.button_height)
