@@ -3,7 +3,7 @@ import pygame
 from src.utils.currency import load_wallet
 
 
-class Player_gui():
+class Player_gui:
     def __init__(self, screen):
         self.font = pygame.font.Font(None, 36)
         self.screen = screen

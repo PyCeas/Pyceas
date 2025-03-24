@@ -3,8 +3,8 @@ inventory class for the players
 this file contain types of items, like Chest
 """
 
-from src.utils.messaging import get_message
 from src.utils.currency import load_inventory, load_wallet, save_wallet
+from src.utils.messaging import get_message
 
 
 class Chest:
@@ -62,7 +62,7 @@ class Inventory:
         if self.remove_item(item_name, 1) == get_message("inventory", "remove_success", item=item_name, quantity=1):
             return get_message("inventory", "use_success", item=item_name)
         return get_message("inventory", "use_fail", item=item_name)
-    
+
     def buy_item(self, item_name, quantity):
         if item_name in self.items:
             self.items[item_name] += quantity
@@ -91,7 +91,7 @@ class Inventory:
     def get_items(self) -> dict[str, int]:
         """Return a copy of the items dictionary."""
         return self.items.copy()
-    
+
     def get_money(self):
         return self.money
 

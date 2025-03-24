@@ -3,9 +3,9 @@ from typing import Dict, Tuple
 import pygame
 
 from src.inventory import Inventory
-from src.utils.currency import load_inventory
 from src.settings import WORLD_LAYERS
 from src.states.base_state import BaseState
+from src.utils.currency import load_inventory
 
 
 class ShowShop(pygame.sprite.Sprite):
@@ -122,7 +122,7 @@ class WindowShop(BaseState):
             for item, quantity in visible_items:
                 if item in self.icons:
                     self.screen.blit(self.icons[item], (50, y_offset))
-                
+
                 # quantity_text = self.font.render(f"x{quantity}", True, (255, 255, 255))
                 # self.screen.blit(quantity_text, (100, y_offset + 5))
                 if "price" in self.price_tag.get(item, {}):
