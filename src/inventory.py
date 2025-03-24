@@ -3,6 +3,7 @@ inventory class for the players
 this file contain types of items, like Chest
 """
 
+from src.utils.currency import load_inventory, load_wallet, save_wallet
 from src.utils.messaging import get_message
 
 
@@ -26,6 +27,9 @@ class Inventory:
     def __init__(self) -> None:
         # Currency
         self.money: int = 0
+        self.wallet = load_wallet()
+        self.price = load_inventory()
+        self.player_wallet = self.wallet["player_wallet"]["quantity"]
 
         # Item management
         self.items: dict[str, int] = {}  # name: quantity
@@ -58,10 +62,15 @@ class Inventory:
         if self.remove_item(item_name, 1) == get_message("inventory", "remove_success", item=item_name, quantity=1):
             return get_message("inventory", "use_success", item=item_name)
         return get_message("inventory", "use_fail", item=item_name)
-    
+
     def buy_item(self, item_name, quantity):
         if item_name in self.items:
             self.items[item_name] += quantity
+            if "price" in self.price.get(item_name, {}):
+                self.item_price = self.price[item_name]["price"]
+                if self.player_wallet >= self.item_price:
+                    self.player_wallet -= self.item_price
+                    self.save_gold = save_wallet(self.player_wallet)
             return get_message("shop_inventory", "buy_success", item=item_name, quantity=quantity)
         else:
             self.items[item_name] = quantity
@@ -69,15 +78,22 @@ class Inventory:
 
     def sell_item(self, item_name, quantity):
         if item_name in self.items and self.items[item_name] >= quantity:
-            self.items[item_name] -= quantity
-            if self.items[item_name] == 0:
-                del self.items[item_name]
-            return get_message("shop_inventory", "sell_success", item=item_name, quantity=quantity)
+            if "price" in self.price.get(item_name, {}):
+                self.item_price = self.price[item_name]["price"]
+                self.items[item_name] -= quantity
+                self.player_wallet += self.item_price
+                self.save_gold = save_wallet(self.player_wallet)
+                if self.items[item_name] == 0:
+                    del self.items[item_name]
+                return get_message("shop_inventory", "sell_success", item=item_name, quantity=quantity)
         return get_message("shop_inventory", "sell_fail", item=item_name, quantity=quantity)
 
     def get_items(self) -> dict[str, int]:
         """Return a copy of the items dictionary."""
         return self.items.copy()
+
+    def get_money(self):
+        return self.money
 
     # Methods for Chest and Quest
     def add_chest(self, chest: Chest) -> None:
