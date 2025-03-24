@@ -88,6 +88,9 @@ class GameRunning(BaseState):
                 (x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"]
             )
 
+        for obj in self.tmx_map["map"].get_layer_by_name("Collision_boarder"):
+            self.island_boarder = src.sprites.Sprite((obj.x, obj,y), surface, self.all_sprites, WORLD_LAYERS["bg"])
+
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
