@@ -14,7 +14,7 @@ from src.settings import (
 
 class BaseSprite(Sprite, ABC):
     """
-    Abstract base class for all custom sprites in the game, combining functionality
+    Abstract base class for all custom sprites in the game, combining the functionality
     of both Sprite and Entity classes. Provides support for rendering, animation,
     and basic movement logic.
 
