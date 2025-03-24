@@ -1,5 +1,7 @@
-import  pygame
+import pygame
+
 from src.sprites.base import BaseSprite
+
 
 class Tile(BaseSprite):
     """Handle tiles for the map"""

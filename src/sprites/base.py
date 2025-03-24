@@ -1,15 +1,11 @@
 """custom sprites classes"""
 
-import pygame  # type: ignore
-from pygame.sprite import Sprite, Group
+from abc import ABC
+
 from pygame import FRect, Surface, Vector2
+from pygame.sprite import Group, Sprite
 
-from abc import ABC, abstractmethod
-
-from src.settings import (
-    WORLD_LAYERS,
-    ANIMATION_SPEED
-)
+from src.settings import ANIMATION_SPEED, WORLD_LAYERS
 
 
 class BaseSprite(Sprite, ABC):
@@ -26,26 +22,24 @@ class BaseSprite(Sprite, ABC):
         facing_direction (str): The current facing direction (e.g., "up", "down").
     """
 
-    rect = FRect
-
     def __init__(
         self,
-            pos: tuple[int, int],
-            surf: Surface,
-            groups: tuple[Group, ...],
-            z: object = WORLD_LAYERS["main"],
-            frames: list[Surface] = None,
+        pos: tuple[int, int],
+        surf: Surface,
+        groups: tuple[Group, ...],
+        z: object = WORLD_LAYERS["main"],
+        frames: list[Surface] | None = None,
     ) -> None:
         """
-       Initialize the base sprite.
-       :param pos: The (x, y) position of the sprite.
-       :param surf: The surface (image) of the sprite.
-       :param groups: Groups the sprite belongs to.
-       :param z: The layer index for rendering.
-       :param frames: The frame index for rendering.
-       """
+        Initialize the base sprite.
+        :param pos: The (x, y) position of the sprite.
+        :param surf: The surface (image) of the sprite.
+        :param groups: Groups the sprite belongs to.
+        :param z: The layer index for rendering.
+        :param frames: The frame index for rendering.
+        """
 
-        super().__init__(groups)
+        super().__init__(*groups)
 
         if surf is None:
             raise ValueError("The `surf` parameter must be a valid pygame.Surface.")
@@ -54,7 +48,7 @@ class BaseSprite(Sprite, ABC):
         self.rect: FRect = self.image.get_frect(topleft=pos)
         self.z = z
 
-        self.frames = frames or[surf]
+        self.frames = frames or [surf]
         self.frame_index: float = 0.0
 
         # Movement

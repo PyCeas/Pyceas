@@ -1,6 +1,7 @@
+from abc import ABC, abstractmethod
+
 import pygame
 
-from abc import ABC, abstractmethod
 
 # class CameraGroup(pygame.sprite.Group, ABC):
 class AllSprites(pygame.sprite.Group, ABC):
@@ -18,6 +19,6 @@ class AllSprites(pygame.sprite.Group, ABC):
         self.scale = 2.0
 
     @abstractmethod
-    def draw(self, player_center) -> None:
+    def draw(self, player_center):
         """Render sprites with camera adjustments."""
         pass

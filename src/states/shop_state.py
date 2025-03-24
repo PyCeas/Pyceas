@@ -1,11 +1,11 @@
 import os
+
 import pygame
 from pygame import Surface
-from pygame.sprite import Group
+
 from src.inventory import Inventory
-from src.settings import WORLD_LAYERS
-from src.states.base_state import BaseState
 from src.sprites.shop.shop_sprite import ShowShop
+from src.states.base_state import BaseState
 
 
 class WindowShop(BaseState):
@@ -78,7 +78,7 @@ class WindowShop(BaseState):
             self.button_actions = {}
 
             items = list(self.inventory.get_items().items())
-            visible_items = items[self.scroll_offset: self.scroll_offset + self.max_visible_items]
+            visible_items = items[self.scroll_offset : self.scroll_offset + self.max_visible_items]
             y_offset = 50
 
             for item, quantity in visible_items:

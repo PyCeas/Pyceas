@@ -1,12 +1,8 @@
-import pygame # ignore
+import pygame  # ignore
 
+from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_LAYERS
 from src.sprites.camera.group import AllSprites
 
-from src.settings import (
-    SCREEN_WIDTH,
-    SCREEN_HEIGHT,
-    WORLD_LAYERS
-)
 
 class PlayerCamera(AllSprites):
     """

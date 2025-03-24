@@ -1,21 +1,17 @@
-import  pygame
+import pygame
 from pygame.sprite import Group
 
-from src.settings import (
-    WORLD_LAYERS,
-    ANIMATION_SPEED
-)
-
+from src.settings import ANIMATION_SPEED, WORLD_LAYERS
 from src.sprites.base import BaseSprite
 
-class AnimatedSprites(BaseSprite):
 
+class AnimatedSprites(BaseSprite):
     def __init__(
         self,
         pos: tuple[int, int],
         frames: list[pygame.Surface],
         groups: tuple[Group, ...],
-        z: int = WORLD_LAYERS["main"]
+        z: int = WORLD_LAYERS["main"],
     ):
         super().__init__(pos, frames[0], groups, z)
         self.frames = frames

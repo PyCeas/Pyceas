@@ -8,17 +8,15 @@ import os
 import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
-
-from src.states.shop_state import ShowShop, WindowShop
 from src.inventory import Inventory
 from src.settings import TILE_SIZE, WORLD_LAYERS
-
-from src.sprites.base import BaseSprite
 from src.sprites.animations import AnimatedSprites
+from src.sprites.base import BaseSprite
 from src.sprites.camera import PlayerCamera
 from src.sprites.entities.player import Player
 from src.states.base_state import BaseState
 from src.states.paused import Paused
+from src.states.shop_state import ShowShop, WindowShop
 from src.support import all_character_import, coast_importer, import_folder
 
 
@@ -88,19 +86,13 @@ class GameRunning(BaseState):
         # Shallow water
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles():
             BaseSprite(
-                pos=(x * TILE_SIZE, y * TILE_SIZE),
-                surf=surface,
-                groups=(self.all_sprites,),
-                z=WORLD_LAYERS["bg"]
+                pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surface, groups=(self.all_sprites,), z=WORLD_LAYERS["bg"]
             )
 
         # Buildings
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
             self.shop = ShowShop(
-                pos=(x * TILE_SIZE, y * TILE_SIZE),
-                surface=surface,
-                groups=(self.all_sprites,),
-                z=WORLD_LAYERS  ["main"]
+                pos=(x * TILE_SIZE, y * TILE_SIZE), surface=surface, groups=(self.all_sprites,), z=WORLD_LAYERS["main"]
             )
 
         # Islands

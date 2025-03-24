@@ -1,8 +1,8 @@
 from pygame import Surface
 from pygame.sprite import Group
 
-from src.sprites.base import BaseSprite
 from src.settings import WORLD_LAYERS
+from src.sprites.base import BaseSprite
 
 
 class ShowShop(BaseSprite):
@@ -20,8 +20,6 @@ class ShowShop(BaseSprite):
         # Compatibility check for get_frect
         if hasattr(self.image, "get_frect"):
             self.rect = self.image.get_frect(topleft=pos)
-        else:
-            self.rect = self.image.get_rect(topleft=pos)
         self.z = z
 
     @staticmethod

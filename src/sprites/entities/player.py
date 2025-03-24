@@ -1,13 +1,11 @@
-import  pygame
-from pygame import FRect, Surface, Vector2
+import pygame
+from pygame import Surface, Vector2
 from pygame.sprite import Group
 
 from src.inventory import Inventory
-from src.settings import (
-    TILE_SIZE
-)
-
+from src.settings import TILE_SIZE
 from src.sprites.base import BaseSprite
+
 
 class Player(BaseSprite):
     def __init__(
@@ -22,8 +20,6 @@ class Player(BaseSprite):
         :param frames: A list of frames for player animation.
         :param groups: Sprite groups the player belongs to.
         """
-
-        rect: FRect
 
         # Use the first frame as the base surface
         first_frame = frames[0] if isinstance(frames, (list, tuple)) and frames else Surface((TILE_SIZE, TILE_SIZE))
@@ -43,7 +39,6 @@ class Player(BaseSprite):
 
         # Input handling
         self.mouse_have_been_pressed: bool = False
-
 
     def input(self) -> None:
         """move the player and show a ghost to preview the move"""
