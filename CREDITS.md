@@ -85,3 +85,12 @@ This file provides credits for all assets, tools, and contributions that have be
 - **Purple Prog**
     - **Role**: Programmer
     - **Github**: [purpleprog](https://github.com/PurpleProg) -->
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
