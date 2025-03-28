@@ -12,7 +12,7 @@ from src.inventory import Inventory
 from src.settings import TILE_SIZE, WORLD_LAYERS
 from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
-from src.sprites.camera import PlayerCamera
+from src.sprites.camera.player import PlayerCamera
 from src.sprites.entities.player import Player
 from src.states.base_state import BaseState
 from src.states.paused import Paused
