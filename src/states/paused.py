@@ -3,7 +3,7 @@ paused state
 holding the inventory
 """
 
-from typing import Dict, Tuple
+# from typing import Dict, Tuple
 
 import pygame  # type: ignore
 
@@ -35,7 +35,7 @@ class Paused(BaseState):
 
         # Load sprite sheet and extract the icons (Testing purposes)
         # To be replaced when:
-        # 1) Spritesheet has been decide.
+        # 1) Sprite sheet has been decided.
         # 2) A 'Buy', 'Found' or 'Add' in-game feature has been implemented
         self.sprite_sheet = pygame.image.load("images/tilesets/Treasure+.png").convert_alpha()
         self.icons = {
@@ -82,12 +82,12 @@ class Paused(BaseState):
             "Glowing Crystal": self.extract_icon(16, 176),
         }
 
-        # Button dimmentions
+        # Button dimensions
         self.button_width = 100
         self.button_height = 50
 
         # Initialize button actions
-        self.button_actions: Dict[str, Tuple[pygame.Rect, pygame.Rect]] = {}
+        self.button_actions: dict[str, tuple[pygame.Rect, pygame.Rect]] = {}
 
         # Action messages
         self.message = ""
@@ -107,7 +107,7 @@ class Paused(BaseState):
         """Extract a single icon from the sprite sheet."""
         return self.sprite_sheet.subsurface((x, y, size, size))
 
-    def draw_buttons(self, x: int, y: int, item: str) -> Tuple[pygame.Rect, pygame.Rect]:
+    def draw_buttons(self, x: int, y: int, item: str) -> tuple[pygame.Rect, pygame.Rect]:
         """Draw Use and Discard buttons for a specific item."""
         use_button = pygame.Rect(x, y, self.button_width, self.button_height)
         discard_button = pygame.Rect(x + self.button_width + 10, y, self.button_width, self.button_height)
@@ -173,11 +173,11 @@ class Paused(BaseState):
             self.button_actions[item] = (use_button, discard_button)
             y_offset += 60  # Move down for the next item
 
-        # Draw hint
+        # Draw a hint
         hint_text = self.font.render("Press 'I' to close inventory", True, (200, 200, 200))  # Light gray text
         self.screen.blit(hint_text, (50, self.screen.get_height() - 60))
 
-        # Display action message above the hint
+        # Display an action message above the hint
         if self.message and pygame.time.get_ticks() < self.message_end_time:
             # Render the message text
             message_text = self.font.render(self.message, True, (255, 255, 0))  # Yellow
@@ -204,6 +204,6 @@ class Paused(BaseState):
                 (message_bg_x + 10, message_bg_y + 5),  # Position text with padding
             )
 
-        # blit tmp self.screen to the actual display (screen form the argument)
+        # blit tmp self.screen to the actual display (screen forms the argument)
         screen.blit(self.screen, dest=(0, 0))
         pygame.display.flip()  # Update the display

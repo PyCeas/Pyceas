@@ -9,7 +9,7 @@ import pygame  # type: ignore
 
 from src.settings import FPS, SCREEN_HEIGHT, SCREEN_WIDTH
 
-# import basestate for typehint
+# import base state for typehint
 from src.states.base_state import BaseState
 from src.states.game_running import GameRunning
 
@@ -29,14 +29,14 @@ class GameStateManager:
         # init pygame
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption("PySeas")
+        pygame.display.set_caption("PyCeas")
 
         self.clock = pygame.Clock()
         self.running = True
         self.events: list[pygame.event.Event] = []
         self.states_stack: list[BaseState] = []
 
-        # instanciate the initial state
+        # instantiate the initial state
         self.states_stack.append(GameRunning(self))
 
     def __str__(self) -> str:
@@ -76,11 +76,11 @@ class GameStateManager:
         while self.running:
             self._handle_events()
 
-            # give the pygame events to each states
+            # give the pygame events to each state
             # to ensure that pygame.event.get() is only called once per frame
             self.states_stack[-1].update(self.events)
 
             self.states_stack[-1].render(self.screen)
 
-            # magic value, use a FPS const in settings or delta time
+            # magic value, use 'a' FPS const in settings or delta time
             self.clock.tick(FPS)

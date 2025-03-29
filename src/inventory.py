@@ -58,7 +58,7 @@ class Inventory:
         if self.remove_item(item_name, 1) == get_message("inventory", "remove_success", item=item_name, quantity=1):
             return get_message("inventory", "use_success", item=item_name)
         return get_message("inventory", "use_fail", item=item_name)
-    
+
     def buy_item(self, item_name, quantity):
         if item_name in self.items:
             self.items[item_name] += quantity
