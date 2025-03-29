@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 
 import pygame
+from pygame.sprite import Group
 
 
 # class CameraGroup(pygame.sprite.Group, ABC):
-class AllSprites(pygame.sprite.Group, ABC):
+class AllSprites(Group, ABC):
     # """A sprite group that handles every sprite and handles the camera logic"""
     """Abstract base class for camera logic and sprite rendering."""
 
