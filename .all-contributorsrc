@@ -2,8 +2,10 @@
     "projectName": "Pyceas",
     "projectOwner": "PyCeas",
     "repoType": "github",
-    "repoHost": "https://github.com/PyCeas/Pyceas",
-    "files": ["CREDITS.md"],
+    "repoHost": "https://github.com/",
+    "files": [
+      "CREDITS.md"
+    ],
     "imageSize": 100,
     "commit": false,
     "contributorsPerLine": 7,
