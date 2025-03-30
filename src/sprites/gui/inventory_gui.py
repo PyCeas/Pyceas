@@ -1,8 +1,7 @@
-from typing import Dict, Tuple
-
 import pygame  # type: ignore
 
 from src.inventory import Inventory
+from src.settings import TILE_SIZE
 
 
 class InventoryGUI:
@@ -19,9 +18,10 @@ class InventoryGUI:
         self.max_visible_items = 10
         self.item_height = 60
 
-        # Load sprite sheet and extract the icons (Testing purposes)
+        # Load a sprite sheet and extract the icons (Testing purposes)
         # To be replaced when:
-        # 1) Spritesheet has been decide. 2) A 'Buy', 'Found' or 'Add' in-game feature has been implemented
+        # 1) Sprite sheet has been decided.
+        # 2) A 'Buy', 'Found' or 'Add' in-game feature has been implemented
         self.sprite_sheet = pygame.image.load("images/tilesets/Treasure+.png").convert_alpha()
         self.icons = {
             "Gold Coin": self.extract_icon(0, 0),
@@ -67,12 +67,12 @@ class InventoryGUI:
             "Glowing Crystal": self.extract_icon(16, 176),
         }
 
-        # Button dimmentions
+        # Button dimensions
         self.button_width = 100
         self.button_height = 50
 
         # Initialize button actions
-        self.button_actions: Dict[str, Tuple[pygame.Rect, pygame.Rect]] = {}
+        self.button_actions: dict[str, tuple[pygame.Rect, pygame.Rect]] = {}
 
         # Action messages
         self.message = ""
@@ -86,12 +86,13 @@ class InventoryGUI:
             max_offset = max(0, len(self.inventory.get_items()) - self.max_visible_items)
             self.scroll_offset = min(self.scroll_offset, max_offset)
 
-    def extract_icon(self, x, y, size=16):
+    def extract_icon(self, x, y, size=TILE_SIZE):
         """Extract a single icon from the sprite sheet."""
         return self.sprite_sheet.subsurface((x, y, size, size))
 
-    def draw_buttons(self, x: int, y: int, item: str) -> Tuple[pygame.Rect, pygame.Rect]:
+    def draw_buttons(self, x: int, y: int, item: str) -> tuple[pygame.Rect, pygame.Rect]:
         """Draw Use and Discard buttons for a specific item."""
+
         use_button = pygame.Rect(x, y, self.button_width, self.button_height)
         discard_button = pygame.Rect(x + self.button_width + 10, y, self.button_width, self.button_height)
 
@@ -108,6 +109,7 @@ class InventoryGUI:
 
     def draw(self):
         """Draw the inventory overlay."""
+
         self.screen.fill((0, 0, 0))  # Solid Black background
 
         # Reset button actions
@@ -138,11 +140,11 @@ class InventoryGUI:
             self.button_actions[item] = (use_button, discard_button)
             y_offset += 60  # Move down for the next item
 
-        # Draw hint
+        # Draw a hint
         hint_text = self.font.render("Press 'I' to close inventory", True, (200, 200, 200))  # Light gray text
         self.screen.blit(hint_text, (50, self.screen.get_height() - 60))
 
-        # Display action message above the hint
+        # Display an action message above the hint
         if self.message and pygame.time.get_ticks() < self.message_end_time:
             # Render the message text
             message_text = self.font.render(self.message, True, (255, 255, 0))  # Yellow
@@ -171,6 +173,7 @@ class InventoryGUI:
 
     def handle_mouse_click(self, mouse_pos) -> None:
         """Handle mouse clicks on buttons."""
+
         for item, (use_button, discard_button) in self.button_actions.items():
             if use_button.collidepoint(mouse_pos):
                 self.message = self.inventory.use_item(item)  # `self.message` stores strings
