@@ -5,6 +5,7 @@ import pygame
 from src.inventory import Inventory
 from src.settings import WORLD_LAYERS
 from src.states.base_state import BaseState
+from src.utils.currency import load_inventory
 
 
 class ShowShop(pygame.sprite.Sprite):
@@ -40,6 +41,7 @@ class WindowShop(BaseState):
         self.message = ""
         self.message_end_time = 0
 
+        self.price_tag = load_inventory()
         self.sprite_sheet = pygame.image.load("images/tilesets/Treasure+.png").convert_alpha()
         self.icons = {
             "Gold Coin": self.extract_icon(0, 0),
@@ -120,9 +122,14 @@ class WindowShop(BaseState):
             for item, quantity in visible_items:
                 if item in self.icons:
                     self.screen.blit(self.icons[item], (50, y_offset))
-                
-                quantity_text = self.font.render(f"x{quantity}", True, (255, 255, 255))
-                self.screen.blit(quantity_text, (100, y_offset + 5))
+
+                # quantity_text = self.font.render(f"x{quantity}", True, (255, 255, 255))
+                # self.screen.blit(quantity_text, (100, y_offset + 5))
+                if "price" in self.price_tag.get(item, {}):
+                    item_price = self.price_tag[item]["price"]
+
+                price_text = self.font.render(f"${item_price}", True, (255, 255, 255))
+                self.screen.blit(price_text, (100, y_offset + 5))
 
                 text = self.font.render(item, True, (255, 255, 255))
                 self.screen.blit(text, (150, y_offset))
