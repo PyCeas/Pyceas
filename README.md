@@ -3,6 +3,7 @@
 [![Discord](https://discord.com/api/guilds/1272287320934056066/widget.png)](https://discord.gg/s2P9fZbeZs)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://www.freecodecamp.org/news/how-to-make-your-first-pull-request-on-github-3/)
 [![License](https://img.shields.io/github/license/PyCeas/PyCeas)](https://github.com/PyCeas/Pyceas/blob/main/LICENSE)
+[![All Contributors](https://img.shields.io/github/all-contributors/PyCeas/Pyceas?color=ee8449&style=flat-square)](#contributors)
 
 ## Table of Contents
 - [PyCeas - Open Source Pirate (Adventure) Board Game](#pyceas---open-source-pirate-adventure-board-game)
