@@ -68,59 +68,59 @@ class Player(BaseSprite):
     def input(self, grid) -> None:
         """Handle player movement using instant tile-based logic"""
 
-        if not pygame.mouse.get_pressed()[0]:
-            self.mouse_have_been_pressed = False
-            return
-
-        # Get the tile coordinates from the grid
-        mouse_pos = pygame.mouse.get_pos()
-        tile_x, tile_y = grid.get_tile_coordinates(mouse_pos, self)
-
-        if (tile_x, tile_y) and (tile_x, tile_y) in self.valid_moves:
-            self.rect.topleft = (tile_x, tile_y)    # Instantly snap to the tile
-            self.prev_tile = (tile_x, tile_y)   # Update previous tile
-
-        # # Reset direction
-        # self.direction = Vector2(0, 0)
-        #
-        # # Get mouse position
-        # mouse_pos = pygame.mouse.get_pos()
-        #
-        # # get the relative pos of the player from the mouse
-        # # to know on which axis the player will move
-        # delta_x = abs(self.rect.centerx - mouse_pos[0])
-        # delta_y = abs(self.rect.centery - mouse_pos[1])
-        #
-        # # Handle mouse input for movement
         # if not pygame.mouse.get_pressed()[0]:
         #     self.mouse_have_been_pressed = False
         #     return
-        # if self.mouse_have_been_pressed:
-        #     return
         #
-        # self.mouse_have_been_pressed = True
+        # # Get the tile coordinates from the grid
+        # mouse_pos = pygame.mouse.get_pos()
+        # tile_x, tile_y = grid.get_tile_coordinates(mouse_pos, self)
         #
-        # # Move on the x-axis or y-axis
-        # if delta_x > delta_y:
-        #     if delta_x >= (TILE_SIZE / 2):
-        #         if mouse_pos[0] > self.rect.centerx:
-        #             self.direction.x = 1
-        #         # if delta_x >= (TILE_SIZE / 2):
-        #         #     self.direction.x = 1 if mouse_pos[0] > self.rect.centerx else -1
-        #         else:
-        #             self.direction.x = -1
-        #             # if delta_y >= (TILE_SIZE / 2):
-        #             #     self.direction.y = 1 if mouse_pos[1] > self.rect.centery else -1
-        # else:
-        #     if delta_y >= (TILE_SIZE / 2):
-        #         if mouse_pos[1] > self.rect.centery:
-        #             self.direction.y = 1
-        #         else:
-        #             self.direction.y = -1
-        #
-        # # Update position
-        # self.rect.x += self.direction.x * TILE_SIZE
-        # self.rect.y += self.direction.y * TILE_SIZE
+        # if (tile_x, tile_y) and (tile_x, tile_y) in self.valid_moves:
+        #     self.rect.topleft = (tile_x, tile_y)    # Instantly snap to the tile
+        #     self.prev_tile = (tile_x, tile_y)   # Update previous tile
+
+        # Reset direction
+        self.direction = Vector2(0, 0)
+
+        # Get mouse position
+        mouse_pos = pygame.mouse.get_pos()
+
+        # get the relative pos of the player from the mouse
+        # to know on which axis the player will move
+        delta_x = abs(self.rect.centerx - mouse_pos[0])
+        delta_y = abs(self.rect.centery - mouse_pos[1])
+
+        # Handle mouse input for movement
+        if not pygame.mouse.get_pressed()[0]:
+            self.mouse_have_been_pressed = False
+            return
+        if self.mouse_have_been_pressed:
+            return
+
+        self.mouse_have_been_pressed = True
+
+        # Move on the x-axis or y-axis
+        if delta_x > delta_y:
+            if delta_x >= (TILE_SIZE / 2):
+                if mouse_pos[0] > self.rect.centerx:
+                    self.direction.x = 1
+                # if delta_x >= (TILE_SIZE / 2):
+                #     self.direction.x = 1 if mouse_pos[0] > self.rect.centerx else -1
+                else:
+                    self.direction.x = -1
+                    # if delta_y >= (TILE_SIZE / 2):
+                    #     self.direction.y = 1 if mouse_pos[1] > self.rect.centery else -1
+        else:
+            if delta_y >= (TILE_SIZE / 2):
+                if mouse_pos[1] > self.rect.centery:
+                    self.direction.y = 1
+                else:
+                    self.direction.y = -1
+
+        # Update position
+        self.rect.x += self.direction.x * TILE_SIZE
+        self.rect.y += self.direction.y * TILE_SIZE
 
         # return None
 
