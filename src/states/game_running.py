@@ -8,13 +8,15 @@ import os
 import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
-import src.shop
-import src.sprites
 from src.inventory import Inventory
 from src.settings import TILE_SIZE, WORLD_LAYERS
-from src.sprites import AnimatedSprites
+from src.sprites.animations import AnimatedSprites
+from src.sprites.base import BaseSprite
+from src.sprites.camera.player import PlayerCamera
+from src.sprites.entities.player import Player
 from src.states.base_state import BaseState
 from src.states.paused import Paused
+from src.states.shop_state import ShowShop, WindowShop
 from src.support import all_character_import, coast_importer, import_folder
 
 
@@ -37,7 +39,7 @@ class GameRunning(BaseState):
         self.player_inventory = Inventory()
         self.load_inventory_from_json("data/inventory.json")
 
-        self.all_sprites = src.sprites.AllSprites()
+        self.all_sprites = PlayerCamera()
 
         # The start positions will be one of the 4 islands in the corners of the board
         self.setup(player_start_pos="top_left_island")
@@ -46,9 +48,9 @@ class GameRunning(BaseState):
         self.shop_window = pygame.Surface((800, 600))
         self.in_shop = False
 
-    def setup(self, player_start_pos):
+    def setup(self, player_start_pos: str) -> None:
         """
-        setup the map and player from the tiled file
+        set up the map and player from the tiled file
         """
         self.tmx_map = {"map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))}
 
@@ -58,13 +60,16 @@ class GameRunning(BaseState):
             "ships": all_character_import(".", "images", "tilesets", "ships"),
         }
 
+        # Initialize self.player to None by default
+        # self.player = None
+
         # Sea
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Sea").tiles():
-            src.sprites.Sprite(
-                (x * TILE_SIZE, y * TILE_SIZE),
-                surface,
-                self.all_sprites,
-                WORLD_LAYERS["bg"],
+            BaseSprite(
+                pos=(x * TILE_SIZE, y * TILE_SIZE),
+                surf=surface,
+                groups=(self.all_sprites,),
+                z=WORLD_LAYERS["bg"],
             )
 
         # Water animated
@@ -72,50 +77,52 @@ class GameRunning(BaseState):
             for x in range(int(obj.x), int(obj.x + obj.width), TILE_SIZE):
                 for y in range(int(obj.y), int(obj.y + obj.height), TILE_SIZE):
                     AnimatedSprites(
-                        (x, y),
-                        self.world_frames["water"],
-                        self.all_sprites,
-                        WORLD_LAYERS["water"],
+                        pos=(x, y),
+                        frames=self.world_frames["water"],
+                        groups=(self.all_sprites,),
+                        z=WORLD_LAYERS["water"],
                     )
 
         # Shallow water
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles():
-            src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
+            BaseSprite(
+                pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surface, groups=(self.all_sprites,), z=WORLD_LAYERS["bg"]
+            )
 
-        # buildings
+        # Buildings
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
-            self.shop = src.shop.ShowShop(
-                (x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["main"]
+            self.shop = ShowShop(
+                pos=(x * TILE_SIZE, y * TILE_SIZE), surface=surface, groups=(self.all_sprites,), z=WORLD_LAYERS["main"]
             )
 
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
-            src.sprites.Sprite(
-                (x * TILE_SIZE, y * TILE_SIZE),
-                surface,
-                self.all_sprites,
-                WORLD_LAYERS["bg"],
+            BaseSprite(
+                pos=(x * TILE_SIZE, y * TILE_SIZE),
+                surf=surface,
+                groups=(self.all_sprites,),
+                z=WORLD_LAYERS["bg"],
             )
 
-        # Enitites
-        for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
-            if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
-                self.player = src.sprites.Player(
-                    pos=(obj.x, obj.y),
-                    frames=self.world_frames["ships"]["player_test_ship"],
-                    groups=self.all_sprites,
-                )
+            # Enitites
+            for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
+                if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
+                    self.player = Player(
+                        pos=(obj.x, obj.y),
+                        frames=self.world_frames["ships"]["player_test_ship"],
+                        groups=(self.all_sprites,),
+                    )
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
             terrain = obj.properties["terrain"]
             side = obj.properties["side"]
             AnimatedSprites(
-                (obj.x, obj.y),
-                self.world_frames["coast"][terrain][side],
-                self.all_sprites,
-                WORLD_LAYERS["bg"],
+                pos=(obj.x, obj.y),
+                frames=self.world_frames["coast"][terrain][side],
+                groups=(self.all_sprites,),
+                z=WORLD_LAYERS["bg"],
             )
 
     def load_inventory_from_json(self, file_path: str):
@@ -133,7 +140,8 @@ class GameRunning(BaseState):
         """
         update each sprites and handle events
         """
-        collide = self.player.rect.colliderect(self.shop.rect)
+
+        collide = self.player.rect.colliderect(self.shop.rect) if self.player else False
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
 
@@ -144,7 +152,7 @@ class GameRunning(BaseState):
                     self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
                 if collide and event.key == pygame.K_e:
                     self.game_state_manager.enter_state(
-                        src.shop.WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
+                        WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
 
     def render(self, screen) -> None:

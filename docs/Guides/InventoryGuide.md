@@ -33,9 +33,7 @@ The `data/inventory.json` file controls the data for all items in the inventory.
 2. Add, remove, or edit item entries using the following format:
    ```json
    {
-        ...
-       "Gold Coin": {"type": "currency", "effect": "collect", "quantity": 1},
-       ...
+       "Gold Coin": {"type": "currency", "effect": "collect", "quantity": 1}
    }
    ```
 
@@ -52,17 +50,24 @@ Each item in the inventory has the following properties:
 ### Adding a New Item Icon
 To add a new item icon to the inventory:
 
-1. Open `src/GUI/inventory_gui.py`.
-2. Locate the initializer method (`self.icons: {}`).
-3. Map the item name in `inventory.json` to the icon's location in the spritesheet. Use the following format:
+   1. Open `src/inventory_gui.py`.
+   2. Locate the initializer method (`self.icons: {}`).
+   3. Map the item name in `inventory.json` to the icon's location in the sprite sheet. Use the following format:
 
-```python
-    "Gold Coin": self.extract_icon(0, 0),
+```py
+class InventoryGUI:
+
+    def __init__(self, ):
+   
+       self.icons = { "Gold Coin": self.extract_icon(0, 0) }
+
+    def extract_icon(self, x, y, size=16):
+        ...
 ```
 
 [![icons-inventory-gui.png](https://i.postimg.cc/CMNKKL8T/icons-inventory-gui.png)](https://postimg.cc/231YcYT2)
 
-4. Test the new item in-game to verify functionality and ensure no errors occur.
+   4. Test the new item in-game to verify functionality and ensure no errors occur.
 
 ## Known Issues
 
