@@ -1,8 +1,7 @@
 import pygame  # ignore
 
-from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_LAYERS, TILE_SIZE
+from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_LAYERS
 from src.sprites.camera.group import AllSprites
-from src.sprites.tiles.grid_manager import GridManager
 
 
 class PlayerCamera(AllSprites):
@@ -20,18 +19,7 @@ class PlayerCamera(AllSprites):
         scale (float): The scaling factor for rendering sprites.
     """
 
-    def __init__(self):
-        super().__init__()
-
-        self.display_surface = pygame.display.get_surface()
-        if not self.display_surface:
-            raise ValueError("Display surface is not initialized")
-
-        self.offset = pygame.math.Vector2()
-        self.scale = 2.0
-        self.grid = GridManager(self.display_surface, tile_size=TILE_SIZE)
-
-    def draw(self, player_center, show_grid = False):
+    def draw(self, player_center):
         # Calculate offsets
         self.offset.x = -(player_center[0] * self.scale - SCREEN_WIDTH / 2)
         self.offset.y = -(player_center[1] * self.scale - SCREEN_HEIGHT / 2)
@@ -71,7 +59,3 @@ class PlayerCamera(AllSprites):
                 if self.display_surface is None:
                     raise ValueError("self.display_surface cannot be None")
                 self.display_surface.blit(scaled_image, scaled_rect.topleft)
-
-        # Draw transparent grid overlay if toggled
-        if show_grid:
-            self.grid.draw(pygame.mouse.get_pos())
