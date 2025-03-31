@@ -115,7 +115,8 @@ class InventoryGUI:
         self.screen.fill((0, 0, 0))  # Solid Black background
 
         # Reset button actions
-        self.button_actions = {}
+        self.button_actions: dict[str, tuple[pygame.Rect, pygame.Rect]] = {}
+
 
         # Draw the inventory items
         items: list = list(self.inventory.get_items().items())
