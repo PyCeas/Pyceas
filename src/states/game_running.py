@@ -14,6 +14,7 @@ from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
 from src.sprites.camera.player import PlayerCamera
 from src.sprites.entities.player import Player
+from src.sprites.tiles.grid_manager import GridManager
 from src.states.base_state import BaseState
 from src.states.paused import Paused
 from src.states.shop_state import ShowShop, WindowShop
@@ -39,7 +40,12 @@ class GameRunning(BaseState):
         self.player_inventory = Inventory()
         self.load_inventory_from_json("data/inventory.json")
 
+        # Camera group
         self.all_sprites = PlayerCamera()
+
+        # Render the grid
+        self.grid_manager = GridManager(self.all_sprites.display_surface, TILE_SIZE)
+        self.show_grid: bool = True
 
         # The start positions will be one of the 4 islands in the corners of the board
         self.setup(player_start_pos="top_left_island")
@@ -145,20 +151,28 @@ class GameRunning(BaseState):
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
 
+        # Handle player movement and grid snapping
+        self.player.update(dt, grid=self.grid_manager)
+
         # get events like keypress or mouse clicks
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:  # Toggle inventory with "I" key
                     self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
-                if collide and event.key == pygame.K_e:
+                elif collide and event.key == pygame.K_e:
                     self.game_state_manager.enter_state(
                         WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
+                elif event.key == pygame.K_g:  # Toggle grid with "G" key
+                    self.show_grid = not self.show_grid
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
         screen.fill("#000000")
-        self.all_sprites.draw(self.player.rect.center)
+        self.all_sprites.draw(
+            self.player.rect.center,
+            show_grid=self.show_grid
+        )
 
         # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
         # point = self.shop.rect
