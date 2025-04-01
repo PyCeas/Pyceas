@@ -114,11 +114,13 @@ class GameRunning(BaseState):
             # Enitites
             for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
                 if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
+                    print(f"Creating Player at ({obj.x}, {obj.y})")  # Debugging
                     self.player = Player(
                         pos=(obj.x, obj.y),
                         frames=self.world_frames["ships"]["player_test_ship"],
                         groups=(self.all_sprites,),
                     )
+                    break  # Stops after the first match
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
@@ -152,7 +154,8 @@ class GameRunning(BaseState):
         self.all_sprites.update(dt)
 
         # Handle player movement and grid snapping
-        self.player.update(dt, grid=self.grid_manager)
+        if self.player:
+            self.player.update(dt, grid=self.grid_manager)
 
         # get events like keypress or mouse clicks
         for event in events:
@@ -173,23 +176,5 @@ class GameRunning(BaseState):
             self.player.rect.center,
             show_grid=self.show_grid
         )
-
-        # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
-        # point = self.shop.rect
-        # collide = self.player.rect.colliderect(point)
-        # if collide:
-        #     screen.blit(self.welcome_message, (155, 155))
-
-        # keys = pygame.key.get_pressed()
-        # if collide and keys[pygame.K_e]:
-        #     self.in_shop = True
-
-        # if self.in_shop:
-        #     self.shop_window.fill((0, 0, 0))
-        #     screen.blit(self.shop_window, (260, 40))
-
-        #     if keys[pygame.K_q]:
-        #         self.in_shop = False
-        #         print("Exiting shop")
 
         pygame.display.update()

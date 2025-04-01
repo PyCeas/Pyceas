@@ -52,15 +52,21 @@ class GridManager:
         # Blit the transparent overlay onto the display surface
         self.display_surface.blit(overlay, (0, 0))
 
-    def get_tile_coordinates(self, mouse_pos: tuple[int, int], player: object) -> tuple[int, int]:
+    def draw_path(self, path: list[tuple[int, int]]) -> None:
+        """Draw the path on the grid."""
+        if not path:
+            return
+        for tile in path:
+            x, y = tile
+            rect = pygame.Rect(x * self.block_size, y * self.block_size, self.block_size, self.block_size)
+            pygame.draw.rect(self.display_surface, (255, 0, 0), rect)
+
+    def get_tile_coordinates(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
+        """Convert mouse click position to grid tile coordinates (tile indices)."""
         x, y = mouse_pos
-        player_x, player_y = player.position
-        max_distance: int = 6
-
-        # Calculate the distance from the player's position to the mouse position
-        distance = ((x - player_x) ** 2 + (y - player_y) ** 2) ** 0.5
-
-        return (x // self.block_size * self.block_size, y // self.block_size * self.block_size) if distance > max_distance else None
+        tile_x = x // self.block_size
+        tile_y = y // self.block_size
+        return tile_x, tile_y
 
     def get_coordinates(self, x, y):
         """Returns the coordinates of a tile at position (x, y)."""

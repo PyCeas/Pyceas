@@ -1,10 +1,14 @@
+import math
+
 import pygame
 from pygame import Surface, Vector2, FRect
 from pygame.sprite import Group
 
 from src.inventory import Inventory
-from src.settings import TILE_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT
+from src.pathfinding import a_star_search
+from src.settings import TILE_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 from src.sprites.base import BaseSprite
+from src.sprites.tiles.grid_manager import GridManager
 
 
 class Player(BaseSprite):
@@ -34,27 +38,28 @@ class Player(BaseSprite):
         self.frames = frames
         self.frame_index: float = 0.0
 
-        self.position = pos
-        self.selected: bool = False
-        self.valid_moves: list = []  # Stores valid moves around the player
-        self.prev_tile = None
+        self.position = (pos[0] // TILE_SIZE, pos[1] // TILE_SIZE)  # Convert to tile coordinates
+        self.target_tile = None
+        self.valid_moves: list = [] # Stores valid moves around the player
+        self.path = []
+        self.speed: int = 200    # Pixels per second
 
         # Inventory system
         self.inventory = Inventory()
 
         # Input handling
-        self.mouse_have_been_pressed: bool = False
+        self.mouse_pressed: bool = False
 
-    def get_adjacent_tiles(self, grid, blocked_tiles=[]):
-        """Calculate and return all valid adjacent (neighbor) tiles for the player."""
+    def get_adjacent_tiles(self, grid, blocked_tiles=None):
+        """Calculate and return all valid adjacent tiles."""
 
         if blocked_tiles is None:
             blocked_tiles = []
-        x, y = self.rect.topleft
-        tile_size = grid.block_size
+        x, y = self.position
+
         directions = [
-            (0, -tile_size), (0, tile_size),    # Up, Down
-            (-tile_size, 0), (tile_size, 0)     # Left, Right
+            (0, -1), (0, 1),    # Up, Down
+            (-1, 0), (1, 0)     # Left, Right
         ]
         self.valid_moves = [
             (x + dx, y + dy)
@@ -64,69 +69,58 @@ class Player(BaseSprite):
                and (x + dx, y + dy) not in blocked_tiles
         ]
 
+    def input(self, grid: GridManager, blocked_tiles: set[tuple[int, int]]) -> None:
+        """Handle player movement and validate adjacent tiles."""
 
-    def input(self, grid) -> None:
-        """Handle player movement using instant tile-based logic"""
+        mouse_pos: tuple[int, int] = pygame.mouse.get_pos()
+        # print(f"Mouse position: {mouse_pos}")
 
-        # if not pygame.mouse.get_pressed()[0]:
-        #     self.mouse_have_been_pressed = False
-        #     return
-        #
-        # # Get the tile coordinates from the grid
-        # mouse_pos = pygame.mouse.get_pos()
-        # tile_x, tile_y = grid.get_tile_coordinates(mouse_pos, self)
-        #
-        # if (tile_x, tile_y) and (tile_x, tile_y) in self.valid_moves:
-        #     self.rect.topleft = (tile_x, tile_y)    # Instantly snap to the tile
-        #     self.prev_tile = (tile_x, tile_y)   # Update previous tile
+        if pygame.mouse.get_pressed()[0]:  # Left click
+            tile_x, tile_y = grid.get_tile_coordinates(mouse_pos)
+            print(f"Tile coordinates: {tile_x}, {tile_y}")
+            if tile_x is not None and tile_y is not None:
+                if (tile_x, tile_y) != self.position:
+                    self.target_tile = (int(tile_x), int(tile_y))
+                    self.path = self.calculate_path(self.position, self.target_tile, grid, blocked_tiles)
+                    if not self.path:
+                        print("No valid path found.")
+                    else:
+                        print(f"Path: {self.path}")
 
-        # Reset direction
-        self.direction = Vector2(0, 0)
+                if (tile_x, tile_y) in self.valid_moves:  # Move only to valid tiles
+                    self.rect.topleft = (tile_x * grid.block_size, tile_y * grid.block_size)
+                    self.position = (tile_x, tile_y)
+                    # print(f"Moved to: {self.rect.topleft}")
 
-        # Get mouse position
-        mouse_pos = pygame.mouse.get_pos()
+    @staticmethod
+    def calculate_path(start: tuple[int, int], target: tuple[int, int], grid: GridManager,
+                       blocked_tiles: set[tuple[int, int]]) -> list[tuple[int, int]]:
+        """Calculate the path from start to target using A*."""
+        return a_star_search(start, target, grid, blocked_tiles)
 
-        # get the relative pos of the player from the mouse
-        # to know on which axis the player will move
-        delta_x = abs(self.rect.centerx - mouse_pos[0])
-        delta_y = abs(self.rect.centery - mouse_pos[1])
+    def move_along_path(self, dt: float) -> None:
+        """Move the player along the calculated path."""
+        if self.path:
+            next_tile = self.path[0]
+            next_pos = (next_tile[0] * TILE_SIZE, next_tile[1] * TILE_SIZE)
+            distance = math.hypot(next_pos[0] - self.position[0], next_pos[1] - self.position[1])
+            if distance < self.speed * dt:
+                self.rect.topleft = next_pos
+                self.position = next_tile
+                self.path.pop(0)
+            else:
+                direction = ((next_pos[0] - self.rect.x) / distance, (next_pos[1] - self.rect.y) / distance)
+                self.rect.x += direction[0] * self.speed * dt
+                self.rect.y += direction[1] * self.speed * dt
 
-        # Handle mouse input for movement
-        if not pygame.mouse.get_pressed()[0]:
-            self.mouse_have_been_pressed = False
-            return
-        if self.mouse_have_been_pressed:
-            return
 
-        self.mouse_have_been_pressed = True
-
-        # Move on the x-axis or y-axis
-        if delta_x > delta_y:
-            if delta_x >= (TILE_SIZE / 2):
-                if mouse_pos[0] > self.rect.centerx:
-                    self.direction.x = 1
-                # if delta_x >= (TILE_SIZE / 2):
-                #     self.direction.x = 1 if mouse_pos[0] > self.rect.centerx else -1
-                else:
-                    self.direction.x = -1
-                    # if delta_y >= (TILE_SIZE / 2):
-                    #     self.direction.y = 1 if mouse_pos[1] > self.rect.centery else -1
-        else:
-            if delta_y >= (TILE_SIZE / 2):
-                if mouse_pos[1] > self.rect.centery:
-                    self.direction.y = 1
-                else:
-                    self.direction.y = -1
-
-        # Update position
-        self.rect.x += self.direction.x * TILE_SIZE
-        self.rect.y += self.direction.y * TILE_SIZE
-
-        # return None
-
-    def update(self, dt: float, grid=None) -> None:
+    def update(self, dt: float, grid=None, blocked_tiles: set[tuple[int, int]] = None) -> None:
         """Update the player's position and state."""
+
+        # print(f"Player instance created: {id(self)}")
         if grid:
-            self.get_adjacent_tiles(grid)   # Update valid moves
-            self.input(grid)                # Handle input
+            self.get_adjacent_tiles(grid, blocked_tiles)   # Update valid moves
+            self.input(grid, blocked_tiles)     # Handle input
+            grid.draw_path(self.path)       # Draw the path on the grid
+        self.move_along_path(dt)         # Move along the path
         self.animate(dt)
