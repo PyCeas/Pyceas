@@ -99,12 +99,13 @@ class GameRunning(BaseState):
         #     self.island_boarder = src.sprites.Sprite((obj.x, obj,y), surface, self.all_sprites, WORLD_LAYERS["bg"])
 
         # Islands
-        islands = self.tmx_map["map"].get_layer_by_name("Islands")
-        for x, y, surface in islands.tiles():
-            BaseSprite(
+        self.island_group = pygame.sprite.Group()
+        self.islands = self.tmx_map["map"].get_layer_by_name("Islands")
+        for x, y, surface in self.islands.tiles():
+            self.island_obj = BaseSprite(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
-                groups=(self.all_sprites,),
+                groups=(self.all_sprites, self.island_group),
                 z=WORLD_LAYERS["bg"],
             )
 
@@ -143,7 +144,7 @@ class GameRunning(BaseState):
         """
         update each sprites and handle events
         """
-
+        island_collision = pygame.sprite.spritecollideany(self.player, self.island_group)
         collide = self.player.rect.colliderect(self.shop.rect) if self.player else False
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
@@ -157,11 +158,18 @@ class GameRunning(BaseState):
                     self.game_state_manager.enter_state(
                         WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
+            if island_collision:
+                print("Hello there!")
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(self.player.rect.center)
+
+        # point = self.island_obj.rect
+        # collide = self.player.rect.colliderect(point)
+        # if collide:
+        #     print("Collided with the island!")
 
         # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
         # point = self.shop.rect
