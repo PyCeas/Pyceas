@@ -150,6 +150,7 @@ class GameRunning(BaseState):
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
         self.test_chest = Chest("test chest", 1000)
+        # self.screen = pygame.Surface
 
         # get events like keypress or mouse clicks
         for event in events:
@@ -163,8 +164,9 @@ class GameRunning(BaseState):
             if island_collision:
                 self.player_inventory.add_chest(self.test_chest)
                 print("Chest added")
-                # self.chest_message = self.font.render(f"Added {self.test_chest.name} to the inventory!")
-                # screen.blit(self.chest_message, (155, 155))
+                # self.chest_message = self.font.render(f"Added {self.test_chest.name} to the inventory!", True, (100, 100, 100))
+                # self.screen.blit(self.chest_message, (155, 155))
+                # print(type(self.chest_message))
                 
 
     def render(self, screen) -> None:
