@@ -9,8 +9,11 @@ from src.utils.messaging import get_message
 class Chest:
     """contain loot, and worth"""
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, worth: int) -> None:
         self.name = name
+        self.worth = worth
+
+    
 
 
 class Quest:

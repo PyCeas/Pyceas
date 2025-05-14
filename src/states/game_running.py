@@ -9,6 +9,7 @@ import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
 from src.inventory import Inventory
+from src.inventory import Chest
 from src.settings import TILE_SIZE, WORLD_LAYERS
 from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
@@ -148,6 +149,7 @@ class GameRunning(BaseState):
         collide = self.player.rect.colliderect(self.shop.rect) if self.player else False
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
+        self.test_chest = Chest("test chest", 1000)
 
         # get events like keypress or mouse clicks
         for event in events:
@@ -159,7 +161,11 @@ class GameRunning(BaseState):
                         WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
             if island_collision:
-                print("Hello there!")
+                self.player_inventory.add_chest(self.test_chest)
+                print("Chest added")
+                # self.chest_message = self.font.render(f"Added {self.test_chest.name} to the inventory!")
+                # screen.blit(self.chest_message, (155, 155))
+                
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
