@@ -18,6 +18,7 @@ from src.sprites.entities.player import Player
 from src.states.base_state import BaseState
 from src.states.paused import Paused
 from src.states.shop_state import ShowShop, WindowShop
+from src.states.chest_state import ChestState
 from src.support import all_character_import, coast_importer, import_folder
 
 
@@ -145,7 +146,7 @@ class GameRunning(BaseState):
         """
         update each sprites and handle events
         """
-        island_collision = pygame.sprite.spritecollideany(self.player, self.island_group)
+        self.island_collision = pygame.sprite.spritecollideany(self.player, self.island_group)
         collide = self.player.rect.colliderect(self.shop.rect) if self.player else False
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
@@ -161,8 +162,11 @@ class GameRunning(BaseState):
                     self.game_state_manager.enter_state(
                         WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
-            if island_collision:
-                self.player_inventory.add_chest(self.test_chest)
+            if self.island_collision:
+                self.game_state_manager.enter_state(
+                    ChestState(self.game_state_manager, self.player, self.player_inventory, self.test_chest, self.island_group)
+                )
+                # self.player_inventory.add_chest(self.test_chest)
                 print("Chest added")
                 # self.chest_message = self.font.render(f"Added {self.test_chest.name} to the inventory!", True, (100, 100, 100))
                 # self.screen.blit(self.chest_message, (155, 155))
