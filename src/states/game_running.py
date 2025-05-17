@@ -40,14 +40,11 @@ class GameRunning(BaseState):
         self.player_inventory = Inventory()
         self.load_inventory_from_json("data/inventory.json")
 
-        # Camera group
-        self.all_sprites = PlayerCamera()
-
-        # Load the TMX map
-        self.tmx_map = {"map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))}
+        # Initialize sprite groups
+        self.all_sprites = pygame.sprite.Group()
 
         # Render the grid
-        self.grid_manager = GridManager(self.tmx_map["map"], TILE_SIZE)
+        self.grid_manager = None  # Initialize grid_manager as None
         self.show_grid: bool = True
 
         # The start positions will be one of the 4 islands in the corners of the board
@@ -58,9 +55,13 @@ class GameRunning(BaseState):
         self.in_shop = False
 
     def setup(self, player_start_pos: str) -> None:
-        """
-        set up the map and player from the tiled file
-        """
+        # Load the TMX map and make it an attribute of the class
+        self.tmx_map = {"map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))}
+        if not self.tmx_map:
+            raise ValueError("Failed to load the TMX map")
+
+        # Initialize the grid manager
+        self.grid_manager = GridManager(self.tmx_map["map"], TILE_SIZE)
 
         self.world_frames = {
             "water": import_folder(".", "images", "tilesets", "temporary_water"),
@@ -69,7 +70,7 @@ class GameRunning(BaseState):
         }
 
         # Initialize self.player to None by default
-        # self.player = None
+        self.player = None
 
         # Sea
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Sea").tiles():
@@ -113,7 +114,7 @@ class GameRunning(BaseState):
                 z=WORLD_LAYERS["bg"],
             )
 
-        # Enitites
+        # Entities
         for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
             if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
                 self.player = Player(
@@ -132,6 +133,13 @@ class GameRunning(BaseState):
                 groups=(self.all_sprites,),
                 z=WORLD_LAYERS["bg"],
             )
+
+        # Create a new PlayerCamera with all the sprites
+        sprites = list(self.all_sprites)  # Get all sprites from the temporary group
+        self.all_sprites = PlayerCamera(self.tmx_map["map"], self.player.rect.topleft)
+        # Add all sprites to the new camera group
+        for sprite in sprites:
+            self.all_sprites.add(sprite)
 
     def load_inventory_from_json(self, file_path: str):
         """Load initial inventory items from JSON file."""

@@ -20,14 +20,16 @@ class PlayerCamera(AllSprites):
         scale (float): The scaling factor for rendering sprites.
     """
 
-    def __init__(self):
+    def __init__(self, tmx_map, player_start_pos):
             super().__init__()
             self.display_surface = pygame.display.get_surface()
             if not self.display_surface:
                 raise ValueError("Display surface is not initialized")
+
             self.offset = pygame.math.Vector2()
             self.scale = 2.0
-            self.grid = GridManager(self.display_surface, tile_size=TILE_SIZE)
+            self.grid = GridManager(tmx_map, tile_size=TILE_SIZE)
+            self.player_start_pos = player_start_pos
 
     def draw(self, player_center, show_grid = False):
         # Calculate offsets
