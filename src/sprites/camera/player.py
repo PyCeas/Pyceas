@@ -21,15 +21,13 @@ class PlayerCamera(AllSprites):
     """
 
     def __init__(self):
-        super().__init__()
-
-        self.display_surface = pygame.display.get_surface()
-        if not self.display_surface:
-            raise ValueError("Display surface is not initialized")
-
-        self.offset = pygame.math.Vector2()
-        self.scale = 2.0
-        self.grid = GridManager(self.display_surface, tile_size=TILE_SIZE)
+            super().__init__()
+            self.display_surface = pygame.display.get_surface()
+            if not self.display_surface:
+                raise ValueError("Display surface is not initialized")
+            self.offset = pygame.math.Vector2()
+            self.scale = 2.0
+            self.grid = GridManager(self.display_surface, tile_size=TILE_SIZE)
 
     def draw(self, player_center, show_grid = False):
         # Calculate offsets
@@ -72,6 +70,6 @@ class PlayerCamera(AllSprites):
                     raise ValueError("self.display_surface cannot be None")
                 self.display_surface.blit(scaled_image, scaled_rect.topleft)
 
-        # Draw transparent grid overlay if toggled
+        # Draw a transparent grid overlay if toggled
         if show_grid:
             self.grid.draw(pygame.mouse.get_pos())

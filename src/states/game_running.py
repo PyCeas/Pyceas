@@ -43,8 +43,11 @@ class GameRunning(BaseState):
         # Camera group
         self.all_sprites = PlayerCamera()
 
+        # Load the TMX map
+        self.tmx_map = {"map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))}
+
         # Render the grid
-        self.grid_manager = GridManager(self.all_sprites.display_surface, TILE_SIZE)
+        self.grid_manager = GridManager(self.tmx_map["map"], TILE_SIZE)
         self.show_grid: bool = True
 
         # The start positions will be one of the 4 islands in the corners of the board
@@ -58,7 +61,6 @@ class GameRunning(BaseState):
         """
         set up the map and player from the tiled file
         """
-        self.tmx_map = {"map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))}
 
         self.world_frames = {
             "water": import_folder(".", "images", "tilesets", "temporary_water"),
@@ -111,14 +113,14 @@ class GameRunning(BaseState):
                 z=WORLD_LAYERS["bg"],
             )
 
-            # Enitites
-            for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
-                if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
-                    self.player = Player(
-                        pos=(obj.x, obj.y),
-                        frames=self.world_frames["ships"]["player_test_ship"],
-                        groups=(self.all_sprites,),
-                    )
+        # Enitites
+        for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
+            if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
+                self.player = Player(
+                    pos=(obj.x, obj.y),
+                    frames=self.world_frames["ships"]["player_test_ship"],
+                    groups=(self.all_sprites,),
+                )
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
