@@ -60,12 +60,13 @@ class GridManager:
 
         return x // self.tile_size * self.tile_size, y // self.tile_size * self.tile_size
 
-    def draw(self, mouse_pos: tuple[int, int], camera_offset=None, camera_scale=None) -> None:
+    def draw(self, player_pos: tuple[int, int], mouse_pos: tuple[int, int], camera_offset=None, camera_scale=None) -> None:
         """
         Draw the grid on the screen.
         Highlight the tile under the mouse cursor.
 
         Args:
+            player_pos (tuple[int, int]): The current player position.
             mouse_pos (tuple[int, int]): The current mouse position.
             camera_offset (tuple[int, int], optional): The camera offset from PlayerCamera (Vector2)
             camera_scale (float, optional): The camera scale from PlayerCamera (float)
@@ -77,8 +78,16 @@ class GridManager:
             camera_scale = 1.0
 
         # Convert screen mouse position to grid coordinates
-        word_mouse_x = (mouse_pos[0] - camera_offset.x) / camera_scale
-        word_mouse_y = (mouse_pos[1] - camera_offset.y) / camera_scale
+        # word_mouse_x = (mouse_pos[0] - camera_offset.x) / camera_scale
+        # word_mouse_y = (mouse_pos[1] - camera_offset.y) / camera_scale
+
+        # Convert player position to grid coordinates
+        player_grid_x = int(player_pos[0] // self.tile_size)
+        player_grid_y = int(player_pos[1] // self.tile_size)
+
+        # Convert mouse position to world coordinates
+        mouse_grid_x = int(mouse_pos[0] // self.tile_size)
+        mouse_grid_y = int(mouse_pos[1] // self.tile_size)
 
         # Draw grid lines
         for y in range(self.height):
@@ -94,18 +103,17 @@ class GridManager:
                 rect = pygame.Rect(screen_x, screen_y,
                                    self.tile_size * camera_scale,
                                    self.tile_size * camera_scale)
-                pygame.draw.rect(self.display_surface, (0, 255, 0, 50), rect, 1)  # Draw grid lines
+                # pygame.draw.rect(self.display_surface, (0, 255, 0, 50), rect, 1)  # Draw grid lines
 
         # Calculate pathfinding start position using world coordinates
-        start = ((int(word_mouse_x) // self.tile_size),
-                 (int(word_mouse_y) // self.tile_size))
-        end = (self.width - 1, self.height - 1)
+        start = (player_grid_x, player_grid_y)
+        end = (mouse_grid_x, mouse_grid_y)
 
         # Only calculate a path if the start position is within bounds
         if 0 <= start[0] < self.width and 0 <= start[1] < self.height:
             path = self.find_path(start, end)
             for x, y in path:
-                # Convert path coordinates to screen position
+                # Convert path coordinates to the screen position
                 screen_x = x * self.tile_size * camera_scale + camera_offset.x
                 screen_y = y * self.tile_size * camera_scale + camera_offset.y
                 rect = pygame.Rect(screen_x, screen_y,

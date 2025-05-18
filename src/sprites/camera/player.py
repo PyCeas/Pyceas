@@ -74,6 +74,9 @@ class PlayerCamera(AllSprites):
 
         # Draw a transparent grid overlay if toggled
         if show_grid:
-            self.grid.draw(pygame.mouse.get_pos(),
-                           camera_offset=self.offset,
-                           camera_scale=self.scale)
+            mouse_pos = pygame.mouse.get_pos()
+            self.grid.draw(
+                player_pos=player_center,
+                mouse_pos=mouse_pos,
+                camera_offset=self.offset,
+                camera_scale=self.scale)

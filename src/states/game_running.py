@@ -185,29 +185,13 @@ class GameRunning(BaseState):
         )
 
         # Pass the player's position to the draw method
-        # if self.player:
-        #     self.grid_manager.draw(
-        #         player_pos=self.player.rect.topleft,
-        #         camera_offset=self.all_sprites.offset,
-        #         camera_scale=self.all_sprites.scale,
-        #     )
-
-        # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
-        # point = self.shop.rect
-        # collide = self.player.rect.colliderect(point)
-        # if collide:
-        #     screen.blit(self.welcome_message, (155, 155))
-
-        # keys = pygame.key.get_pressed()
-        # if collide and keys[pygame.K_e]:
-        #     self.in_shop = True
-
-        # if self.in_shop:
-        #     self.shop_window.fill((0, 0, 0))
-        #     screen.blit(self.shop_window, (260, 40))
-
-        #     if keys[pygame.K_q]:
-        #         self.in_shop = False
-        #         print("Exiting shop")
+        if self.player:
+            mouse_pos = pygame.mouse.get_pos()
+            self.grid_manager.draw(
+                player_pos=self.player.rect.topleft,
+                mouse_pos=mouse_pos,
+                camera_offset=self.all_sprites.offset,
+                camera_scale=self.all_sprites.scale,
+            )
 
         pygame.display.update()

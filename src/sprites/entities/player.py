@@ -49,8 +49,7 @@ class Player(BaseSprite):
 
         if blocked_tiles is None:
             blocked_tiles = []
-        if blocked_tiles is None:
-            blocked_tiles = []
+
         x, y = self.rect.topleft
         tile_size = grid.tile_size
         directions = [
