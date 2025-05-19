@@ -19,13 +19,14 @@ class GridManager:
         self.height = tmx_map.height  # Number of tiles high
         self.grid_matrix = self.create_grid_matrix()
         self.grid = Grid(matrix=self.grid_matrix)
+        self._cached_start = None
+        self._cached_end = None
+        self._cached_path = []
 
-        # The display surface should be provided by the calling context, e.g., PlayerCamera
         self.display_surface: Surface = pygame.display.get_surface()
-
         self.font = pygame.font.SysFont(None, 12)
-
         self.coordinate_surfaces = {}
+
         for y in range(self.height):
             for x in range(self.width):
                 text_surface = self.font.render(f"{x}, {y}", True, (255, 255, 255))
@@ -51,17 +52,25 @@ class GridManager:
         """
         Find a path from start to end using A* algorithm.
         """
+        if start == self._cached_start and end == self._cached_end:
+            return self._cached_path
+
+        self.grid.cleanup()  # Reset the grid state
+
         start_node = self.grid.node(start[0], start[1])
         end_node = self.grid.node(end[0], end[1])
 
         finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
         path, _ = finder.find_path(start_node, end_node, self.grid)
 
-        return [[node.x, node.y] for node in path]
+        self._cached_start = start
+        self._cached_end = end
+        self._cached_path = [[node.x, node.y] for node in path]
+        return self._cached_path
 
     def get_tile_coordinates(self, mouse_pos: tuple[int, int], player: object) -> tuple[int, int]:
         """
-        Get the tile coordinates based on mouse position.
+        Get the tile indices (x, y) based on mouse position.
         This is used to determine where the player can move.
         """
         x, y = mouse_pos
@@ -114,7 +123,7 @@ class GridManager:
                 rect = pygame.Rect(screen_x, screen_y,
                                    self.tile_size * camera_scale,
                                    self.tile_size * camera_scale)
-                pygame.draw.rect(self.display_surface, (0, 255, 0, 50), rect, 1)  # Draw grid lines
+                pygame.draw.rect(self.display_surface, ("dark grey"), rect, 1)  # Draw grid lines
 
                 # Calculate the position to draw the text (center of the tile)
                 text_surface = self.coordinate_surfaces[(x, y)]
@@ -140,4 +149,4 @@ class GridManager:
                 rect = pygame.Rect(screen_x, screen_y,
                                       self.tile_size * camera_scale,
                                       self.tile_size * camera_scale)
-                pygame.draw.rect(self.display_surface, (255, 0, 0, 50), rect, 2)  # Draw path tiles
+                pygame.draw.rect(self.display_surface, ("green"), rect, 2)  # Draw path tiles
