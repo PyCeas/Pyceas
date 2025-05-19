@@ -89,9 +89,9 @@ class GridManager:
         player_grid_x = int(player_pos[0] // self.tile_size)
         player_grid_y = int(player_pos[1] // self.tile_size)
 
-        # Convert mouse position to world coordinates
-        mouse_grid_x = int(mouse_pos[0] // self.tile_size)
-        mouse_grid_y = int(mouse_pos[1] // self.tile_size)
+        # Clamp mouse position to the grid boundaries
+        mouse_grid_x = max(0, min(self.width - 1, int(mouse_pos[0] // self.tile_size)))
+        mouse_grid_y = max(0, min(self.height - 1, int(mouse_pos[1] // self.tile_size)))
 
         # Calculate the visible area based on camera offset and scale
         visible_start_x = max(0, int(-camera_offset.x // self.tile_size * camera_scale))
@@ -126,7 +126,7 @@ class GridManager:
                 # Draw the text on the screen
                 self.display_surface.blit(text_surface, text_rect)
 
-        # Calculate pathfinding start position using world coordinates
+        # Clamp pathfinding start and end points to the grid boundaries
         start = (player_grid_x, player_grid_y)
         end = (mouse_grid_x, mouse_grid_y)
 
