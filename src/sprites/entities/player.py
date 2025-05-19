@@ -87,6 +87,8 @@ class Player(BaseSprite):
         # Calculate the tile coordinates from the grid
         tile_x, tile_y = grid.get_tile_coordinates(mouse_pos, self)
 
+        print(f"Mouse Position: {mouse_pos}, Tile Coordinates: {(tile_x, tile_y)}")
+
         # Check if the clicked tile is a valid move
         if (tile_x, tile_y) in self.valid_moves:
             # Move the player to the clicked tile

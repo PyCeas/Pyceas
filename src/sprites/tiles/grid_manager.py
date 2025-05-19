@@ -34,7 +34,7 @@ class GridManager:
                 if layer.name == 'Sea':
                     for x, y, gid in layer:
                         matrix[y][x] = 0  # Walkable
-                elif layer.name == 'Islands':
+                elif layer.name == 'Islands' or layer.name == 'Shallow Sea':
                     for x, y, gid in layer:
                         matrix[y][x] = 1  # Non-walkable
         return matrix
@@ -89,7 +89,9 @@ class GridManager:
         mouse_grid_x = int(mouse_pos[0] // self.tile_size)
         mouse_grid_y = int(mouse_pos[1] // self.tile_size)
 
-        # Draw grid lines
+        # Initialize a font object
+        font = pygame.font.SysFont(None, 12)  # You can adjust the font size as needed
+
         for y in range(self.height):
             for x in range(self.width):
                 # Calculate world position
@@ -103,7 +105,17 @@ class GridManager:
                 rect = pygame.Rect(screen_x, screen_y,
                                    self.tile_size * camera_scale,
                                    self.tile_size * camera_scale)
-                # pygame.draw.rect(self.display_surface, (0, 255, 0, 50), rect, 1)  # Draw grid lines
+                pygame.draw.rect(self.display_surface, (0, 255, 0, 50), rect, 1)  # Draw grid lines
+
+                # Render the x and y coordinates as text
+                text = font.render(f"{x}, {y}", True, (255, 255, 255))  # White text
+
+                # Calculate the position to draw the text (center of the tile)
+                text_rect = text.get_rect(center=(screen_x + self.tile_size * camera_scale / 2,
+                                                  screen_y + self.tile_size * camera_scale / 2))
+
+                # Draw the text on the screen
+                self.display_surface.blit(text, text_rect)
 
         # Calculate pathfinding start position using world coordinates
         start = (player_grid_x, player_grid_y)

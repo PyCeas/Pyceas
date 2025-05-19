@@ -70,7 +70,7 @@ class GameRunning(BaseState):
         }
 
         # Initialize self.player to None by default
-        self.player = None
+        # self.player = None
 
         # Sea
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Sea").tiles():
@@ -117,11 +117,14 @@ class GameRunning(BaseState):
         # Entities
         for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
             if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
+                grid_x = int(obj.x / TILE_SIZE) * TILE_SIZE
+                grid_y = int(obj.y / TILE_SIZE) * TILE_SIZE
                 self.player = Player(
-                    pos=(obj.x, obj.y),
+                    pos=(grid_x, grid_y),
                     frames=self.world_frames["ships"]["player_test_ship"],
                     groups=(self.all_sprites,),
                 )
+        # print(f"Player Position: {self.player.rect.topleft}")
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
@@ -193,5 +196,10 @@ class GameRunning(BaseState):
                 camera_offset=self.all_sprites.offset,
                 camera_scale=self.all_sprites.scale,
             )
+
+        # Draw the tile coordinates on the screen
+        tile_x, tile_y = self.grid_manager.get_tile_coordinates(mouse_pos, self.player)
+        tile_pos = (tile_x, tile_y)
+        pygame.draw.circle(screen, (0, 255, 0), tile_pos, 5)  # Green circle at tile coordinates
 
         pygame.display.update()

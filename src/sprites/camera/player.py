@@ -1,5 +1,6 @@
 import pygame  # ignore
 
+
 from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_LAYERS, TILE_SIZE
 from src.sprites.camera.group import AllSprites
 from src.sprites.tiles.grid_manager import GridManager
@@ -21,20 +22,41 @@ class PlayerCamera(AllSprites):
     """
 
     def __init__(self, tmx_map, player_start_pos):
-            super().__init__()
-            self.display_surface = pygame.display.get_surface()
-            if not self.display_surface:
-                raise ValueError("Display surface is not initialized")
+        super().__init__()
+        self.display_surface = pygame.display.get_surface()
+        if not self.display_surface:
+            raise ValueError("Display surface is not initialized")
 
-            self.offset = pygame.math.Vector2()
-            self.scale = 2.0
-            self.grid = GridManager(tmx_map, tile_size=TILE_SIZE)
-            self.player_start_pos = player_start_pos
+        self.offset = pygame.math.Vector2()
+        self.scale = 2.0
+        self.grid = GridManager(tmx_map, tile_size=TILE_SIZE)
+        self.player_start_pos = player_start_pos
+
+        # camera offset
+        self.half_width = self.display_surface.get_size()[0] / 2
+        self.half_height = self.display_surface.get_size()[1] / 2
+
+        # camera speed
+        self.keyboard_speed = 5
+        self.mouse_speed = 0.2
+
+        # camera zoom
+        self.zoom_scale = 1
+        self.internal_surf_size = (2500, 2500)
+        self.internal_surf = pygame.Surface(self.internal_surf_size, pygame.SRCALPHA)
+        self.internal_rect = self.internal_surf.get_rect(center=(self.half_width, self.half_height))
+        self.internal_size_vector = pygame.math.Vector2(self.internal_surf_size)
+        self.internal_offset = pygame.math.Vector2()
+        self.internal_offset.x = self.internal_surf_size[0] / 2 - self.half_width
+        self.internal_offset.y = self.internal_surf_size[1] / 2 - self.half_height
 
     def draw(self, player_center, show_grid = False):
         # Calculate offsets
         self.offset.x = -(player_center[0] * self.scale - SCREEN_WIDTH / 2)
         self.offset.y = -(player_center[1] * self.scale - SCREEN_HEIGHT / 2)
+
+        # print(f"Player Center: {player_center}")
+        # print(f"Camera Offset: {self.offset}")
 
         # Separate sprites into layers
         background_sprites = [sprite for sprite in self if sprite.z < WORLD_LAYERS["main"]]
@@ -71,12 +93,3 @@ class PlayerCamera(AllSprites):
                 if self.display_surface is None:
                     raise ValueError("self.display_surface cannot be None")
                 self.display_surface.blit(scaled_image, scaled_rect.topleft)
-
-        # Draw a transparent grid overlay if toggled
-        if show_grid:
-            mouse_pos = pygame.mouse.get_pos()
-            self.grid.draw(
-                player_pos=player_center,
-                mouse_pos=mouse_pos,
-                camera_offset=self.offset,
-                camera_scale=self.scale)
