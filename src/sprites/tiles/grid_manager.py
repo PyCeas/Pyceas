@@ -23,6 +23,14 @@ class GridManager:
         # The display surface should be provided by the calling context, e.g., PlayerCamera
         self.display_surface: Surface = pygame.display.get_surface()
 
+        self.font = pygame.font.SysFont(None, 12)
+
+        self.coordinate_surfaces = {}
+        for y in range(self.height):
+            for x in range(self.width):
+                text_surface = self.font.render(f"{x}, {y}", True, (255, 255, 255))
+                self.coordinate_surfaces[(x, y)] = text_surface.convert_alpha()
+
     def create_grid_matrix(self) -> list[list[int]]:
         """
         Create a grid matrix from the Tiled map.
@@ -58,7 +66,7 @@ class GridManager:
         """
         x, y = mouse_pos
 
-        return x // self.tile_size * self.tile_size, y // self.tile_size * self.tile_size
+        return int(x // self.tile_size) * self.tile_size, int(y // self.tile_size) * self.tile_size
 
     def draw(self, player_pos: tuple[int, int], mouse_pos: tuple[int, int], camera_offset=None, camera_scale=None) -> None:
         """
@@ -77,10 +85,6 @@ class GridManager:
         if camera_scale is None:
             camera_scale = 1.0
 
-        # Convert screen mouse position to grid coordinates
-        # word_mouse_x = (mouse_pos[0] - camera_offset.x) / camera_scale
-        # word_mouse_y = (mouse_pos[1] - camera_offset.y) / camera_scale
-
         # Convert player position to grid coordinates
         player_grid_x = int(player_pos[0] // self.tile_size)
         player_grid_y = int(player_pos[1] // self.tile_size)
@@ -89,11 +93,16 @@ class GridManager:
         mouse_grid_x = int(mouse_pos[0] // self.tile_size)
         mouse_grid_y = int(mouse_pos[1] // self.tile_size)
 
-        # Initialize a font object
-        font = pygame.font.SysFont(None, 12)  # You can adjust the font size as needed
+        # Calculate the visible area based on camera offset and scale
+        visible_start_x = max(0, int(-camera_offset.x // self.tile_size * camera_scale))
+        visible_start_y = max(0, int(-camera_offset.y // self.tile_size * camera_scale))
+        visible_end_x = min(self.width,
+                            int((self.display_surface.get_width() - camera_offset.x) // self.tile_size * camera_scale))
+        visible_end_y = min(self.height,
+                            int((self.display_surface.get_height() - camera_offset.y) // self.tile_size * camera_scale))
 
-        for y in range(self.height):
-            for x in range(self.width):
+        for y in range(visible_start_y, visible_end_y):
+            for x in range(visible_start_x, visible_end_x):
                 # Calculate world position
                 world_x = x * self.tile_size
                 world_y = y * self.tile_size
@@ -107,21 +116,21 @@ class GridManager:
                                    self.tile_size * camera_scale)
                 pygame.draw.rect(self.display_surface, (0, 255, 0, 50), rect, 1)  # Draw grid lines
 
-                # Render the x and y coordinates as text
-                text = font.render(f"{x}, {y}", True, (255, 255, 255))  # White text
+                # Calculate the position to draw the text (center of the tile)
+                text_surface = self.coordinate_surfaces[(x, y)]
 
                 # Calculate the position to draw the text (center of the tile)
-                text_rect = text.get_rect(center=(screen_x + self.tile_size * camera_scale / 2,
+                text_rect = text_surface.get_rect(center=(screen_x + self.tile_size * camera_scale / 2,
                                                   screen_y + self.tile_size * camera_scale / 2))
 
                 # Draw the text on the screen
-                self.display_surface.blit(text, text_rect)
+                self.display_surface.blit(text_surface, text_rect)
 
         # Calculate pathfinding start position using world coordinates
         start = (player_grid_x, player_grid_y)
         end = (mouse_grid_x, mouse_grid_y)
 
-        # Only calculate a path if the start position is within bounds
+        # Path finding and drawing a path
         if 0 <= start[0] < self.width and 0 <= start[1] < self.height:
             path = self.find_path(start, end)
             for x, y in path:
@@ -132,65 +141,3 @@ class GridManager:
                                       self.tile_size * camera_scale,
                                       self.tile_size * camera_scale)
                 pygame.draw.rect(self.display_surface, (255, 0, 0, 50), rect, 2)  # Draw path tiles
-
-# class GridManager:
-#     """Handles grid rendering and interaction."""
-#
-#     def __init__(
-#         self,
-#         display_surface: pygame.Surface,
-#         tile_size: int = TILE_SIZE,
-#         grid_color: str = "grey",
-#         hover_color: str = "azure4"
-#     ):
-#         self.display_surface: pygame.Surface = display_surface
-#         self.tile_size: int = tile_size
-#         self.grid_color: str = grid_color
-#         self.hover_color: str = hover_color
-#         self.overlay_alpha: int = 50    # Transparency level (0-255)
-#         self.block_size: int = 64
-#         self.coordinates: dict[tuple[int, int], tuple[int, int]] = {}
-#
-#     def draw(self, mouse_pos: tuple[int, int], valid_moves: set[tuple[int, int]] = None) -> None:
-#
-#         overlay: Surface = pygame.Surface(self.display_surface.get_size(), pygame.SRCALPHA)
-#         overlay.fill((0, 0, 0, 0))  # Fully transparent background
-#
-#         font = pygame.font.SysFont("Arial", 12)
-#
-#         for x in range(0, self.display_surface.get_width(), self.block_size):
-#             for y in range(0, self.display_surface.get_height(), self.block_size):
-#                 rect = pygame.Rect(x, y, self.block_size, self.block_size)
-#
-#                 # Highlight valid tiles
-#                 if valid_moves and (x, y) in valid_moves:
-#                     pygame.draw.rect(overlay, (0, 255, 0, 100), rect)
-#                 elif rect.collidepoint(mouse_pos):
-#                     pygame.draw.rect(overlay, (0, 0, 255, 100), rect)
-#
-#                 # Draw grid lines
-#                 pygame.draw.rect(self.display_surface, self.grid_color, rect, 1)
-#                 self.coordinates[(x, y)] = (x // self.block_size, y // self.block_size)
-#
-#                 # Render the x, y integers
-#                 text = font.render(f"({self.coordinates[(x, y)][0]}, {self.coordinates[(x, y)][1]})", True, (0, 0, 0))
-#                 text_rect = text.get_rect(center=rect.center)
-#                 self.display_surface.blit(text, text_rect)
-#
-#         # Blit the transparent overlay onto the display surface
-#         self.display_surface.blit(overlay, (0, 0))
-#
-#     def get_tile_coordinates(self, mouse_pos: tuple[int, int], player: object) -> tuple[int, int]:
-#         x, y = mouse_pos
-#         player_x, player_y = player.position
-#         max_distance: int = 6
-#
-#         # Calculate the distance from the player's position to the mouse position
-#         distance = ((x - player_x) ** 2 + (y - player_y) ** 2) ** 0.5
-#
-#         return (x // self.block_size * self.block_size, y // self.block_size * self.block_size) if distance > max_distance else None
-#
-#     def get_coordinates(self, x, y):
-#         """Returns the coordinates of a tile at position (x, y)."""
-#
-#         return self.coordinates.get((x, y))

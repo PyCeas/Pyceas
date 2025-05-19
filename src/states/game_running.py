@@ -117,6 +117,7 @@ class GameRunning(BaseState):
         # Entities
         for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
             if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
+                # Cast the player position to int and snap to the grid
                 grid_x = int(obj.x / TILE_SIZE) * TILE_SIZE
                 grid_y = int(obj.y / TILE_SIZE) * TILE_SIZE
                 self.player = Player(
