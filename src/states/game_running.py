@@ -166,7 +166,11 @@ class GameRunning(BaseState):
         self.all_sprites.update(dt)
 
         # Handle player movement and grid snapping
-        self.player.update(dt, grid=self.grid_manager)
+        self.player.update(dt,
+                           grid=self.grid_manager,
+                           camera_offset=self.all_sprites.offset,
+                           camera_scale=self.all_sprites.scale
+                           )
 
         # get events like keypress or mouse clicks
         for event in events:
@@ -181,7 +185,7 @@ class GameRunning(BaseState):
                     )
 
     def render(self, screen) -> None:
-        """draw sprites to the canvas"""
+        """Draw sprites to the canvas."""
         screen.fill("#000000")
         self.all_sprites.draw(
             self.player.rect.center,
@@ -200,9 +204,18 @@ class GameRunning(BaseState):
                     visible_radius=5,
                 )
 
-        # Draw the tile coordinates on the screen
-        tile_x, tile_y = self.grid_manager.get_tile_coordinates(mouse_pos, self.player)
-        tile_pos = (tile_x, tile_y)
-        pygame.draw.circle(screen, (0, 255, 0), tile_pos, 5)  # Green circle at tile coordinates
+            # Get tile coordinates with camera offset and scale
+            tile_x, tile_y = self.grid_manager.get_tile_coordinates(
+                mouse_pos,
+                self.all_sprites.offset,
+                self.all_sprites.scale
+            )
+
+            # Convert grid coordinates to screen coordinates
+            dot_x = tile_x * TILE_SIZE * self.all_sprites.scale + self.all_sprites.offset.x
+            dot_y = tile_y * TILE_SIZE * self.all_sprites.scale + self.all_sprites.offset.y
+
+            # Draw the green dot at the screen coordinates
+            pygame.draw.circle(screen, (0, 255, 0), (dot_x, dot_y), 5)  # Green circle at tile coordinates
 
         pygame.display.update()

@@ -67,40 +67,33 @@ class Player(BaseSprite):
                and (x + dx, y + dy) not in blocked_tiles
         ]
 
-
-    def input(self, grid) -> None:
+    def input(self, grid, camera_offset=None, camera_scale=None) -> None:
         """Handle player movement using instant tile-based logic"""
 
         # Get mouse position
         mouse_pos = pygame.mouse.get_pos()
-
         if not pygame.mouse.get_pressed()[0]:
             self.mouse_have_been_pressed = False
             return
         if self.mouse_have_been_pressed:
             return
-
         self.mouse_have_been_pressed = True
 
-        # Calculate the tile coordinates from the grid
-        tile_x, tile_y = grid.get_tile_coordinates(mouse_pos, self)
+        # Calculate the tile coordinates from the grid with camera offset and scale
         player_tile = (self.rect.x // grid.tile_size, self.rect.y // grid.tile_size)
-        target_tile = (tile_x // grid.tile_size, tile_y // grid.tile_size)
+        target_tile = grid.get_tile_coordinates(mouse_pos, camera_offset, camera_scale)
 
         # Find a path using A* algorithm
         path = grid.find_path(player_tile, target_tile)
         if path and len(path) > 1:
             # Move to the next tile in the path
             self.path = path[1:]
-            # next_tile = path[1]
-            # self.rect.topleft = (next_tile[0] * grid.tile_size, next_tile[1] * grid.tile_size)
-            # self.prev_tile = player_tile
 
-    def update(self, dt: float, grid=None) -> None:
+    def update(self, dt: float, grid=None, camera_offset=None, camera_scale=None) -> None:
         """Update the player's position and state."""
         if grid:
             # self.get_neighbor_tiles(grid)  # Update valid moves
-            self.input(grid)                # Handle input
+            self.input(grid, camera_offset, camera_scale)  # Handle input with camera offset and scale
             if self.path:
                 next_tile = self.path.pop(0)
                 self.rect.topleft = (next_tile[0] * grid.tile_size, next_tile[1] * grid.tile_size)

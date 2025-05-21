@@ -69,14 +69,30 @@ class GridManager:
         self._cached_path = [[node.x, node.y] for node in path]
         return self._cached_path
 
-    def get_tile_coordinates(self, mouse_pos: tuple[int, int], player: object) -> tuple[int, int]:
+    def get_tile_coordinates(self, mouse_pos: tuple[int, int], camera_offset: pygame.math.Vector2 = None,
+                             camera_scale: float = None) -> tuple[int, int]:
         """
         Get the tile indices (x, y) based on mouse position.
         This is used to determine where the player can move.
         """
-        x, y = mouse_pos
+        # if camera_offset is None:
+        #     camera_offset = pygame.math.Vector2()  # Initialize to zero vector if None
+        # if camera_scale is None:
+        #     camera_scale = 2.0
 
-        return int(x // self.tile_size) * self.tile_size, int(y // self.tile_size) * self.tile_size
+        # Reverse the camera transformations to get world coordinates
+        world_x = (mouse_pos[0] - camera_offset.x) / camera_scale
+        world_y = (mouse_pos[1] - camera_offset.y) / camera_scale
+
+        # Convert world coordinates to grid coordinates
+        grid_x = int(world_x // self.tile_size)
+        grid_y = int(world_y // self.tile_size)
+
+        # Clamp grid coordinates to the grid boundaries
+        grid_x = max(0, min(self.width - 1, grid_x))
+        grid_y = max(0, min(self.height - 1, grid_y))
+
+        return grid_x, grid_y
 
     def draw(self, player_pos: tuple[int, int], mouse_pos: tuple[int, int], camera_offset=None, camera_scale=None,
              visible_radius: int = 5) -> None:
@@ -94,16 +110,15 @@ class GridManager:
 
         if camera_offset is None:
             camera_offset = pygame.math.Vector2()
-        if camera_scale is None:
-            camera_scale = 1.0
+        # if camera_scale is None:
+        #     camera_scale = 2.0
 
         # Convert player position to grid coordinates
         player_grid_x = int(player_pos[0] // self.tile_size)
         player_grid_y = int(player_pos[1] // self.tile_size)
 
-        # Clamp mouse position to the grid boundaries
-        mouse_grid_x = max(0, min(self.width - 1, int(mouse_pos[0] // self.tile_size)))
-        mouse_grid_y = max(0, min(self.height - 1, int(mouse_pos[1] // self.tile_size)))
+        # Get mouse grid coordinates with camera offset and scale
+        mouse_grid_x, mouse_grid_y = self.get_tile_coordinates(mouse_pos, camera_offset, camera_scale)
 
         # Calculate the visible area based on camera offset and scale
         visible_start_x = max(0, player_grid_x - visible_radius)
@@ -131,7 +146,7 @@ class GridManager:
 
                 # Calculate the position to draw the text (center of the tile)
                 text_rect = text_surface.get_rect(center=(screen_x + self.tile_size * camera_scale / 2,
-                                                  screen_y + self.tile_size * camera_scale / 2))
+                                                          screen_y + self.tile_size * camera_scale / 2))
 
                 # Draw the text on the screen
                 self.display_surface.blit(text_surface, text_rect)
@@ -148,6 +163,11 @@ class GridManager:
                 screen_x = x * self.tile_size * camera_scale + camera_offset.x
                 screen_y = y * self.tile_size * camera_scale + camera_offset.y
                 rect = pygame.Rect(screen_x, screen_y,
-                                      self.tile_size * camera_scale,
-                                      self.tile_size * camera_scale)
+                                   self.tile_size * camera_scale,
+                                   self.tile_size * camera_scale)
                 pygame.draw.rect(self.display_surface, "green", rect, 2)  # Draw path tiles
+
+        # Draw the green dot at the mouse grid coordinates
+        dot_x = mouse_grid_x * self.tile_size * camera_scale + camera_offset.x
+        dot_y = mouse_grid_y * self.tile_size * camera_scale + camera_offset.y
+        pygame.draw.circle(self.display_surface, (0, 255, 0), (dot_x, dot_y), 5)  # Green circle at tile coordinates
