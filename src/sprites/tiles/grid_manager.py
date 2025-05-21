@@ -52,6 +52,10 @@ class GridManager:
     def find_path(self, start: tuple[int, int], end: tuple[int, int]) -> list[list[int]]:
         """
         Find a path from start to end using A* algorithm.
+
+        Args:
+            start (tuple[int, int]): The starting tile coordinates (x, y).
+            end (tuple[int, int]): The ending tile coordinates (x, y).
         """
         if start == self._cached_start and end == self._cached_end:
             return self._cached_path
@@ -74,11 +78,12 @@ class GridManager:
         """
         Get the tile indices (x, y) based on mouse position.
         This is used to determine where the player can move.
+
+        Args:
+            mouse_pos (tuple[int, int]): The current mouse position.
+            camera_offset (tuple[int, int], optional): The camera offset from PlayerCamera (Vector2)
+            camera_scale (float, optional): The camera scale from PlayerCamera (float)
         """
-        # if camera_offset is None:
-        #     camera_offset = pygame.math.Vector2()  # Initialize to zero vector if None
-        # if camera_scale is None:
-        #     camera_scale = 2.0
 
         # Reverse the camera transformations to get world coordinates
         world_x = (mouse_pos[0] - camera_offset.x) / camera_scale
@@ -94,8 +99,9 @@ class GridManager:
 
         return grid_x, grid_y
 
-    def draw(self, player_pos: tuple[int, int], mouse_pos: tuple[int, int], camera_offset=None, camera_scale=None,
-             visible_radius: int = 5) -> None:
+    def draw(self, player_pos: tuple[int, int], mouse_pos: tuple[int, int], camera_offset: pygame.math.Vector2 = None,
+             camera_scale: float = None,
+             visible_radius: int = None) -> None:
         """
         Draw the grid on the screen.
         Highlight the tile under the mouse cursor.
@@ -107,11 +113,6 @@ class GridManager:
             camera_scale (float, optional): The camera scale from PlayerCamera (float)
             visible_radius (int, optional): The radius of the visible area around the player.
         """
-
-        if camera_offset is None:
-            camera_offset = pygame.math.Vector2()
-        # if camera_scale is None:
-        #     camera_scale = 2.0
 
         # Convert player position to grid coordinates
         player_grid_x = int(player_pos[0] // self.tile_size)

@@ -34,9 +34,9 @@ class Player(BaseSprite):
         self.frame_index: float = 0.0
 
         self.position = pos
-        self.selected: bool = False
-        self.valid_moves: list = []  # Stores validly move around the player
-        self.prev_tile = None
+        # self.selected: bool = False
+        # self.valid_moves: list = []  # Stores validly move around the player
+        # self.prev_tile = None
         self.path = []  # Stores the path to the destination tile
 
         # Inventory system
@@ -45,29 +45,28 @@ class Player(BaseSprite):
         # Input handling
         self.mouse_have_been_pressed: bool = False
 
-    def get_neighbor_tiles(self, grid, blocked_tiles=None):
-        """Calculate and return all valid adjacent (neighbor) tiles for the player."""
+    # def get_neighbor_tiles(self, grid, blocked_tiles=None):
+    #     """Calculate and return all valid adjacent (neighbor) tiles for the player."""
+    #     if blocked_tiles is None:
+    #         blocked_tiles = []
+    #
+    #     x, y = self.rect.topleft
+    #     tile_size = grid.tile_size
+    #     directions = [
+    #         (0, -tile_size), (0, tile_size),  # Up, Down
+    #         (-tile_size, 0), (tile_size, 0),  # Left, Right
+    #         (-tile_size, -tile_size), (tile_size, -tile_size),  # Diagonal: Top-left, Top-right
+    #         (-tile_size, tile_size), (tile_size, tile_size)  # Diagonal: Bottom-left, Bottom-right
+    #     ]
+    #     self.valid_moves = [
+    #         (x + dx, y + dy)
+    #         for dx, dy in directions
+    #         if 0 <= x + dx < SCREEN_WIDTH
+    #            and 0 <= y + dy < SCREEN_HEIGHT
+    #            and (x + dx, y + dy) not in blocked_tiles
+    #     ]
 
-        if blocked_tiles is None:
-            blocked_tiles = []
-
-        x, y = self.rect.topleft
-        tile_size = grid.tile_size
-        directions = [
-            (0, -tile_size), (0, tile_size),  # Up, Down
-            (-tile_size, 0), (tile_size, 0),  # Left, Right
-            (-tile_size, -tile_size), (tile_size, -tile_size),  # Diagonal: Top-left, Top-right
-            (-tile_size, tile_size), (tile_size, tile_size)  # Diagonal: Bottom-left, Bottom-right
-        ]
-        self.valid_moves = [
-            (x + dx, y + dy)
-            for dx, dy in directions
-            if 0 <= x + dx < SCREEN_WIDTH
-               and 0 <= y + dy < SCREEN_HEIGHT
-               and (x + dx, y + dy) not in blocked_tiles
-        ]
-
-    def input(self, grid, camera_offset=None, camera_scale=None) -> None:
+    def input(self, grid, camera_offset: pygame.math.Vector2 = None, camera_scale: float = None) -> None:
         """Handle player movement using instant tile-based logic"""
 
         # Get mouse position
@@ -89,10 +88,12 @@ class Player(BaseSprite):
             # Move to the next tile in the path
             self.path = path[1:]
 
-    def update(self, dt: float, grid=None, camera_offset=None, camera_scale=None) -> None:
+    def update(self, dt: float, grid=None, camera_offset: pygame.math.Vector2 = None,
+               camera_scale: float = None) -> None:
         """Update the player's position and state."""
         if grid:
-            # self.get_neighbor_tiles(grid)  # Update valid moves
+            # this method is not used, could be useful when implementing a player switching system
+            # self.get_neighbor_tiles(grid)
             self.input(grid, camera_offset, camera_scale)  # Handle input with camera offset and scale
             if self.path:
                 next_tile = self.path.pop(0)

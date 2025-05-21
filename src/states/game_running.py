@@ -120,12 +120,12 @@ class GameRunning(BaseState):
                 # Cast the player position to int and snap to the grid
                 grid_x = int(obj.x / TILE_SIZE) * TILE_SIZE
                 grid_y = int(obj.y / TILE_SIZE) * TILE_SIZE
+                # print(f"Player Position: ({grid_x, grid_y})")
                 self.player = Player(
                     pos=(grid_x, grid_y),
                     frames=self.world_frames["ships"]["player_test_ship"],
                     groups=(self.all_sprites,),
                 )
-        # print(f"Player Position: {self.player.rect.topleft}")
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
