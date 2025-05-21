@@ -91,17 +91,17 @@ class Player(BaseSprite):
         path = grid.find_path(player_tile, target_tile)
         if path and len(path) > 1:
             # Move to the next tile in the path
-            # self.path = path[1:] (will automatically find the fastest path)
-            next_tile = path[1]
-            self.rect.topleft = (next_tile[0] * grid.tile_size, next_tile[1] * grid.tile_size)
-            self.prev_tile = player_tile
+            self.path = path[1:]
+            # next_tile = path[1]
+            # self.rect.topleft = (next_tile[0] * grid.tile_size, next_tile[1] * grid.tile_size)
+            # self.prev_tile = player_tile
 
     def update(self, dt: float, grid=None) -> None:
         """Update the player's position and state."""
         if grid:
-            self.get_neighbor_tiles(grid)  # Update valid moves
+            # self.get_neighbor_tiles(grid)  # Update valid moves
             self.input(grid)                # Handle input
             if self.path:
                 next_tile = self.path.pop(0)
                 self.rect.topleft = (next_tile[0] * grid.tile_size, next_tile[1] * grid.tile_size)
-        # self.animate(dt)
+        self.animate(dt)

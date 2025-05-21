@@ -173,12 +173,12 @@ class GameRunning(BaseState):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:  # Toggle inventory with "I" key
                     self.game_state_manager.enter_state(Paused(self.game_state_manager, self.player_inventory))
+                elif event.key == pygame.K_g:  # Toggle grid with "G" key
+                    self.show_grid = not self.show_grid
                 elif collide and event.key == pygame.K_e:
                     self.game_state_manager.enter_state(
                         WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
-                elif event.key == pygame.K_g:  # Toggle grid with "G" key
-                    self.show_grid = not self.show_grid
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
@@ -191,12 +191,14 @@ class GameRunning(BaseState):
         # Pass the player's position to the draw method
         if self.player:
             mouse_pos = pygame.mouse.get_pos()
-            self.grid_manager.draw(
-                player_pos=self.player.rect.topleft,
-                mouse_pos=mouse_pos,
-                camera_offset=self.all_sprites.offset,
-                camera_scale=self.all_sprites.scale,
-            )
+            if self.show_grid:
+                self.grid_manager.draw(
+                    player_pos=self.player.rect.topleft,
+                    mouse_pos=mouse_pos,
+                    camera_offset=self.all_sprites.offset,
+                    camera_scale=self.all_sprites.scale,
+                    visible_radius=5,
+                )
 
         # Draw the tile coordinates on the screen
         tile_x, tile_y = self.grid_manager.get_tile_coordinates(mouse_pos, self.player)
