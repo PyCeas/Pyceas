@@ -99,7 +99,10 @@ class GridManager:
 
         return grid_x, grid_y
 
-    def draw(self, player_pos: tuple[int, int], mouse_pos: tuple[int, int], camera_offset: pygame.math.Vector2 = None,
+    def draw(self,
+             player_pos: tuple[int, int],
+             mouse_pos: tuple[int, int],
+             camera_offset: pygame.math.Vector2 = None,
              camera_scale: float = None,
              visible_radius: int = None) -> None:
         """

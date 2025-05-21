@@ -69,9 +69,6 @@ class GameRunning(BaseState):
             "ships": all_character_import(".", "images", "tilesets", "ships"),
         }
 
-        # Initialize self.player to None by default
-        # self.player = None
-
         # Sea
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Sea").tiles():
             BaseSprite(

@@ -9,7 +9,7 @@ TILE_SIZE = 16
 ANIMATION_SPEED = 4
 
 WORLD_LAYERS = {"water": 0, "bg": 1, "main": 2, "top": 3}
-FPS = 60
+FPS = 30
 
 
 # For some imports like pygame.freetype, Mypy can't infer the type of this attribute, so we suppress the error.
