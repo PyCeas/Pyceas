@@ -26,7 +26,8 @@ class ChestState(BaseState):
             "Wooden_chest": self.extract_icon(0, 144),
             "Silver_chest": self.extract_icon(0, 160),
             "Golden_chest": self.extract_icon(0, 176),
-            "Mimic_chest": self.extract_icon(0, 192)
+            "Mimic_chest": self.extract_icon(0, 192),
+            "Voyage_scroll": self.extract_icon(176, 176)
         }
 
         chest_name, chest_icon = random.choice(list(self.icons.items()))
