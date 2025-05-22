@@ -1,5 +1,5 @@
 import pygame
-import pygame.locals
+import random
 from src.states.base_state import BaseState
 from src.inventory import Chest, Inventory
 
@@ -29,6 +29,10 @@ class ChestState(BaseState):
             "Mimic_chest": self.extract_icon(0, 192)
         }
 
+        chest_name, chest_icon = random.choice(list(self.icons.items()))
+        self.chest_name = chest_name
+        self.chest_icon = chest_icon
+
     def extract_icon(self, x, y, size=16):
         return self.sprite_sheet.subsurface((x, y, size, size))
 
@@ -53,8 +57,9 @@ class ChestState(BaseState):
         self.screen.fill((0, 0, 0))  # Clear UI surface
 
         y_offset = 150
-        scaled_icon = pygame.transform.scale(self.icons["Wooden_chest"], (64, 64))
-        self.screen.blit(scaled_icon, (215, y_offset))
+        scaled_icon = pygame.transform.scale(self.chest_icon, (64, 64))
+        if self.chest_icon:
+            self.screen.blit(scaled_icon, (215, y_offset))
 
         if self.collide:
             prompt_text = self.font.render("Press 'E' to pick up the chest!", True, (255, 255, 255))
