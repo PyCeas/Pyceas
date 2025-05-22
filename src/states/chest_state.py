@@ -23,11 +23,11 @@ class ChestState(BaseState):
 
         self.sprite_sheet = pygame.image.load('images/tilesets/Treasure+.png').convert_alpha()
         self.icons = {
-            "Wooden_chest": self.extract_icon(0, 144),
-            "Golden_chest": self.extract_icon(0, 160),
-            "Silver_chest": self.extract_icon(0, 176),
-            "Mimic_chest": self.extract_icon(0, 192),
-            "Voyage_scroll": self.extract_icon(176, 176)
+            "Wooden chest": self.extract_icon(0, 144),
+            "Golden chest": self.extract_icon(0, 160),
+            "Silver chest": self.extract_icon(0, 176),
+            "Mimic chest": self.extract_icon(0, 192),
+            "Voyage scroll": self.extract_icon(176, 176)
         }
 
         chest_name, chest_icon = random.choice(list(self.icons.items()))
