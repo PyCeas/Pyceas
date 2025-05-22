@@ -1,4 +1,5 @@
 import pygame
+import pygame.locals
 from src.states.base_state import BaseState
 from src.inventory import Chest, Inventory
 
@@ -19,6 +20,17 @@ class ChestState(BaseState):
         self.message_end_time = 0
 
         self.screen = pygame.Surface((500, 400))  # Main UI surface
+        
+        self.sprite_sheet = pygame.image.load('images/tilesets/Treasure+.png').convert_alpha()
+        self.icons = {
+            "Wooden_chest": self.extract_icon(144, 0),
+            "Silver_chest": self.extract_icon(160, 0),
+            "Golden_chest": self.extract_icon(176, 0),
+            "Mimic_chest": self.extract_icon(192, 0)
+        }
+
+    def extract_icon(self, x, y, size=16):
+        return self.sprite_sheet.subsurface((x, y, size, size))
 
     def update(self, events):
         # Collision check
