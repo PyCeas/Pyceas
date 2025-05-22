@@ -20,13 +20,13 @@ class ChestState(BaseState):
         self.message_end_time = 0
 
         self.screen = pygame.Surface((500, 400))  # Main UI surface
-        
+
         self.sprite_sheet = pygame.image.load('images/tilesets/Treasure+.png').convert_alpha()
         self.icons = {
-            "Wooden_chest": self.extract_icon(144, 0),
-            "Silver_chest": self.extract_icon(160, 0),
-            "Golden_chest": self.extract_icon(176, 0),
-            "Mimic_chest": self.extract_icon(192, 0)
+            "Wooden_chest": self.extract_icon(0, 144),
+            "Silver_chest": self.extract_icon(0, 160),
+            "Golden_chest": self.extract_icon(0, 176),
+            "Mimic_chest": self.extract_icon(0, 192)
         }
 
     def extract_icon(self, x, y, size=16):
@@ -51,6 +51,10 @@ class ChestState(BaseState):
 
     def render(self, screen: pygame.Surface):
         self.screen.fill((0, 0, 0))  # Clear UI surface
+
+        y_offset = 150
+        scaled_icon = pygame.transform.scale(self.icons["Wooden_chest"], (64, 64))
+        self.screen.blit(scaled_icon, (215, y_offset))
 
         if self.collide:
             prompt_text = self.font.render("Press 'E' to pick up the chest!", True, (255, 255, 255))
