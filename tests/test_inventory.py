@@ -16,10 +16,12 @@ from src.utils.messaging import get_message
 #         """Set up a new Inventory object before each test."""
 #         self.inventory = Inventory()
 
+
 @pytest.fixture
 def inventory():
     """Set up a new Inventory object before each test."""
     return Inventory()
+
 
 # Test add_item
 def test_add_item_new(inventory):
@@ -29,12 +31,14 @@ def test_add_item_new(inventory):
     assert inventory.items == {"Sword": 1}
     assert result == expected
 
+
 def test_add_item_existing(inventory):
     """Test adding to an existing item."""
     result = inventory.add_item("Potion", 2)
     expected = get_message("inventory", "add_success", item="Potion", quantity=2)
     assert inventory.items == {"Potion": 2}
     assert result == expected
+
 
 # Test remove_item
 def test_remove_item_success(inventory):
@@ -53,6 +57,7 @@ def test_remove_item_fail(inventory):
     assert inventory.items == {}
     assert result == expected
 
+
 # Test use_item
 def test_use_item_success(inventory):
     """Test using an item."""
@@ -62,12 +67,14 @@ def test_use_item_success(inventory):
     assert inventory.items == {}
     assert result == expected
 
+
 def test_use_item_fail(inventory):
     """Test failing to use an item."""
     result = inventory.use_item("Potion")
     expected = get_message("inventory", "use_fail", item="Potion")
     assert inventory.items == {}
     assert result == expected
+
 
 # Test add_chest
 def test_add_chest(inventory):
@@ -77,13 +84,15 @@ def test_add_chest(inventory):
     assert len(inventory.chests) == 1
     assert inventory.chests[0].name == "Gold Chest"
 
+
 # Test add_quest
 def test_add_quest(inventory):
     """Test adding a quest."""
     quest = Quest()
     inventory.add_quest(quest)
     assert len(inventory.quests) == 1
-    assert inventory.quests[0].completed == False
+    assert not inventory.quests[0].completed
+
 
 # Test get_items
 def test_get_items(inventory):
@@ -92,6 +101,7 @@ def test_get_items(inventory):
     items = inventory.get_items()
     assert items == {"Sword": 1}
     assert items is not inventory.items  # Copy of items
+
 
 # Test get_chests
 def test_get_chests(inventory):
@@ -102,6 +112,7 @@ def test_get_chests(inventory):
     assert len(chests) == 1
     assert chests[0].name == "Gold Chest"
     assert chests is not inventory.chests  # Copy of items
+
 
 # Test get_quests
 def test_get_quests(inventory):
