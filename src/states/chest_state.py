@@ -24,8 +24,8 @@ class ChestState(BaseState):
         self.sprite_sheet = pygame.image.load('images/tilesets/Treasure+.png').convert_alpha()
         self.icons = {
             "Wooden_chest": self.extract_icon(0, 144),
-            "Silver_chest": self.extract_icon(0, 160),
-            "Golden_chest": self.extract_icon(0, 176),
+            "Golden_chest": self.extract_icon(0, 160),
+            "Silver_chest": self.extract_icon(0, 176),
             "Mimic_chest": self.extract_icon(0, 192),
             "Voyage_scroll": self.extract_icon(176, 176)
         }
@@ -51,7 +51,7 @@ class ChestState(BaseState):
                     if not self.pressed:
                         self.pressed = True
                         self.inventory.add_item(self.chest.name, 1)
-                        self.message = f"Added {self.chest.name} to inventory!"
+                        self.message = f"Added {self.chest_name} to inventory!"
                         self.message_end_time = pygame.time.get_ticks() + 2000  # Show for 2s
 
     def render(self, screen: pygame.Surface):
