@@ -44,5 +44,5 @@
     "Silver chest": {"type": "chest", "effect": "open_for_reward", "quantity": 0},
     "Golden chest": {"type": "chest", "effect": "open_for_reward", "quantity": 0},
     "Mimic chest": {"type": "enemy", "effect": "damage", "quantity": 0},
-    "Voayge": {"type": "quest", "effect": "explore", "quantity": 0}
+    "Voayge scroll": {"type": "quest", "effect": "explore", "quantity": 0}
 }
