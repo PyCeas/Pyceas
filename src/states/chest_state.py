@@ -50,7 +50,7 @@ class ChestState(BaseState):
                 elif event.key == pygame.K_e and self.collide:
                     if not self.pressed:
                         self.pressed = True
-                        self.inventory.add_item(self.chest.name, 1)
+                        self.inventory.add_item(self.chest_name, 1)
                         self.message = f"Added {self.chest_name} to inventory!"
                         self.message_end_time = pygame.time.get_ticks() + 2000  # Show for 2s
 

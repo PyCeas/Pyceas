@@ -39,5 +39,10 @@
     "Dragon (Black)": {"type": "creature", "effect": "dark_attack", "quantity": 1},
     "Dragon (White)": {"type": "creature", "effect": "light_attack", "quantity": 1},
     "Gem Cluster": {"type": "treasure", "effect": "trade", "quantity": 1},
-    "Glowing Crystal": {"type": "treasure", "effect": "magic_boost", "quantity": 1}
+    "Glowing Crystal": {"type": "treasure", "effect": "magic_boost", "quantity": 1},
+    "Wooden chest": {"type": "chest", "effect": "open_for_reward", "quantity": 0},
+    "Silver chest": {"type": "chest", "effect": "open_for_reward", "quantity": 0},
+    "Golden chest": {"type": "chest", "effect": "open_for_reward", "quantity": 0},
+    "Mimic chest": {"type": "enemy", "effect": "damage", "quantity": 0},
+    "Voayge": {"type": "quest", "effect": "explore", "quantity": 0}
 }
