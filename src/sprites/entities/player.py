@@ -8,7 +8,7 @@ from src.sprites.base import BaseSprite
 
 
 class Player(BaseSprite):
-    """Handles player interaction with the grid, using instant tile movement."""
+    """Handles player interaction with the grid, moving with the pathfinding."""
     rect: FRect
 
     def __init__(
@@ -34,9 +34,6 @@ class Player(BaseSprite):
         self.frame_index: float = 0.0
 
         self.position = pos
-        # self.selected: bool = False
-        # self.valid_moves: list = []  # Stores validly move around the player
-        # self.prev_tile = None
         self.path = []  # Stores the path to the destination tile
 
         # Inventory system

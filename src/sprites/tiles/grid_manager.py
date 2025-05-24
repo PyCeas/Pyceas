@@ -2,9 +2,7 @@ import pygame
 from pygame import Surface
 import pytmx
 import numpy as np
-from pathfinding.core.grid import Grid
-from pathfinding.finder.a_star import AStarFinder
-from pathfinding.core.diagonal_movement import DiagonalMovement
+from src.sprites.tiles.pathfinding import PathFinder
 
 from src.settings import TILE_SIZE
 
@@ -19,10 +17,11 @@ class GridManager:
         self.width = tmx_map.width  # Number of tiles wide
         self.height = tmx_map.height  # Number of tiles high
         self.grid_matrix = self.create_grid_matrix()
-        self.grid = Grid(matrix=self.grid_matrix)
-        self._cached_start = None
-        self._cached_end = None
-        self._cached_path = []
+        self.path_finder = PathFinder(self.grid_matrix)
+        # self.grid = Grid(matrix=self.grid_matrix)
+        # self._cached_start = None
+        # self._cached_end = None
+        # self._cached_path = []
 
         self.display_surface: Surface = pygame.display.get_surface()
         self.font = pygame.font.SysFont(None, 12)
@@ -52,29 +51,33 @@ class GridManager:
                         matrix[y, x] = 1  # Non-walkable
         return matrix
 
+    # Not the best way to do this, but it works for now
     def find_path(self, start: tuple[int, int], end: tuple[int, int]) -> list[list[int]]:
-        """
-        Find a path from start to end using A* algorithm.
+        return self.path_finder.find_path(start, end)
 
-        Args:
-            start (tuple[int, int]): The starting tile coordinates (x, y).
-            end (tuple[int, int]): The ending tile coordinates (x, y).
-        """
-        if start == self._cached_start and end == self._cached_end:
-            return self._cached_path
-
-        self.grid.cleanup()  # Reset the grid state
-
-        start_node = self.grid.node(start[0], start[1])
-        end_node = self.grid.node(end[0], end[1])
-
-        finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-        path, _ = finder.find_path(start_node, end_node, self.grid)
-
-        self._cached_start = start
-        self._cached_end = end
-        self._cached_path = [[node.x, node.y] for node in path]
-        return self._cached_path
+    # def find_path(self, start: tuple[int, int], end: tuple[int, int]) -> list[list[int]]:
+    #     """
+    #     Find a path from start to end using A* algorithm.
+    #
+    #     Args:
+    #         start (tuple[int, int]): The starting tile coordinates (x, y).
+    #         end (tuple[int, int]): The ending tile coordinates (x, y).
+    #     """
+    #     if start == self._cached_start and end == self._cached_end:
+    #         return self._cached_path
+    #
+    #     self.grid.cleanup()  # Reset the grid state
+    #
+    #     start_node = self.grid.node(start[0], start[1])
+    #     end_node = self.grid.node(end[0], end[1])
+    #
+    #     finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+    #     path, _ = finder.find_path(start_node, end_node, self.grid)
+    #
+    #     self._cached_start = start
+    #     self._cached_end = end
+    #     self._cached_path = [[node.x, node.y] for node in path]
+    #     return self._cached_path
 
     def get_tile_coordinates(self, mouse_pos: tuple[int, int], camera_offset: pygame.math.Vector2 = None,
                              camera_scale: float = None) -> tuple[int, int]:
@@ -179,7 +182,7 @@ class GridManager:
         end = (end_x, end_y)
 
         if 0 <= start[0] < self.width and 0 <= start[1] < self.height:
-            path = self.find_path(start, end)
+            path = self.path_finder.find_path(start, end)
             for x, y in path:
                 screen_x, screen_y = self._convert_to_screen_coordinates(x, y, camera_offset, camera_scale)
                 rect = pygame.Rect(screen_x, screen_y,
