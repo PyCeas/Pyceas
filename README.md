@@ -184,7 +184,7 @@ We chose to use [Ruff](https://docs.astral.sh/ruff/) to automatically lint and f
 >
 > 
 > ```sh
-> ruff format . && ruff check --include I --fix . # this formats code and sort imports
+> ruff format . && ruff check --select I --fix . # this formats code and sort imports
 > ruff check . # run linting and perform fixes
 > mypy main.py
 > ```
@@ -193,7 +193,7 @@ We chose to use [Ruff](https://docs.astral.sh/ruff/) to automatically lint and f
 >
 > ```powershell
 > ruff format .;
-> ruff check --include I --fix .;
+> ruff check --select I --fix .;
 > ruff check .;
 > mypy main.py
 > ```
