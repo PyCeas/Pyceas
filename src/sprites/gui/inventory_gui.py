@@ -117,7 +117,6 @@ class InventoryGUI:
         # Reset button actions
         self.button_actions: dict[str, tuple[pygame.Rect, pygame.Rect]] = {}
 
-
         # Draw the inventory items
         items: list = list(self.inventory.get_items().items())
         visible_items: list = items[self.scroll_offset : self.scroll_offset + self.max_visible_items]

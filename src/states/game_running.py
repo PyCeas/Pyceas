@@ -40,21 +40,30 @@ class GameRunning(BaseState):
         self.player_inventory = Inventory()
         self.load_inventory_from_json("data/inventory.json")
 
-        # Initialize sprite groups
-        self.all_sprites = pygame.sprite.Group()
-
         # Render the grid
-        self.grid_manager = None  # Initialize grid_manager as None
+        self.grid_manager: GridManager | None = None  # Initialize grid_manager as None
         self.show_grid: bool = True
 
+        sprite_group: pygame.sprite.Group = pygame.sprite.Group()  # Initialize sprite group
+        self.all_sprites: PlayerCamera  # Initialize all_sprites as PlayerCamera
+
         # The start positions will be one of the 4 islands in the corners of the board
-        self.setup(player_start_pos="top_left_island")
+        self.setup(player_start_pos="top_left_island", sprite_group=sprite_group)
+
+        # Create the player camera and add all sprites to it
+        sprites = list(sprite_group)
+        self.all_sprites = PlayerCamera(self.tmx_map["map"], self.player.rect.topleft)
+        for sprite in sprites:
+            self.all_sprites.add(sprite)
 
         self.font = pygame.font.Font(None, 36)
         self.shop_window = pygame.Surface((800, 600))
         self.in_shop = False
 
-    def setup(self, player_start_pos: str) -> None:
+    def setup(self, player_start_pos: str, sprite_group=None) -> None:
+        if sprite_group is None:
+            sprite_group = pygame.sprite.Group()
+
         # Load the TMX map and make it an attribute of the class
         self.tmx_map = {"map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))}
         if not self.tmx_map:
@@ -74,7 +83,7 @@ class GameRunning(BaseState):
             BaseSprite(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
-                groups=(self.all_sprites,),
+                groups=(sprite_group,),
                 z=WORLD_LAYERS["bg"],
             )
 
@@ -85,20 +94,18 @@ class GameRunning(BaseState):
                     AnimatedSprites(
                         pos=(x, y),
                         frames=self.world_frames["water"],
-                        groups=(self.all_sprites,),
+                        groups=(sprite_group,),
                         z=WORLD_LAYERS["water"],
                     )
 
         # Shallow water
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles():
-            BaseSprite(
-                pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surface, groups=(self.all_sprites,), z=WORLD_LAYERS["bg"]
-            )
+            BaseSprite(pos=(x * TILE_SIZE, y * TILE_SIZE), surf=surface, groups=(sprite_group,), z=WORLD_LAYERS["bg"])
 
         # Buildings
         for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shop").tiles():
             self.shop = ShowShop(
-                pos=(x * TILE_SIZE, y * TILE_SIZE), surface=surface, groups=(self.all_sprites,), z=WORLD_LAYERS["main"]
+                pos=(x * TILE_SIZE, y * TILE_SIZE), surface=surface, groups=(sprite_group,), z=WORLD_LAYERS["main"]
             )
 
         # Islands
@@ -107,7 +114,7 @@ class GameRunning(BaseState):
             BaseSprite(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
-                groups=(self.all_sprites,),
+                groups=(sprite_group,),
                 z=WORLD_LAYERS["bg"],
             )
 
@@ -121,7 +128,7 @@ class GameRunning(BaseState):
                 self.player = Player(
                     pos=(grid_x, grid_y),
                     frames=self.world_frames["ships"]["player_test_ship"],
-                    groups=(self.all_sprites,),
+                    groups=(sprite_group,),
                 )
 
         # Coast
@@ -131,16 +138,9 @@ class GameRunning(BaseState):
             AnimatedSprites(
                 pos=(obj.x, obj.y),
                 frames=self.world_frames["coast"][terrain][side],
-                groups=(self.all_sprites,),
+                groups=(sprite_group,),
                 z=WORLD_LAYERS["bg"],
             )
-
-        # Create a new PlayerCamera with all the sprites
-        sprites = list(self.all_sprites)  # Get all sprites from the temporary group
-        self.all_sprites = PlayerCamera(self.tmx_map["map"], self.player.rect.topleft)
-        # Add all sprites to the new camera group
-        for sprite in sprites:
-            self.all_sprites.add(sprite)
 
     def load_inventory_from_json(self, file_path: str):
         """Load initial inventory items from JSON file."""
@@ -158,16 +158,25 @@ class GameRunning(BaseState):
         update each sprites and handle events
         """
 
-        collide = self.player.rect.colliderect(self.shop.rect) if self.player else False
+        collide: bool = (
+                self.player is not None
+                and self.shop is not None
+                and isinstance(self.player.rect, (pygame.Rect, pygame.FRect))
+                and isinstance(self.shop.rect, (pygame.Rect, pygame.FRect))
+                and self.player.rect.colliderect(self.shop.rect)
+        )
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
 
         # Handle player movement and grid snapping
-        self.player.update(dt,
-                           grid=self.grid_manager,
-                           camera_offset=self.all_sprites.offset,
-                           camera_scale=self.all_sprites.scale
-                           )
+        if isinstance(self.all_sprites, PlayerCamera):
+            camera_offset = self.all_sprites.offset
+            scale = self.all_sprites.scale
+        else:
+            camera_offset = pygame.math.Vector2()
+            scale = 1.0
+        # scale = getattr(self.all_sprites, "scale", 1.0)
+        self.player.update(dt, grid=self.grid_manager, camera_offset=camera_offset, camera_scale=scale)
 
         # get events like keypress or mouse clicks
         for event in events:
@@ -184,17 +193,15 @@ class GameRunning(BaseState):
     def render(self, screen) -> None:
         """Draw sprites to the canvas."""
         screen.fill("#000000")
-        self.all_sprites.draw(
-            self.player.rect.center,
-            show_grid=self.show_grid
-        )
+        if isinstance(self.all_sprites, PlayerCamera):
+            self.all_sprites.draw(self.player.rect.center, show_grid=self.show_grid)
 
         # Pass the player's position to the draw method
-        if self.player:
+        if self.player and self.grid_manager is not None:
             mouse_pos = pygame.mouse.get_pos()
             if self.show_grid:
                 self.grid_manager.draw(
-                    player_pos=self.player.rect.topleft,
+                    player_pos=(int(self.player.rect.topleft[0]), int(self.player.rect.topleft[1])),
                     mouse_pos=mouse_pos,
                     camera_offset=self.all_sprites.offset,
                     camera_scale=self.all_sprites.scale,
@@ -203,9 +210,7 @@ class GameRunning(BaseState):
 
             # Get tile coordinates with camera offset and scale
             tile_x, tile_y = self.grid_manager.get_tile_coordinates(
-                mouse_pos,
-                self.all_sprites.offset,
-                self.all_sprites.scale
+                mouse_pos, self.all_sprites.offset, self.all_sprites.scale
             )
 
             # Convert grid coordinates to screen coordinates

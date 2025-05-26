@@ -7,7 +7,7 @@ import sys
 
 import pygame  # type: ignore
 
-from src.settings import FPS, SCREEN_HEIGHT, SCREEN_WIDTH
+from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH
 
 # import base state for typehint
 from src.states.base_state import BaseState

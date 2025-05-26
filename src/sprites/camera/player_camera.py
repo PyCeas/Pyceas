@@ -1,7 +1,6 @@
 import pygame  # ignore
 
-
-from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_LAYERS, TILE_SIZE
+from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE, WORLD_LAYERS
 from src.sprites.camera.group import AllSprites
 from src.sprites.tiles.grid_manager import GridManager
 
@@ -21,18 +20,25 @@ class PlayerCamera(AllSprites):
         scale (float): The scaling factor for rendering sprites.
     """
 
-    def __init__(self, tmx_map, player_start_pos):
+    def __init__(self, tmx_map=None, player_start_pos=None):
         super().__init__()
         self.display_surface = pygame.display.get_surface()
         if not self.display_surface:
             raise ValueError("Display surface is not initialized")
 
+        if tmx_map is None:
+            raise ValueError("TMX map cannot be None")
+        if player_start_pos is None:
+            raise ValueError("Player start position cannot be None")
+
+        self.player_start_pos = player_start_pos
+        self.tmx_map = tmx_map
         self.offset = pygame.math.Vector2()
         self.scale = 2.0
         self.grid = GridManager(tmx_map, tile_size=TILE_SIZE)
         self.player_start_pos = player_start_pos
 
-    def draw(self, player_center, show_grid = False):
+    def draw(self, player_center, show_grid=False):
         # Calculate offsets
         self.offset.x = -(player_center[0] * self.scale - SCREEN_WIDTH / 2)
         self.offset.y = -(player_center[1] * self.scale - SCREEN_HEIGHT / 2)

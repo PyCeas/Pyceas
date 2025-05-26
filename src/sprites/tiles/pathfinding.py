@@ -1,13 +1,14 @@
 from dataclasses import dataclass
 
-from pathfinding.core.grid import Grid
-from pathfinding.finder.a_star import AStarFinder
-from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.diagonal_movement import DiagonalMovement  # noqa: F401
+from pathfinding.core.grid import Grid  # noqa: F401
+from pathfinding.finder.a_star import AStarFinder  # noqa: F401
 
 
 @dataclass(frozen=True)
 class Coordinate:
     """A simple data class to represent a coordinate in the grid."""
+
     x: int
     y: int
 
@@ -44,6 +45,7 @@ class PathCache:
         self.start = start
         self.end = end
         self.path = path
+
 
 class PathFinder:
     MOVEMENT_TYPE = DiagonalMovement.always

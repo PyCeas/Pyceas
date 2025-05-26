@@ -1,14 +1,15 @@
-import pygame
-from pygame import Surface, Vector2, FRect
-from pygame.sprite import Group
+import pygame  # type: ignore
+from pygame import FRect, Surface  # type: ignore
+from pygame.sprite import Group  # type: ignore
 
 from src.inventory import Inventory
-from src.settings import TILE_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT
+from src.settings import TILE_SIZE
 from src.sprites.base import BaseSprite
 
 
 class Player(BaseSprite):
     """Handles player interaction with the grid, moving with the pathfinding."""
+
     rect: FRect
 
     def __init__(
@@ -34,7 +35,8 @@ class Player(BaseSprite):
         self.frame_index: float = 0.0
 
         self.position = pos
-        self.path = []  # Stores the path to the destination tile
+        # In your __init__ method
+        self.path: list[tuple[int, int]] = []  # Stores the path to the destination tile
 
         # Inventory system
         self.inventory = Inventory()
@@ -63,7 +65,7 @@ class Player(BaseSprite):
     #            and (x + dx, y + dy) not in blocked_tiles
     #     ]
 
-    def input(self, grid, camera_offset: pygame.math.Vector2 = None, camera_scale: float = None) -> None:
+    def input(self, grid, camera_offset: pygame.math.Vector2 | None = None, camera_scale: float | None = None) -> None:
         """Handle player movement using instant tile-based logic"""
 
         # Get mouse position
@@ -85,8 +87,10 @@ class Player(BaseSprite):
             # Move to the next tile in the path
             self.path = path[1:]
 
-    def update(self, dt: float, grid=None, camera_offset: pygame.math.Vector2 = None,
-               camera_scale: float = None) -> None:
+    def update(
+            self, dt: float, grid=None, camera_offset: pygame.math.Vector2 | None = None,
+            camera_scale: float | None = None
+    ) -> None:
         """Update the player's position and state."""
         if grid:
             # this method is not used, could be useful when implementing a player switching system
