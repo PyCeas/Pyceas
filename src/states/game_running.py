@@ -49,6 +49,8 @@ class GameRunning(BaseState):
         self.shop_window = pygame.Surface((800, 600))
         self.in_shop = False
 
+        self.obstacle_handler = ObstacleHandler(self.player, self.obstacle_group)
+
     def setup(self, player_start_pos: str) -> None:
         """
         set up the map and player from the tiled file
@@ -103,7 +105,7 @@ class GameRunning(BaseState):
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
                 groups=(self.all_sprites,),
-                z=WORLD_LAYERS["bg"]
+                z=WORLD_LAYERS["main"],
             )
 
         # Islands
@@ -156,6 +158,7 @@ class GameRunning(BaseState):
         self.obstacle_collision = pygame.sprite.spritecollideany(self.player, self.obstacle_group)
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
+        self.obstacle_handler.update()
 
         # get events like keypress or mouse clicks
         for event in events:
@@ -173,6 +176,7 @@ class GameRunning(BaseState):
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(self.player.rect.center)
+        self.obstacle_handler.render(screen)
         self.message = self.font.render(
             f"Player's Health: {self.player.player_hp}", True, (0, 0, 0)
         )

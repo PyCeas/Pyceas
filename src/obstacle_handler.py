@@ -6,7 +6,7 @@ class ObstacleHandler:
         self.obstacles = obstacles
         self.obstacle_damage = 15
         self.font = pygame.font.Font(None, 36)
-        self.screen: pygame.Surface = pygame.Surface((500, 400))
+        self.screen: pygame.Surface = pygame.Surface((200, 100))
 
         self.collide = None
         self.damage_applied = False
@@ -22,7 +22,6 @@ class ObstacleHandler:
 
         if not self.collide and self.damage_applied:
             self.damage_applied = False
-            self.game_state_manager.exit_state()
 
     def render(self, screen: pygame.Surface):
         self.screen.fill((0, 0, 0))  # Clear UI
