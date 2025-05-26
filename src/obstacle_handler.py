@@ -6,7 +6,7 @@ class ObstacleHandler:
         self.obstacles = obstacles
         self.obstacle_damage = 15
         self.font = pygame.font.Font(None, 36)
-        self.screen: pygame.Surface = pygame.Surface((600, 100))
+        self.screen: pygame.Surface = pygame.Surface((600, 100), pygame.SRCALPHA)
 
         self.collide = None
         self.damage_applied = False
@@ -24,7 +24,7 @@ class ObstacleHandler:
             self.damage_applied = False
 
     def render(self, screen: pygame.Surface):
-        self.screen.fill((0, 0, 0))  # Clear UI
+        self.screen.fill((0, 0, 0, 0))  # Clear UI
 
         if self.collide and pygame.time.get_ticks() < self.message_end_time:
             message = self.font.render(
