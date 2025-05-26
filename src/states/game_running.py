@@ -175,7 +175,6 @@ class GameRunning(BaseState):
         else:
             camera_offset = pygame.math.Vector2()
             scale = 1.0
-        # scale = getattr(self.all_sprites, "scale", 1.0)
         self.player.update(dt, grid=self.grid_manager, camera_offset=camera_offset, camera_scale=scale)
 
         # get events like keypress or mouse clicks

@@ -155,7 +155,8 @@ class GridManager:
     ) -> None:
         for y in range(visible_start_y, visible_end_y):
             for x in range(visible_start_x, visible_end_x):
-                assert self.display_surface is not None, "Display surface must be initialized"
+                if self.display_surface is None:
+                    raise RuntimeError("Display surface must be initialized")
                 screen_x, screen_y = self._convert_to_screen_coordinates(x, y, camera_offset, camera_scale)
                 rect = pygame.Rect(screen_x, screen_y, self.tile_size * camera_scale, self.tile_size * camera_scale)
                 pygame.draw.rect(self.display_surface, "dark grey", rect, 1)  # Draw grid lines
@@ -190,7 +191,8 @@ class GridManager:
         if 0 <= start[0] < self.width and 0 <= start[1] < self.height:
             path = self.path_finder.find_path(start, end)
             for x, y in path:
-                assert self.display_surface is not None, "Display surface must be initialized"
+                if self.display_surface is None:
+                    raise RuntimeError("Display surface must be initialized")
                 screen_x, screen_y = self._convert_to_screen_coordinates(x, y, camera_offset, camera_scale)
                 rect = pygame.Rect(screen_x, screen_y, self.tile_size * camera_scale, self.tile_size * camera_scale)
                 pygame.draw.rect(self.display_surface, "green", rect, 2)  # Draw path tiles
@@ -198,7 +200,8 @@ class GridManager:
     def _draw_mouse_indicator(
             self, mouse_grid_x: int, mouse_grid_y: int, camera_offset: pygame.math.Vector2, camera_scale: float
     ) -> None:
-        assert self.display_surface is not None, "Display surface must be initialized"
+        if self.display_surface is None:
+            raise RuntimeError("Display surface must be initialized")
         dot_x = mouse_grid_x * self.tile_size * camera_scale + camera_offset.x
         dot_y = mouse_grid_y * self.tile_size * camera_scale + camera_offset.y
         pygame.draw.circle(self.display_surface, (0, 255, 0), (dot_x, dot_y), 5)  # Green circle at tile coordinates
