@@ -171,5 +171,7 @@ class GameRunning(BaseState):
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(self.player.rect.center)
+        self.message = self.font.render("Press E to interact\nPress Q to quit interaction", True, (0, 0, 0))
+        screen.blit(self.message, (50, screen.get_height() - 100))
 
         pygame.display.update()
