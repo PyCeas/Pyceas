@@ -40,6 +40,9 @@ class Player(BaseSprite):
         # Input handling
         self.mouse_have_been_pressed: bool = False
 
+        # Hp points
+        self.player_hp = 100
+
     def input(self) -> None:
         """move the player and show a ghost to preview the move"""
 

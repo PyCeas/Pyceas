@@ -15,6 +15,7 @@ from src.sprites.base import BaseSprite
 from src.sprites.camera.player import PlayerCamera
 from src.sprites.entities.player import Player
 from src.states.base_state import BaseState
+from src.states.obstacle_state import ObstacleSate
 from src.states.paused import Paused
 from src.states.shop_state import ShowShop, WindowShop
 from src.support import all_character_import, coast_importer, import_folder
@@ -95,6 +96,16 @@ class GameRunning(BaseState):
                 pos=(x * TILE_SIZE, y * TILE_SIZE), surface=surface, groups=(self.all_sprites,), z=WORLD_LAYERS["main"]
             )
 
+        self.obstacle_group: pygame.sprite.Group = pygame.sprite.Group()
+        obstacles = self.tmx_map["map"].get_layer_by_name("Obstacles")
+        for x, y, surface in obstacles.tiles():
+            BaseSprite(
+                pos=(x * TILE_SIZE, y * TILE_SIZE),
+                surf=surface,
+                groups=(self.all_sprites,),
+                z=WORLD_LAYERS["bg"]
+            )
+
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
@@ -142,6 +153,7 @@ class GameRunning(BaseState):
         """
 
         collide = self.player.rect.colliderect(self.shop.rect) if self.player else False
+        self.obstacle_collision = pygame.sprite.spritecollideany(self.player, self.obstacle_group)
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
 
@@ -154,11 +166,17 @@ class GameRunning(BaseState):
                     self.game_state_manager.enter_state(
                         WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
+            if self.obstacle_collision:
+                self.game_state_manager.enter_state(ObstacleSate(self.game_state_manager, self.player, self.obstacle_group))
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(self.player.rect.center)
+        self.message = self.font.render(
+            f"Player's Health: {self.player.player_hp}", True, (0, 0, 0)
+        )
+        screen.blit(self.message, (50, screen.get_height() - 100))
 
         # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
         # point = self.shop.rect
