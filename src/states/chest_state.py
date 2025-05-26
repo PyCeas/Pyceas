@@ -54,19 +54,32 @@ class ChestState(BaseState):
                         self.collide.chest_collected = True
                         self.message = self.inventory.add_item(self.chest_name, 1)
                         self.message_end_time = pygame.time.get_ticks() + 2000  # Show for 2s
+                    elif not self.pressed and self.collide.chest_collected:
+                        self.collected_message = "There are no chest nor voyage's here anymore!"
+                        self.collected_message_end_time = pygame.time.get_ticks() + 2000
+                        
 
     def render(self, screen: pygame.Surface):
         self.screen.fill((0, 0, 0))  # Clear UI surface
 
         y_offset = 150
-        scaled_icon = pygame.transform.scale(self.chest_icon, (64, 64))
-        if self.chest_icon:
-            self.screen.blit(scaled_icon, (215, y_offset))
 
+        # Only draw the chest icon if it hasn't been collected
+        if self.collide and not getattr(self.collide, "chest_collected", False):
+            scaled_icon = pygame.transform.scale(self.chest_icon, (64, 64))
+            if self.chest_icon:
+                self.screen.blit(scaled_icon, (215, y_offset))
+
+        # Show prompt if player is colliding with the island
         if self.collide:
-            prompt_text = self.font.render("Press 'E' to pick up the chest!", True, (255, 255, 255))
+            if getattr(self.collide, "chest_collected", False):
+                prompt_text = self.font.render("No chest or voyage available here.", True, (200, 100, 100))
+            else:
+                prompt_text = self.font.render("Press 'E' to pick up the chest!", True, (255, 255, 255))
+
             self.screen.blit(prompt_text, (50, self.screen.get_height() - 100))
 
+        # Show message if a chest was just picked up
         if self.pressed and self.message and pygame.time.get_ticks() < self.message_end_time:
             message_text = self.font.render(self.message, True, (255, 255, 0))
             text_width, text_height = message_text.get_size()
@@ -76,7 +89,13 @@ class ChestState(BaseState):
             pygame.draw.rect(self.screen, (0, 0, 0), (bg_x, bg_y, text_width + 20, text_height + 10))
             self.screen.blit(message_text, (bg_x + 10, bg_y + 5))
 
+        # Optionally: show the "no chest" message as a timed message too
+        if hasattr(self, "collected_message") and pygame.time.get_ticks() < self.collected_message_end_time:
+            no_chest_text = self.font.render(self.collected_message, True, (180, 0, 0))
+            self.screen.blit(no_chest_text, (50, self.screen.get_height() - 70))
+
         # Blit the ChestState UI surface onto the main screen
         screen.blit(self.screen, (400, 125))
         pygame.display.flip()
+
 
