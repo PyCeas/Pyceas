@@ -13,8 +13,6 @@ class Chest:
         self.name = name
         self.worth = worth
 
-    
-
 
 class Quest:
     """TODO: make the docstrings"""

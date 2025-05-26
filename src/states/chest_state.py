@@ -22,13 +22,13 @@ class ChestState(BaseState):
 
         self.screen = pygame.Surface((500, 400))  # Main UI surface
 
-        self.sprite_sheet = pygame.image.load('images/tilesets/Treasure+.png').convert_alpha()
+        self.sprite_sheet = pygame.image.load("images/tilesets/Treasure+.png").convert_alpha()
         self.icons = {
             "Wooden chest": self.extract_icon(0, 144),
             "Golden chest": self.extract_icon(0, 160),
             "Silver chest": self.extract_icon(0, 176),
             "Mimic chest": self.extract_icon(0, 192),
-            "Voyage scroll": self.extract_icon(176, 176)
+            "Voyage scroll": self.extract_icon(176, 176),
         }
 
         chest_name, chest_icon = random.choice(list(self.icons.items()))
@@ -57,7 +57,6 @@ class ChestState(BaseState):
                     elif not self.pressed and self.collide.chest_collected:
                         self.collected_message = "There are no chest nor voyage's here anymore!"
                         self.collected_message_end_time = pygame.time.get_ticks() + 2000
-                        
 
     def render(self, screen: pygame.Surface):
         self.screen.fill((0, 0, 0))  # Clear UI surface
@@ -97,5 +96,3 @@ class ChestState(BaseState):
         # Blit the ChestState UI surface onto the main screen
         screen.blit(self.screen, (400, 125))
         pygame.display.flip()
-
-

@@ -164,14 +164,22 @@ class GameRunning(BaseState):
                     )
                 if self.island_collision and event.key == pygame.K_e:
                     self.game_state_manager.enter_state(
-                        ChestState(self.game_state_manager, self.player, self.player_inventory, self.test_chest, self.island_group)
+                        ChestState(
+                            self.game_state_manager,
+                            self.player,
+                            self.player_inventory,
+                            self.test_chest,
+                            self.island_group,
+                        )
                     )
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(self.player.rect.center)
-        self.message = self.font.render("Press E to interact\nPress Q to quit interaction\nPress I to opne inventory", True, (0, 0, 0))
+        self.message = self.font.render(
+            "Press E to interact\nPress Q to quit interaction\nPress I to opne inventory", True, (0, 0, 0)
+        )
         screen.blit(self.message, (50, screen.get_height() - 100))
 
         pygame.display.update()
