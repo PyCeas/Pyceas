@@ -1,29 +1,40 @@
 import pygame
 import random
+from typing import Optional, List, Union
 from src.states.base_state import BaseState
 from src.inventory import Chest, Inventory
 
 
 class ChestState(BaseState):
-    def __init__(self, game_state_manager, player, inventory: Inventory, chest: Chest, island):
+    def __init__(
+        self,
+        game_state_manager,
+        player: pygame.sprite.Sprite,
+        inventory: Inventory,
+        chest: Chest,
+        island: pygame.sprite.Group,
+    ) -> None:
         super().__init__(game_state_manager)
         self.font = pygame.font.Font(None, 36)
 
-        self.player = player
-        self.island = island
-        self.chest = chest
-        self.inventory = inventory
+        self.player: pygame.sprite.Sprite = player
+        self.island: pygame.sprite.Group = island
+        self.chest: Chest = chest
+        self.inventory: Inventory = inventory
 
-        self.collide = False
-        self.pressed = False
-        self.chest_collected = False
-        self.message = ""
-        self.message_end_time = 0
+        # collide can be None or a Sprite
+        self.collide: Optional[pygame.sprite.Sprite] = None
+        self.pressed: bool = False
+        self.chest_collected: bool = False
+        self.message: str = ""
+        self.message_end_time: int = 0
+        self.collected_message: str = ""
+        self.collected_message_end_time: int = 0
 
-        self.screen = pygame.Surface((500, 400))  # Main UI surface
+        self.screen: pygame.Surface = pygame.Surface((500, 400))  # Main UI surface
 
-        self.sprite_sheet = pygame.image.load("images/tilesets/Treasure+.png").convert_alpha()
-        self.icons = {
+        self.sprite_sheet: pygame.Surface = pygame.image.load("images/tilesets/Treasure+.png").convert_alpha()
+        self.icons: dict[str, pygame.Surface] = {
             "Wooden chest": self.extract_icon(0, 144),
             "Golden chest": self.extract_icon(0, 160),
             "Silver chest": self.extract_icon(0, 176),
@@ -32,14 +43,14 @@ class ChestState(BaseState):
         }
 
         chest_name, chest_icon = random.choice(list(self.icons.items()))
-        self.chest_name = chest_name
-        self.chest_icon = chest_icon
+        self.chest_name: str = chest_name
+        self.chest_icon: pygame.Surface = chest_icon
 
-    def extract_icon(self, x, y, size=16):
+    def extract_icon(self, x: int, y: int, size: int = 16) -> pygame.Surface:
         return self.sprite_sheet.subsurface((x, y, size, size))
 
-    def update(self, events):
-        # Collision check
+    def update(self, events: List[pygame.event.Event]) -> None:
+        # Collision check, can be None if no collision
         self.collide = pygame.sprite.spritecollideany(self.player, self.island)
 
         for event in events:
@@ -49,16 +60,16 @@ class ChestState(BaseState):
                     self.game_state_manager.exit_state()
 
                 elif event.key == pygame.K_e and self.collide:
-                    if not self.pressed and not self.collide.chest_collected:
+                    if not self.pressed and not getattr(self.collide, "chest_collected", False):
                         self.pressed = True
-                        self.collide.chest_collected = True
+                        setattr(self.collide, "chest_collected", True)
                         self.message = self.inventory.add_item(self.chest_name, 1)
                         self.message_end_time = pygame.time.get_ticks() + 2000  # Show for 2s
-                    elif not self.pressed and self.collide.chest_collected:
+                    elif not self.pressed and getattr(self.collide, "chest_collected", False):
                         self.collected_message = "There are no chest nor voyage's here anymore!"
                         self.collected_message_end_time = pygame.time.get_ticks() + 2000
 
-    def render(self, screen: pygame.Surface):
+    def render(self, screen: pygame.Surface) -> None:
         self.screen.fill((0, 0, 0))  # Clear UI surface
 
         y_offset = 150
@@ -89,7 +100,7 @@ class ChestState(BaseState):
             self.screen.blit(message_text, (bg_x + 10, bg_y + 5))
 
         # Optionally: show the "no chest" message as a timed message too
-        if hasattr(self, "collected_message") and pygame.time.get_ticks() < self.collected_message_end_time:
+        if self.collected_message and pygame.time.get_ticks() < self.collected_message_end_time:
             no_chest_text = self.font.render(self.collected_message, True, (180, 0, 0))
             self.screen.blit(no_chest_text, (50, self.screen.get_height() - 70))
 

@@ -101,7 +101,7 @@ class GameRunning(BaseState):
         #     self.island_boarder = src.sprites.Sprite((obj.x, obj,y), surface, self.all_sprites, WORLD_LAYERS["bg"])
 
         # Islands
-        self.island_group = pygame.sprite.Group()
+        self.island_group: pygame.sprite.Group = pygame.sprite.Group()
         self.islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in self.islands.tiles():
             self.island_obj = BaseSprite(
