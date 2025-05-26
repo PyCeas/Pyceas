@@ -15,7 +15,7 @@ from src.sprites.base import BaseSprite
 from src.sprites.camera.player import PlayerCamera
 from src.sprites.entities.player import Player
 from src.states.base_state import BaseState
-from src.states.obstacle_state import ObstacleSate
+from src.states.obstacle_state import ObstacleState
 from src.states.paused import Paused
 from src.states.shop_state import ShowShop, WindowShop
 from src.support import all_character_import, coast_importer, import_folder
@@ -167,7 +167,7 @@ class GameRunning(BaseState):
                         WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
             if self.obstacle_collision:
-                self.game_state_manager.enter_state(ObstacleSate(self.game_state_manager, self.player, self.obstacle_group))
+                self.game_state_manager.enter_state(ObstacleState(self.game_state_manager, self.player, self.obstacle_group))
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
