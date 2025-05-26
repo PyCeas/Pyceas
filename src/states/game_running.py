@@ -8,17 +8,16 @@ import os
 import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
-from src.inventory import Inventory
-from src.inventory import Chest
+from src.inventory import Chest, Inventory
 from src.settings import TILE_SIZE, WORLD_LAYERS
 from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
 from src.sprites.camera.player import PlayerCamera
 from src.sprites.entities.player import Player
 from src.states.base_state import BaseState
+from src.states.chest_state import ChestState
 from src.states.paused import Paused
 from src.states.shop_state import ShowShop, WindowShop
-from src.states.chest_state import ChestState
 from src.support import all_character_import, coast_importer, import_folder
 
 

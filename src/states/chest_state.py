@@ -1,8 +1,10 @@
-import pygame
 import random
-from typing import Optional, List, Union
-from src.states.base_state import BaseState
+from typing import List, Optional
+
+import pygame
+
 from src.inventory import Chest, Inventory
+from src.states.base_state import BaseState
 
 
 class ChestState(BaseState):
