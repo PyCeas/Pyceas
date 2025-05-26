@@ -6,7 +6,7 @@ class ObstacleHandler:
         self.obstacles = obstacles
         self.obstacle_damage = 15
         self.font = pygame.font.Font(None, 36)
-        self.screen: pygame.Surface = pygame.Surface((200, 100))
+        self.screen: pygame.Surface = pygame.Surface((600, 100))
 
         self.collide = None
         self.damage_applied = False
@@ -35,6 +35,6 @@ class ObstacleHandler:
             self.screen.blit(message, (50, self.screen.get_height() - 100))
 
         screen.blit(self.screen, (155, 155))
-        pygame.display.flip()
+        # pygame.display.flip()
 
 

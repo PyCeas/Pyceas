@@ -104,8 +104,8 @@ class GameRunning(BaseState):
             BaseSprite(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
-                groups=(self.all_sprites,),
-                z=WORLD_LAYERS["main"],
+                groups=(self.all_sprites, self.obstacle_group),
+                z=WORLD_LAYERS["bg"],
             )
 
         # Islands
