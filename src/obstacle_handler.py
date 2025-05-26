@@ -1,9 +1,7 @@
 import pygame
-from src.states.base_state import BaseState
 
-class ObstacleState(BaseState):
-    def __init__(self, game_state_manager, player, obstacles):
-        super().__init__(game_state_manager)
+class ObstacleHandler:
+    def __init__(self, player, obstacles):
         self.player = player
         self.obstacles = obstacles
         self.obstacle_damage = 15
@@ -14,7 +12,7 @@ class ObstacleState(BaseState):
         self.damage_applied = False
         self.message_end_time = 0
 
-    def update(self, events):
+    def update(self):
         self.collide = pygame.sprite.spritecollideany(self.player, self.obstacles)
 
         if self.collide and not self.damage_applied:
