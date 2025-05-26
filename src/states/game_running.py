@@ -166,6 +166,8 @@ class GameRunning(BaseState):
                     self.game_state_manager.enter_state(
                         ChestState(self.game_state_manager, self.player, self.player_inventory, self.test_chest, self.island_group)
                     )
+                    for island in self.island_group:
+                        print(island)
                 # self.player_inventory.add_chest(self.test_chest)
                 # print("Chest added")
                 # self.chest_message = self.font.render(f"Added {self.test_chest.name} to the inventory!", True, (100, 100, 100))

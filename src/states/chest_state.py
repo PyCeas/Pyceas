@@ -49,9 +49,9 @@ class ChestState(BaseState):
                     self.game_state_manager.exit_state()
 
                 elif event.key == pygame.K_e and self.collide:
-                    if not self.pressed and not self.chest_collected:
+                    if not self.pressed and not self.collide.chest_collected:
                         self.pressed = True
-                        self.chest_collected = True
+                        self.collide.chest_collected = True
                         self.message = self.inventory.add_item(self.chest_name, 1)
                         self.message_end_time = pygame.time.get_ticks() + 2000  # Show for 2s
 
