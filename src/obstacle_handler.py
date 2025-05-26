@@ -30,7 +30,7 @@ class ObstacleHandler:
             message = self.font.render(
                 f"The player has received -{self.obstacle_damage} damage!",
                 True,
-                (255, 80, 80)
+                "red2"
             )
             self.screen.blit(message, (50, self.screen.get_height() - 100))
 
