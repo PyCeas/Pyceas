@@ -166,41 +166,10 @@ class GameRunning(BaseState):
                     self.game_state_manager.enter_state(
                         ChestState(self.game_state_manager, self.player, self.player_inventory, self.test_chest, self.island_group)
                     )
-                    for island in self.island_group:
-                        print(island)
-                # self.player_inventory.add_chest(self.test_chest)
-                # print("Chest added")
-                # self.chest_message = self.font.render(f"Added {self.test_chest.name} to the inventory!", True, (100, 100, 100))
-                # self.screen.blit(self.chest_message, (155, 155))
-                # print(type(self.chest_message))
-                
 
     def render(self, screen) -> None:
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(self.player.rect.center)
-
-        # point = self.island_obj.rect
-        # collide = self.player.rect.colliderect(point)
-        # if collide:
-        #     print("Collided with the island!")
-
-        # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
-        # point = self.shop.rect
-        # collide = self.player.rect.colliderect(point)
-        # if collide:
-        #     screen.blit(self.welcome_message, (155, 155))
-
-        # keys = pygame.key.get_pressed()
-        # if collide and keys[pygame.K_e]:
-        #     self.in_shop = True
-
-        # if self.in_shop:
-        #     self.shop_window.fill((0, 0, 0))
-        #     screen.blit(self.shop_window, (260, 40))
-
-        #     if keys[pygame.K_q]:
-        #         self.in_shop = False
-        #         print("Exiting shop")
 
         pygame.display.update()
