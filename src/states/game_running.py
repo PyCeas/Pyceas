@@ -100,6 +100,11 @@ class GameRunning(BaseState):
                 pos=(x * TILE_SIZE, y * TILE_SIZE), surface=surface, groups=(self.all_sprites, ), z=WORLD_LAYERS["main"]
             )
 
+        for x, y, surface, in self.tmx_map["map"].get_layer_by_name("Cosmetic").tiles():
+            self.cosmetic_shop = ShowShop(
+                pos=(x * TILE_SIZE, y * TILE_SIZE), surface=surface, groups=(self.all_sprites, ), z=WORLD_LAYERS["main"]
+            )
+
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
