@@ -8,15 +8,19 @@ from src.sprites.tiles.pathfinding import PathFinder
 
 
 class GridManager:
-    def __init__(self, tmx_map: pytmx.TiledMap, tile_size: int = TILE_SIZE):
-        if tmx_map is None:
-            raise ValueError("tmx_map cannot be None")
-
-        self.tmx_map = tmx_map
+    def __init__(self, tmx_map: pytmx.TiledMap = None, tile_size: int = TILE_SIZE, grid_matrix: np.ndarray = None):
+        if grid_matrix is not None:
+            self.grid_matrix = grid_matrix
+            self.height, self.width = grid_matrix.shape
+            self.tmx_map = None
+        else:
+            if tmx_map is None:
+                raise ValueError("Either tmx_map or grid_matrix must be provided")
+            self.tmx_map = tmx_map
+            self.width = tmx_map.width  # Number of tiles wide
+            self.height = tmx_map.height  # Number of tiles high
+            self.grid_matrix = self.create_grid_matrix()
         self.tile_size = tile_size
-        self.width = tmx_map.width  # Number of tiles wide
-        self.height = tmx_map.height  # Number of tiles high
-        self.grid_matrix = self.create_grid_matrix()
         self.path_finder = PathFinder(self.grid_matrix)
 
         self.display_surface: Surface | None = pygame.display.get_surface()
