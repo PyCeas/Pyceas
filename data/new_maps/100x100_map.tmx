@@ -4,7 +4,7 @@
  <tileset firstgid="217" source="../tilesets/Ships tiles.tsx"/>
  <tileset firstgid="2107" source="../tilesets/Water+.tsx"/>
  <tileset firstgid="2275" source="../tilesets/Fort Tiles.tsx"/>
- <layer id="1" name="Sea" width="100" height="100" opacity="0.9">
+ <layer id="1" name="Sea" width="100" height="100" visible="0" opacity="0.9">
   <data encoding="csv">
 2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,
 2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,
@@ -108,7 +108,7 @@
 2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131,2131
 </data>
  </layer>
- <objectgroup id="15" name="Water">
+ <objectgroup id="15" name="Water" visible="0">
   <object id="215" x="224" y="112" width="16" height="112"/>
   <object id="216" x="96" y="96" width="144" height="16"/>
   <object id="217" x="96" y="224" width="144" height="16"/>
@@ -178,7 +178,7 @@
   <object id="281" x="1360" y="1488" width="144" height="16"/>
   <object id="283" x="0" y="0" width="1600" height="1600"/>
  </objectgroup>
- <layer id="6" name="Shallow Sea" width="100" height="100">
+ <layer id="6" name="Shallow Sea" width="100" height="100" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -389,75 +389,75 @@
  <objectgroup id="19" name="IslandNames">
   <object id="286" name="Island" x="128" y="128" width="80" height="80">
    <properties>
-    <property name="name" value="Blackfang Isle"/>
+    <property name="islandName" value="Blackfang Isle"/>
    </properties>
   </object>
   <object id="287" name="Island" x="704" y="128">
    <properties>
-    <property name="name" value="Dead Man’s Haven"/>
+    <property name="islandName" value="Dead Man’s Haven"/>
    </properties>
    <polygon points="0,0 64,0 64,-64 128,-64 128,0 192,0 192,64 160,64 160,96 128,96 128,128 64,128 64,64 0,64"/>
   </object>
   <object id="288" name="Island" x="1392" y="128" width="80" height="80">
    <properties>
-    <property name="name" value="Crimson Reef Cay"/>
+    <property name="islandName" value="Crimson Reef Cay"/>
    </properties>
   </object>
   <object id="289" name="Island" x="704" y="704" width="192" height="192">
    <properties>
-    <property name="name" value="Serpent’s Hollow"/>
+    <property name="islandName" value="Serpent’s Hollow"/>
    </properties>
   </object>
   <object id="290" name="Island" x="128" y="1392" width="80" height="80">
    <properties>
-    <property name="name" value="Ironhook Key"/>
+    <property name="islandName" value="Ironhook Key"/>
    </properties>
   </object>
   <object id="291" name="Island" x="688" y="1328" width="32" height="32">
    <properties>
-    <property name="name" value="Marrowdeep Isle"/>
+    <property name="islandName" value="Marrowdeep Isle"/>
    </properties>
   </object>
   <object id="292" name="Island" x="768" y="1408" width="64" height="64">
    <properties>
-    <property name="name" value="Marrowdeep Isle"/>
+    <property name="islandName" value="Marrowdeep Isle"/>
    </properties>
   </object>
   <object id="293" name="Island" x="880" y="1408" width="48" height="48">
    <properties>
-    <property name="name" value="Marrowdeep Isle"/>
+    <property name="islandName" value="Marrowdeep Isle"/>
    </properties>
   </object>
   <object id="294" name="Island" x="1088" y="1088" width="64" height="64">
    <properties>
-    <property name="name" value="Cutlass Cay"/>
+    <property name="islandName" value="Cutlass Cay"/>
    </properties>
   </object>
   <object id="295" name="Island" x="1392" y="1392" width="80" height="80">
    <properties>
-    <property name="name" value="Saltwither Rock"/>
+    <property name="islandName" value="Saltwither Rock"/>
    </properties>
   </object>
   <object id="296" name="Island" x="128" y="688">
    <properties>
-    <property name="name" value="Skullfire Atoll"/>
+    <property name="islandName" value="Skullfire Atoll"/>
    </properties>
    <polygon points="0,0 64,0 64,80 112,80 112,144 64,144 64,224 0,224"/>
   </object>
   <object id="297" name="Island" x="1024" y="432">
    <properties>
-    <property name="name" value="Whalegrave Spit"/>
+    <property name="islandName" value="Whalegrave Spit"/>
    </properties>
    <polygon points="0,0 0,144 144,144 144,96 192,96 192,-16 176,-16 176,-48 48,-48 48,-32 32,-32 32,-16 16,-16 16,0"/>
   </object>
   <object id="298" name="Island" x="656" y="1424">
    <properties>
-    <property name="name" value="Marrowdeep Isle"/>
+    <property name="islandName" value="Marrowdeep Isle"/>
    </properties>
    <polygon points="0,0 64,0 64,96 80,96 80,128 32,128 32,48 0,48 0,0"/>
   </object>
  </objectgroup>
- <objectgroup id="16" name="Coast">
+ <objectgroup id="16" name="Coast" visible="0">
   <object id="57" x="192" y="176" width="16" height="16">
    <properties>
     <property name="side" value="right"/>
@@ -885,7 +885,7 @@
    </properties>
   </object>
  </objectgroup>
- <layer id="9" name="Fort" width="100" height="100">
+ <layer id="9" name="Fort" width="100" height="100" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -989,7 +989,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="10" name="Ships">
+ <objectgroup id="10" name="Ships" visible="0">
   <object id="1" name="Player" x="263" y="168.5">
    <properties>
     <property name="direction" value="down"/>
@@ -1019,7 +1019,7 @@
    <point/>
   </object>
  </objectgroup>
- <layer id="18" name="Shop" width="100" height="100">
+ <layer id="18" name="Shop" width="100" height="100" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -1123,10 +1123,10 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="17" name="Buildings">
+ <objectgroup id="17" name="Buildings" visible="0">
   <object id="285" name="Shop" x="800" y="160" visible="0"/>
  </objectgroup>
- <layer id="7" name="Docks" width="100" height="100">
+ <layer id="7" name="Docks" width="100" height="100" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

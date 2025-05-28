@@ -19,6 +19,7 @@ class IslandsIndicators:
         self.collide = pygame.sprite.spritecollideany(self.player, self.island)
 
         if self.collide and not previous_collide:
+            self.current_island_name = getattr(self.collide, "islandName", "an island")
             self.message_end_time = pygame.time.get_ticks() + 5000
             self.alpha = 0
             self.fading_in = True
@@ -32,7 +33,7 @@ class IslandsIndicators:
         self.screen.fill((0, 0, 0, 0))
 
         if self.collide and pygame.time.get_ticks() < self.message_end_time:
-            message_surface = self.font.render("Welcome to the island", True, (0, 0, 0))
+            message_surface = self.font.render(f"{self.current_island_name}", True, (0, 0, 0))
             message_surface.set_alpha(self.alpha)
             self.screen.blit(message_surface, (50, self.screen.get_height() - 100))
         else:

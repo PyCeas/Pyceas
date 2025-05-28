@@ -109,14 +109,25 @@ class GameRunning(BaseState):
                 z=WORLD_LAYERS["bg"],
             )
 
-            # Enitites
-            for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
-                if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
-                    self.player = Player(
-                        pos=(obj.x, obj.y),
-                        frames=self.world_frames["ships"]["player_test_ship"],
-                        groups=(self.all_sprites,),
-                    )
+        for obj in self.tmx_map["map"].get_layer_by_name("IslandNames"):
+            name = obj.properties.get("islandName", "Unnamed Island")
+
+            island = BaseSprite(
+                pos=(obj.x, obj.y),
+                surf=pygame.Surface((obj.width, obj.height), pygame.SRCALPHA),
+                groups=(self.island_groups,),
+                z=WORLD_LAYERS["bg"]
+            )
+            island.name = name
+
+        # Enitites
+        for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
+            if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
+                self.player = Player(
+                    pos=(obj.x, obj.y),
+                    frames=self.world_frames["ships"]["player_test_ship"],
+                    groups=(self.all_sprites,),
+                )
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
