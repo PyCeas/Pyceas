@@ -14,6 +14,7 @@ from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
 from src.sprites.camera.player import PlayerCamera
 from src.sprites.entities.player import Player
+from src.island_indications import IslandsIndicators
 from src.states.base_state import BaseState
 from src.states.paused import Paused
 from src.states.shop_state import ShowShop, WindowShop
@@ -47,6 +48,8 @@ class GameRunning(BaseState):
         self.font = pygame.font.Font(None, 36)
         self.shop_window = pygame.Surface((800, 600))
         self.in_shop = False
+
+        self.indicator_handler = IslandsIndicators(self.player, self.island_groups)
 
     def setup(self, player_start_pos: str) -> None:
         """
@@ -96,12 +99,13 @@ class GameRunning(BaseState):
             )
 
         # Islands
+        self.island_groups: pygame.sprite.Group = pygame.sprite.Group()
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
             BaseSprite(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
-                groups=(self.all_sprites,),
+                groups=(self.all_sprites, self.island_groups),
                 z=WORLD_LAYERS["bg"],
             )
 
@@ -144,6 +148,7 @@ class GameRunning(BaseState):
         collide = self.player.rect.colliderect(self.shop.rect) if self.player else False
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
+        self.indicator_handler.update()
 
         # get events like keypress or mouse clicks
         for event in events:
@@ -159,6 +164,7 @@ class GameRunning(BaseState):
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(self.player.rect.center)
+        self.indicator_handler.render(screen)
 
         # self.welcome_message = self.font.render("Press 'E' to interact!", True, (100, 100, 100))
         # point = self.shop.rect
