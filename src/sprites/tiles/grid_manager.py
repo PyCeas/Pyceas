@@ -8,7 +8,9 @@ from src.sprites.tiles.pathfinding import PathFinder
 
 
 class GridManager:
-    def __init__(self, tmx_map: pytmx.TiledMap = None, tile_size: int = TILE_SIZE, grid_matrix: np.ndarray = None):
+    def __init__(
+            self, tmx_map: pytmx.TiledMap = None, tile_size: int = TILE_SIZE, grid_matrix: np.ndarray | None = None
+    ):
         if grid_matrix is not None:
             self.grid_matrix = grid_matrix
             self.height, self.width = grid_matrix.shape
@@ -40,6 +42,8 @@ class GridManager:
         Create a grid matrix from the Tiled map.
         Each tile is represented as 0 (walkable) or 1 (non-walkable).
         """
+        if self.tmx_map is None:
+            raise ValueError("TMX map must be None when creating grid matrix")
         matrix = np.zeros((self.height, self.width), dtype=int)  # Initialize with zeros (walkable)
         for layer in self.tmx_map.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer):
@@ -209,62 +213,3 @@ class GridManager:
         dot_x = mouse_grid_x * self.tile_size * camera_scale + camera_offset.x
         dot_y = mouse_grid_y * self.tile_size * camera_scale + camera_offset.y
         pygame.draw.circle(self.display_surface, (0, 255, 0), (dot_x, dot_y), 5)  # Green circle at tile coordinates
-
-        # # Convert player position to grid coordinates
-        # player_grid_x = int(player_pos[0] // self.tile_size)
-        # player_grid_y = int(player_pos[1] // self.tile_size)
-        #
-        # # Get mouse grid coordinates with camera offset and scale
-        # mouse_grid_x, mouse_grid_y = self.get_tile_coordinates(mouse_pos, camera_offset, camera_scale)
-        #
-        # # Calculate the visible area based on camera offset and scale
-        # visible_start_x = max(0, player_grid_x - visible_radius)
-        # visible_start_y = max(0, player_grid_y - visible_radius)
-        # visible_end_x = min(self.width, player_grid_x + visible_radius + 1)
-        # visible_end_y = min(self.height, player_grid_y + visible_radius + 1)
-        #
-        # for y in range(visible_start_y, visible_end_y):
-        #     for x in range(visible_start_x, visible_end_x):
-        #         # Calculate world position
-        #         world_x = x * self.tile_size
-        #         world_y = y * self.tile_size
-        #
-        #         # Convert to screen coordinates
-        #         screen_x = world_x * camera_scale + camera_offset.x
-        #         screen_y = world_y * camera_scale + camera_offset.y
-        #
-        #         rect = pygame.Rect(screen_x, screen_y,
-        #                            self.tile_size * camera_scale,
-        #                            self.tile_size * camera_scale)
-        #         pygame.draw.rect(self.display_surface, "dark grey", rect, 1)  # Draw grid lines
-        #
-        #         # Calculate the position to draw the text (center of the tile)
-        #         text_surface = self.coordinate_surfaces[(x, y)]
-        #
-        #         # Calculate the position to draw the text (center of the tile)
-        #         text_rect = text_surface.get_rect(center=(screen_x + self.tile_size * camera_scale / 2,
-        #                                                   screen_y + self.tile_size * camera_scale / 2))
-        #
-        #         # Draw the text on the screen
-        #         self.display_surface.blit(text_surface, text_rect)
-        #
-        # # Clamp pathfinding start and end points to the grid boundaries
-        # start = (player_grid_x, player_grid_y)
-        # end = (mouse_grid_x, mouse_grid_y)
-        #
-        # # Path finding and drawing a path
-        # if 0 <= start[0] < self.width and 0 <= start[1] < self.height:
-        #     path = self.find_path(start, end)
-        #     for x, y in path:
-        #         # Convert path coordinates to the screen position
-        #         screen_x = x * self.tile_size * camera_scale + camera_offset.x
-        #         screen_y = y * self.tile_size * camera_scale + camera_offset.y
-        #         rect = pygame.Rect(screen_x, screen_y,
-        #                            self.tile_size * camera_scale,
-        #                            self.tile_size * camera_scale)
-        #         pygame.draw.rect(self.display_surface, "green", rect, 2)  # Draw path tiles
-        #
-        # # Draw the green dot at the mouse grid coordinates
-        # dot_x = mouse_grid_x * self.tile_size * camera_scale + camera_offset.x
-        # dot_y = mouse_grid_y * self.tile_size * camera_scale + camera_offset.y
-        # pygame.draw.circle(self.display_surface, (0, 255, 0), (dot_x, dot_y), 5)  # Green circle at tile coordinates
