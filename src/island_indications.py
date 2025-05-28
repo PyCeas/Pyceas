@@ -19,7 +19,7 @@ class IslandsIndicators:
         self.collide = pygame.sprite.spritecollideany(self.player, self.island)
 
         if self.collide and not previous_collide:
-            self.message_end_time = pygame.time.get_ticks() + 2000
+            self.message_end_time = pygame.time.get_ticks() + 5000
             self.alpha = 0
             self.fading_in = True
 
@@ -37,6 +37,6 @@ class IslandsIndicators:
             self.screen.blit(message_surface, (50, self.screen.get_height() - 100))
         else:
             self.fading_in = False
-            self.collide = None  # Optional: reset collision
+            # self.collide = None  # Optional: reset collision
 
         screen.blit(self.screen, (155, 155))
