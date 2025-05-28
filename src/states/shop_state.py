@@ -4,7 +4,7 @@ import pygame
 from pygame import Surface
 
 from src.inventory import Inventory
-from src.sprites.shop.shop_sprite import ShowShop
+from src.sprites.shops.shop_sprite import ShowShop
 from src.states.base_state import BaseState
 
 
