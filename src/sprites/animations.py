@@ -1,5 +1,5 @@
-import pygame
-from pygame.sprite import Group
+import pygame  # type: ignore
+from pygame.sprite import Group  # type: ignore
 
 from src.settings import ANIMATION_SPEED, WORLD_LAYERS
 from src.sprites.base import BaseSprite

@@ -1,3 +1,4 @@
 ruff>=0.5.3
 mypy>=1.11.1
 pytest>=7.4.4
+hypothesis>=6.80.0

@@ -2,8 +2,8 @@
 
 from abc import ABC
 
-from pygame import FRect, Surface, Vector2
-from pygame.sprite import Group, Sprite
+from pygame import Surface, Vector2  # type: ignore
+from pygame.sprite import Group, Sprite  # type: ignore
 
 from src.settings import ANIMATION_SPEED, WORLD_LAYERS
 
@@ -45,7 +45,7 @@ class BaseSprite(Sprite, ABC):
             raise ValueError("The `surf` parameter must be a valid pygame.Surface.")
 
         self.image = surf
-        self.rect: FRect = self.image.get_frect(topleft=pos)
+        self.rect = self.image.get_rect(topleft=pos)
         self.z = z
 
         self.frames = frames or [surf]
