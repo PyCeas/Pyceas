@@ -74,10 +74,6 @@ This file provides credits for all assets, tools, and contributions that have be
 
 ## Contributors
 
-- **Davidek523**
-    - **Role**: Programmer
-    - **Github**: [davidek523](https://github.com/Davidek523)
-
 - **Danilo Saiu**
     - **Role**: Project overseer/programmer
     - **Github**: [ultimateownsz](https://www.github.com/ultimateownsz)

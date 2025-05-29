@@ -5,14 +5,6 @@ import pygame.freetype
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
 TILE_SIZE = 16
-ANIMATION_SPEED = 4
-
-WORLD_LAYERS = {
-    "water": 0,
-    "bg": 1,
-    "main": 2,
-    "top": 3
-}
 FPS = 60
 
 

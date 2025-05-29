@@ -12,10 +12,8 @@ import random
 from src.states.base_state import BaseState
 from src.states.paused import Paused
 from src.inventory import Inventory
-from src.support import import_folder, coast_importer, all_character_import
-from src.sprites import AnimatedSprites
 
-from src.settings import TILE_SIZE, WORLD_LAYERS
+from src.settings import TILE_SIZE
 import src.sprites
 
 
@@ -43,7 +41,6 @@ class GameRunning(BaseState):
         self.turn_order = None
         
         # Initialize player inventory
-        self.clock = pygame.Clock()
         self.player_inventory = Inventory()
         self.load_inventory_from_json("data/inventory.json")
 
@@ -59,47 +56,33 @@ class GameRunning(BaseState):
         setup the map and player from the tiled file
         """
         self.tmx_map = {
-            "map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))
+            "map": load_pygame(os.path.join(".", "data", "maps", "100x100_map.tmx"))
         }
-
-        self.world_frames = {
-            "water": import_folder(".", "images", "tilesets", "temporary_water"),
-            "coast": coast_importer(6, 6, ".", "images", "tilesets", "coast"),
-            "ships": all_character_import(".", "images", "tilesets", "ships")
-        }
-
-        # Sea
-        for x, y, surface in self.tmx_map["map"].get_layer_by_name("Sea").tiles():
-            src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
-
-        # Water animated
-        for obj in self.tmx_map["map"].get_layer_by_name("Water"):
-            for x in range(int(obj.x), int(obj.x + obj.width), TILE_SIZE):
-                for y in range(int(obj.y), int(obj.y + obj.height), TILE_SIZE):
-                    AnimatedSprites((x, y), self.world_frames["water"], self.all_sprites, WORLD_LAYERS["water"])
-
-        # Shallow water
-        for x, y, surface in self.tmx_map["map"].get_layer_by_name("Shallow Sea").tiles():
-            src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
 
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
-            src.sprites.Sprite((x * TILE_SIZE, y * TILE_SIZE), surface, self.all_sprites, WORLD_LAYERS["bg"])
+            src.sprites.Tile(
+                self.all_sprites,
+                pos=(x * TILE_SIZE, y * TILE_SIZE),
+                surf=surface,
+            )
 
-        # Enitites
-        for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
-            if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
-                self.player = src.sprites.Player(
-                    pos = (obj.x, obj.y), 
-                    frames = self.world_frames["ships"]["player_test_ship"], 
-                    groups = self.all_sprites)
-
-        # Coast
-        for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
-            terrain = obj.properties["terrain"]
-            side = obj.properties["side"]
-            AnimatedSprites((obj.x, obj.y), self.world_frames["coast"][terrain][side], self.all_sprites, WORLD_LAYERS["bg"])
+        # Objects
+        ships_layer = self.tmx_map["map"].get_layer_by_name("Ships")
+        for idx, obj in enumerate(ships_layer):
+            print(f"Object name: {obj.name}, Properties: {obj.properties}")
+            for starting_position in player_start_positions:
+                if obj.name == "Player" and obj.properties["pos"] == starting_position:
+                    player_name = f"Player {idx + 1}"  # Player 1, Player 2, etc.
+                    player = src.sprites.Player(name=obj.name, pos=(obj.x, obj.y), groups=self.all_sprites)
+                    self.players.append(player)
+        
+        if not self.players:
+            raise ValueError("No player starting positions found in the map.")
+        
+        if len(self.players) < 2: # for now, we require at least two players
+            raise ValueError("At least two player starting positions are required.")
 
     def load_inventory_from_json(self, file_path: str):
         """Load initial inventory items from JSON file."""
@@ -180,8 +163,10 @@ class GameRunning(BaseState):
         """
         update each sprites and handle events
         """
-        dt = self.clock.tick() / 1000
-        self.all_sprites.update(dt)
+
+        self.active_player = self.players[self.current_player_index]
+
+        self.all_sprites.update()
 
         # get events like keypress or mouse clicks
         for event in events:
@@ -200,7 +185,9 @@ class GameRunning(BaseState):
         """draw sprites to the canvas"""
         screen.fill("#000000")
         self.all_sprites.draw(
-            self.player.rect.center
+            self.active_player.rect.center,
+            self.active_player.player_preview,
+            self.active_player.player_preview_rect,
         )
         self.display_turn_indicator(screen) # display turn indicator
 
