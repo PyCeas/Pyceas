@@ -55,6 +55,9 @@ class BaseSprite(Sprite, ABC):
         self.direction = Vector2()
         self.facing_direction: str = "down"
 
+        # Chest bool
+        self.chest_collected = False
+
     def animate(self, dt: float) -> None:
         """Handle animation logic."""
         if len(self.frames) > 1:  # Only animate if there's more than one frame

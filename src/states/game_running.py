@@ -8,7 +8,7 @@ import os
 import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
-from src.inventory import Inventory
+from src.inventory import Chest, Inventory
 from src.settings import TILE_SIZE, WORLD_LAYERS
 from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
@@ -16,6 +16,7 @@ from src.sprites.camera.player_camera import PlayerCamera
 from src.sprites.entities.player import Player
 from src.sprites.tiles.grid_manager import GridManager
 from src.states.base_state import BaseState
+from src.states.chest_state import ChestState
 from src.states.paused import Paused
 from src.states.shop_state import ShowShop, WindowShop
 from src.support import all_character_import, coast_importer, import_folder
@@ -108,13 +109,17 @@ class GameRunning(BaseState):
                 pos=(x * TILE_SIZE, y * TILE_SIZE), surface=surface, groups=(sprite_group,), z=WORLD_LAYERS["main"]
             )
 
+        # for obj in self.tmx_map["map"].get_layer_by_name("Collision_boarder"):
+        #     self.island_boarder = src.sprites.Sprite((obj.x, obj,y), surface, self.all_sprites, WORLD_LAYERS["bg"])
+
         # Islands
-        islands = self.tmx_map["map"].get_layer_by_name("Islands")
-        for x, y, surface in islands.tiles():
-            BaseSprite(
+        self.island_group: pygame.sprite.Group = pygame.sprite.Group()
+        self.islands = self.tmx_map["map"].get_layer_by_name("Islands")
+        for x, y, surface in self.islands.tiles():
+            self.island_obj = BaseSprite(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
-                groups=(sprite_group,),
+                groups=(sprite_group, self.island_group),
                 z=WORLD_LAYERS["bg"],
             )
 
@@ -157,7 +162,8 @@ class GameRunning(BaseState):
         """
         update each sprites and handle events
         """
-
+        self.test_chest: Chest = Chest("test_chest", 1000)
+        self.island_collision = pygame.sprite.spritecollideany(self.player, self.island_group)
         collide: bool = (
                 self.player is not None
                 and self.shop is not None
@@ -187,6 +193,16 @@ class GameRunning(BaseState):
                 elif collide and event.key == pygame.K_e:
                     self.game_state_manager.enter_state(
                         WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
+                    )
+                if self.island_collision and event.key == pygame.K_e:
+                    self.game_state_manager.enter_state(
+                        ChestState(
+                            self.game_state_manager,
+                            self.player,
+                            self.player_inventory,
+                            self.test_chest,
+                            self.island_group,
+                        )
                     )
 
     def render(self, screen) -> None:
@@ -218,5 +234,10 @@ class GameRunning(BaseState):
 
             # Draw the green dot at the screen coordinates
             pygame.draw.circle(screen, (0, 255, 0), (dot_x, dot_y), 5)  # Green circle at tile coordinates
+
+            self.message = self.font.render(
+            "Press E to interact\nPress Q to quit interaction\nPress I to open inventory", True, (0, 0, 0)
+            )
+            screen.blit(self.message, (50, screen.get_height() - 100))
 
         pygame.display.update()
