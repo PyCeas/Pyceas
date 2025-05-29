@@ -4,12 +4,11 @@ structure of the game, using a stack of states
 """
 
 import sys
+import pygame
 
-import pygame  # type: ignore
+from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 
-from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH
-
-# import base state for typehint
+# import basestate for typehint
 from src.states.base_state import BaseState
 from src.states.game_running import GameRunning
 
@@ -29,14 +28,14 @@ class GameStateManager:
         # init pygame
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        # pygame.display.set_caption("PyCeas")
+        pygame.display.set_caption("PyCeas")
 
         self.clock = pygame.Clock()
         self.running = True
         self.events: list[pygame.event.Event] = []
         self.states_stack: list[BaseState] = []
 
-        # instantiate the initial state
+        # instanciate the initial state
         self.states_stack.append(GameRunning(self))
 
     def __str__(self) -> str:
@@ -76,12 +75,11 @@ class GameStateManager:
         while self.running:
             self._handle_events()
 
-            # give the pygame events to each state
+            # give the pygame events to each states
             # to ensure that pygame.event.get() is only called once per frame
             self.states_stack[-1].update(self.events)
 
             self.states_stack[-1].render(self.screen)
 
-            # magic value, use 'a' FPS const in settings or delta time
-            self.clock.tick()
-            pygame.display.set_caption(f"{self.clock.get_fps():.2f} FPS")
+            # magic value, use a FPS const in settings or delta time
+            self.clock.tick(FPS)

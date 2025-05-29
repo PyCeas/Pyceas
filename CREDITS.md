@@ -73,10 +73,6 @@ This file provides credits for all assets, tools, and contributions that have be
 
 
 ## Contributors
-<!-- Old manual way to add contributors to the credits.
-- **Davidek523**
-    - **Role**: Programmer
-    - **Github**: [davidek523](https://github.com/Davidek523)
 
 - **Danilo Saiu**
     - **Role**: Project overseer/programmer
@@ -84,13 +80,4 @@ This file provides credits for all assets, tools, and contributions that have be
 
 - **Purple Prog**
     - **Role**: Programmer
-    - **Github**: [purpleprog](https://github.com/PurpleProg) -->
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+    - **Github**: [purpleprog](https://github.com/PurpleProg)
