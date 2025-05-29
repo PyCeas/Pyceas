@@ -162,6 +162,7 @@ class GameRunning(BaseState):
         """
         update each sprites and handle events
         """
+        self.test_chest: Chest | None = None
         self.island_collision = pygame.sprite.spritecollideany(self.player, self.island_group)
         collide: bool = (
                 self.player is not None
@@ -233,5 +234,10 @@ class GameRunning(BaseState):
 
             # Draw the green dot at the screen coordinates
             pygame.draw.circle(screen, (0, 255, 0), (dot_x, dot_y), 5)  # Green circle at tile coordinates
+
+            self.message = self.font.render(
+            "Press E to interact\nPress Q to quit interaction\nPress I to open inventory", True, (0, 0, 0)
+            )
+            screen.blit(self.message, (50, screen.get_height() - 100))
 
         pygame.display.update()
