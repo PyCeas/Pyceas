@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-import pygame
-from pygame.sprite import Group
+import pygame  # type: ignore
+from pygame.sprite import Group  # type: ignore
 
 
 # class CameraGroup(pygame.sprite.Group, ABC):

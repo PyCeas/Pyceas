@@ -1,6 +1,6 @@
-import pygame
-from pygame import Surface, Vector2
-from pygame.sprite import Group
+import pygame  # type: ignore
+from pygame import FRect, Surface  # type: ignore
+from pygame.sprite import Group  # type: ignore
 
 from src.inventory import Inventory
 from src.settings import TILE_SIZE
@@ -8,6 +8,10 @@ from src.sprites.base import BaseSprite
 
 
 class Player(BaseSprite):
+    """Handles player interaction with the grid, moving with the pathfinding."""
+
+    rect: FRect
+
     def __init__(
         self,
         pos: tuple[int, int],
@@ -21,18 +25,18 @@ class Player(BaseSprite):
         :param groups: Sprite groups the player belongs to.
         """
 
-        # Use the first frame as the base surface
-        first_frame = frames[0] if isinstance(frames, (list, tuple)) and frames else Surface((TILE_SIZE, TILE_SIZE))
-        first_frame.fill("red")
-        super().__init__(pos=pos, surf=first_frame, groups=groups)
+        # Initialize the player sprite
+        player_square = frames[0] if isinstance(frames, (list, tuple)) and frames else Surface((TILE_SIZE, TILE_SIZE))
+        player_square.fill("red")
+        super().__init__(pos=pos, surf=player_square, groups=groups)
 
         # Animation frames
         self.frames = frames
         self.frame_index: float = 0.0
 
-        # Ghost preview
-        self.player_preview = first_frame.copy()
-        self.player_preview.set_alpha(128)
+        self.position = pos
+        # In your __init__ method
+        self.path: list[tuple[int, int]] = []  # Stores the path to the destination tile
 
         # Inventory system
         self.inventory = Inventory()
@@ -40,78 +44,59 @@ class Player(BaseSprite):
         # Input handling
         self.mouse_have_been_pressed: bool = False
 
-    def input(self) -> None:
-        """move the player and show a ghost to preview the move"""
+    # def get_neighbor_tiles(self, grid, blocked_tiles=None):
+    #     """Calculate and return all valid adjacent (neighbor) tiles for the player."""
+    #     if blocked_tiles is None:
+    #         blocked_tiles = []
+    #
+    #     x, y = self.rect.topleft
+    #     tile_size = grid.tile_size
+    #     directions = [
+    #         (0, -tile_size), (0, tile_size),  # Up, Down
+    #         (-tile_size, 0), (tile_size, 0),  # Left, Right
+    #         (-tile_size, -tile_size), (tile_size, -tile_size),  # Diagonal: Top-left, Top-right
+    #         (-tile_size, tile_size), (tile_size, tile_size)  # Diagonal: Bottom-left, Bottom-right
+    #     ]
+    #     self.valid_moves = [
+    #         (x + dx, y + dy)
+    #         for dx, dy in directions
+    #         if 0 <= x + dx < SCREEN_WIDTH
+    #            and 0 <= y + dy < SCREEN_HEIGHT
+    #            and (x + dx, y + dy) not in blocked_tiles
+    #     ]
 
-        # Reset direction
-        self.direction = Vector2(0, 0)
+    def input(self, grid, camera_offset: pygame.math.Vector2 | None = None, camera_scale: float | None = None) -> None:
+        """Handle player movement using instant tile-based logic"""
 
         # Get mouse position
         mouse_pos = pygame.mouse.get_pos()
-
-        # get the relative pos of the player from the mouse
-        # to know on which axis the player will move
-        delta_x = abs(self.rect.centerx - mouse_pos[0])
-        delta_y = abs(self.rect.centery - mouse_pos[1])
-
-        # #  move the ghost on the x-axis
-        # self.player_preview_rect = self.rect.copy()
-        # if delta_x > delta_y:
-        #     if delta_x < (TILE_SIZE / 2):
-        #         # don't move the ghost if the mouse is on the player hit box
-        #         self.player_preview_rect.x = self.rect.x
-        #     elif mouse_pos[0] > self.rect.centerx:
-        #         # go right
-        #         self.player_preview_rect.x = self.rect.x + TILE_SIZE
-        #     else:
-        #         # go left
-        #         self.player_preview_rect.x = self.rect.x - TILE_SIZE
-        # # move the ghost on the y-axis
-        # else:
-        #     if delta_y < (TILE_SIZE / 2):
-        #         # don't move if the mouse is on the player hit box
-        #         self.player_preview_rect.y = self.rect.y
-        #     elif mouse_pos[1] > self.rect.centery:
-        #         # go down
-        #         self.player_preview_rect.y = self.rect.y + TILE_SIZE
-        #     else:
-        #         # go up
-        #         self.player_preview_rect.y = self.rect.y - TILE_SIZE
-
-        # Handle mouse input for movement
         if not pygame.mouse.get_pressed()[0]:
             self.mouse_have_been_pressed = False
             return
         if self.mouse_have_been_pressed:
             return
-
         self.mouse_have_been_pressed = True
 
-        # Move on the x-axis or y-axis
-        if delta_x > delta_y:
-            if delta_x >= (TILE_SIZE / 2):
-                if mouse_pos[0] > self.rect.centerx:
-                    self.direction.x = 1
-                # if delta_x >= (TILE_SIZE / 2):
-                #     self.direction.x = 1 if mouse_pos[0] > self.rect.centerx else -1
-                else:
-                    self.direction.x = -1
-                    # if delta_y >= (TILE_SIZE / 2):
-                    #     self.direction.y = 1 if mouse_pos[1] > self.rect.centery else -1
-        else:
-            if delta_y >= (TILE_SIZE / 2):
-                if mouse_pos[1] > self.rect.centery:
-                    self.direction.y = 1
-                else:
-                    self.direction.y = -1
+        # Calculate the tile coordinates from the grid with camera offset and scale
+        player_tile = (self.rect.x // grid.tile_size, self.rect.y // grid.tile_size)
+        target_tile = grid.get_tile_coordinates(mouse_pos, camera_offset, camera_scale)
 
-        # Update position
-        self.rect.x += self.direction.x * TILE_SIZE
-        self.rect.y += self.direction.y * TILE_SIZE
+        # Find a path using A* algorithm
+        path = grid.find_path(player_tile, target_tile)
+        if path and len(path) > 1:
+            # Move to the next tile in the path
+            self.path = path[1:]
 
-        # return None
-
-    def update(self, dt: float) -> None:
+    def update(
+            self, dt: float, grid=None, camera_offset: pygame.math.Vector2 | None = None,
+            camera_scale: float | None = None
+    ) -> None:
         """Update the player's position and state."""
-        self.input()
+        if grid:
+            # this method is not used, could be useful when implementing a player switching system
+            # self.get_neighbor_tiles(grid)
+            self.input(grid, camera_offset, camera_scale)  # Handle input with camera offset and scale
+            if self.path:
+                next_tile = self.path.pop(0)
+                self.rect.topleft = (next_tile[0] * grid.tile_size, next_tile[1] * grid.tile_size)
         self.animate(dt)
