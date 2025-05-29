@@ -1,2 +1,4 @@
 pygame-ce>=2.5.0
 pytmx>=3.32
+pathfinding~=1.0.17
+numpy~=2.2.6

@@ -2,7 +2,8 @@
 
 [![Discord](https://discord.com/api/guilds/1272287320934056066/widget.png)](https://discord.gg/s2P9fZbeZs)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://www.freecodecamp.org/news/how-to-make-your-first-pull-request-on-github-3/)
-[![License](https://img.shields.io/github/license/ultimateownsz/PyCeas)](https://github.com/PyCeas/Pyceas/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/PyCeas/PyCeas)](https://github.com/PyCeas/Pyceas/blob/main/LICENSE)
+[![All Contributors](https://img.shields.io/github/all-contributors/PyCeas/Pyceas?color=ee8449&style=flat-square)](#contributors)
 
 ## Table of Contents
 - [PyCeas - Open Source Pirate (Adventure) Board Game](#pyceas---open-source-pirate-adventure-board-game)
@@ -11,6 +12,12 @@
   - [Game Design Document](#game-design-document)
   - [Why Join PyCeas?](#why-join-pyceas)
   - [Getting Started](#getting-started)
+    - [Clone the Repository](#clone-the-repository)
+    - [Install Python](#install-python)
+    - [Set up a virtual environment](#set-up-a-virtual-environment)
+    - [Install Required Software](#install-required-software)
+    - [Run the project](#run-the-project)
+    - [Deactivate the Virtual Environment:](#deactivate-the-virtual-environment)
   - [Reporting bugs \& requesting features](#reporting-bugs--requesting-features)
     - [Local Development](#local-development)
     - [Linting and Formatting for developers](#linting-and-formatting-for-developers)
@@ -37,11 +44,7 @@ Every game needs thorough documentation, and you can find our Game Design Docume
 - **Create something enjoyable**: Contributing to a project that results in a game you and others can enjoy.
 - **Join our community on [Discord](https://discord.gg/MZ5MHqDnGW)**: Whether you want to help with ideas, give feedback, or simply enjoy the game, everyone is welcome!
 
-## Getting Started
-
-No need to worry if you are new to programming. This guide will walk you through the setup step by step. by the end, you'll have everything ready to run the PyCeas project.
-
-> [!IMPORTANT]
+> [!NOTE]
 >
 > This project was previously known as **PySeas** and has been renamed to **PyCeas**.
 > If you have already cloned the repository under the old name, update your local repository’s remote URL:
@@ -50,17 +53,59 @@ No need to worry if you are new to programming. This guide will walk you through
 > git remote set-url origin https://github.com/PyCeas/Pyceas.git
 > ```
 
+## Getting Started
 
-1. **Clone the Repository:**
+No need to worry if you are new to programming. This guide will walk you through the setup step by step. by the end, you'll have everything ready to run the PyCeas project.
+
+
+### Clone the Repository
 First you'll need to copy the PyCeas project to your computer through a process called "cloning".
 ```
   git clone https://github.com/PyCeas/Pyceas.git
 
 ```
 
-2. **Set up a virtual environment:** 
+### Install Python
+Check if Python is installed on your system. You can check by running the following command in your terminal prompt: 
+
+- ##### For Mac Users:
+  1. Open the terminal and install Python using `Homebrew`. If Homebrew is not installed, [follow these instructions](https://brew.sh/):
+  ```bash
+  brew install python3
+  ```
+  1. After installation, verify it by running:
+  ```bash
+  python3 --version
+  ```
+
+- ##### For Linux Users
+  1. Open the terminal and update your package list:
+  ```bash
+  sudo apt update
+  ```
+  2. Install Python
+  ```bash
+  sudo apt install python3
+  ```
+  3. After installation, verify it by running:
+  ```bash
+  python3 --version
+  ```
+
+- ##### For Windows Users
+  1. Download the Python installer from the [official Python website](https://www.python.org/downloads/).
+  2. Run the installer and follow the on-screen instructions.
+  3. Make sure to check the box "Add Python to PATH" before clicking "Install Now".
+  4. After installation, verify by running:
+  ```bash
+  python --version
+  ```
+
+
+### Set up a virtual environment
 A virtual environment is like a seperate space on your computer where you can install the software needed for this project without affecting other programs.
-- **For Mac or Linux Users:**
+
+- ##### For Mac or Linux Users:
   - In your terminal, navigate to the folder where you downloaded the project (usually the 'PyCeas' folder) using the 'cd' command:
     ```bash
     cd PyCeas
@@ -74,43 +119,43 @@ A virtual environment is like a seperate space on your computer where you can in
      source venv/bin/activate
      ```
 
-- **For Windows Users**:
+- ##### For Windows Users:
     - Open Command Prompt and navigate to the 'PyCeas' folder (where you downloaded the project) using the 'cd' command:
     ```bash
     cd PyCeas
     ```
     - Set up the virtual environment by typing:
     ```bash
-    python3 -m venv venv
+    python -m venv venv
     ```
     - Activate the virtual environment:
     ```bash
     venv\Scripts\activate
     ```
   
-3. **Install Required Software**:
+### Install Required Software
 Now, you'll need to install the necessary software that the project depends on.
   - Make sure you're still in the 'PyCeas' directory/folder and that the virtual environment is active.
   - Install the software by typing the following command:
-  ```
+  ```bash
   pip install -r requirements.txt # For running the game (runtime dependencies)
   ```
 This installs everything you need to run the project.
   - If you plan to do any local development or modifications, also run:
-  ```
+  ```bash
   pip install -r requirements_dev.txt # For local development
   ```
 
 This step is optional and only needed if you want to make changes to the project.
-4. **Run the project**
+### Run the project
 Now you are ready to start the project!
   - Simply type:
-  ```
+  ```bash
   python main.py
   ```
   - The project should start running, and you'll see it in action!
 
-**Deactivate the Virtual Environment**:
+### Deactivate the Virtual Environment:
 When you’re done working, you can deactivate the virtual environment using:
 ```bash
 deactivate
@@ -139,7 +184,7 @@ We chose to use [Ruff](https://docs.astral.sh/ruff/) to automatically lint and f
 >
 > 
 > ```sh
-> ruff format . && ruff check --include I --fix . # this formats code and sort imports
+> ruff format . && ruff check --select I --fix . # this formats code and sort imports
 > ruff check . # run linting and perform fixes
 > mypy main.py
 > ```
@@ -148,7 +193,7 @@ We chose to use [Ruff](https://docs.astral.sh/ruff/) to automatically lint and f
 >
 > ```powershell
 > ruff format .;
-> ruff check --include I --fix .;
+> ruff check --select I --fix .;
 > ruff check .;
 > mypy main.py
 > ```

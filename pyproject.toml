@@ -1,0 +1,23 @@
+[tool.ruff]
+line-length = 120
+lint.select = ["E", "F", "I"]
+lint.fixable = ["F", "I"]
+exclude = ["build/", "dist/", ".venv/"]
+
+[tool.mypy]
+python_version = "3.12"
+check_untyped_defs = true
+ignore_missing_imports = true
+explicit_package_bases = true
+
+["mypy-pygame.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+# -ra: Show extra test summary info for all tests.
+# -q: Quiet mode, which reduces the verbosity of the output.
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]

@@ -3,13 +3,13 @@ paused state
 holding the inventory
 """
 
-from typing import Dict, Tuple
+# from typing import Dict, Tuple
 
-import pygame
-from src.states.base_state import BaseState
+import pygame  # type: ignore
+
 from src.inventory import Inventory  # for typehints
-
-from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.states.base_state import BaseState
 
 
 class Paused(BaseState):
@@ -35,11 +35,9 @@ class Paused(BaseState):
 
         # Load sprite sheet and extract the icons (Testing purposes)
         # To be replaced when:
-        # 1) Spritesheet has been decide.
+        # 1) Sprite sheet has been decided.
         # 2) A 'Buy', 'Found' or 'Add' in-game feature has been implemented
-        self.sprite_sheet = pygame.image.load(
-            "images/tilesets/Treasure+.png"
-        ).convert_alpha()
+        self.sprite_sheet = pygame.image.load("images/tilesets/Treasure+.png").convert_alpha()
         self.icons = {
             "Gold Coin": self.extract_icon(0, 0),
             "Silver Coin": self.extract_icon(16, 0),
@@ -84,12 +82,12 @@ class Paused(BaseState):
             "Glowing Crystal": self.extract_icon(16, 176),
         }
 
-        # Button dimmentions
+        # Button dimensions
         self.button_width = 100
         self.button_height = 50
 
         # Initialize button actions
-        self.button_actions: Dict[str, Tuple[pygame.Rect, pygame.Rect]] = {}
+        self.button_actions: dict[str, tuple[pygame.Rect, pygame.Rect]] = {}
 
         # Action messages
         self.message = ""
@@ -99,9 +97,7 @@ class Paused(BaseState):
         """Handle mouse clicks on buttons."""
         for item, (use_button, discard_button) in self.button_actions.items():
             if use_button.collidepoint(mouse_pos):
-                self.message = self.inventory.use_item(
-                    item
-                )  # `self.message` stores strings
+                self.message = self.inventory.use_item(item)  # `self.message` stores strings
                 self.message_end_time = pygame.time.get_ticks() + 3000  # 3 seconds
             elif discard_button.collidepoint(mouse_pos):
                 self.message = self.inventory.remove_item(item, 1)
@@ -111,14 +107,10 @@ class Paused(BaseState):
         """Extract a single icon from the sprite sheet."""
         return self.sprite_sheet.subsurface((x, y, size, size))
 
-    def draw_buttons(
-        self, x: int, y: int, item: str
-    ) -> Tuple[pygame.Rect, pygame.Rect]:
+    def draw_buttons(self, x: int, y: int, item: str) -> tuple[pygame.Rect, pygame.Rect]:
         """Draw Use and Discard buttons for a specific item."""
         use_button = pygame.Rect(x, y, self.button_width, self.button_height)
-        discard_button = pygame.Rect(
-            x + self.button_width + 10, y, self.button_width, self.button_height
-        )
+        discard_button = pygame.Rect(x + self.button_width + 10, y, self.button_width, self.button_height)
 
         pygame.draw.rect(self.screen, (0, 255, 0), use_button)  # Green
         pygame.draw.rect(self.screen, (150, 75, 0), discard_button)  # Brown
@@ -145,9 +137,7 @@ class Paused(BaseState):
                         self.handle_mouse_click(event.pos)
                 case pygame.MOUSEWHEEL:
                     self.scroll_offset = max(0, self.scroll_offset - event.y)
-                    max_offset = max(
-                        0, len(self.inventory.get_items()) - self.max_visible_items
-                    )
+                    max_offset = max(0, len(self.inventory.get_items()) - self.max_visible_items)
                     self.scroll_offset = min(self.scroll_offset, max_offset)
 
     def render(self, screen: pygame.Surface) -> None:
@@ -160,9 +150,7 @@ class Paused(BaseState):
 
         # Draw the inventory items
         items = list(self.inventory.get_items().items())
-        visible_items = items[
-            self.scroll_offset : self.scroll_offset + self.max_visible_items
-        ]
+        visible_items = items[self.scroll_offset : self.scroll_offset + self.max_visible_items]
         y_offset = 50  # Start below the title
 
         for item, quantity in visible_items:
@@ -185,13 +173,11 @@ class Paused(BaseState):
             self.button_actions[item] = (use_button, discard_button)
             y_offset += 60  # Move down for the next item
 
-        # Draw hint
-        hint_text = self.font.render(
-            "Press 'I' to close inventory", True, (200, 200, 200)
-        )  # Light gray text
+        # Draw a hint
+        hint_text = self.font.render("Press 'I' to close inventory", True, (200, 200, 200))  # Light gray text
         self.screen.blit(hint_text, (50, self.screen.get_height() - 60))
 
-        # Display action message above the hint
+        # Display an action message above the hint
         if self.message and pygame.time.get_ticks() < self.message_end_time:
             # Render the message text
             message_text = self.font.render(self.message, True, (255, 255, 0))  # Yellow
@@ -218,6 +204,6 @@ class Paused(BaseState):
                 (message_bg_x + 10, message_bg_y + 5),  # Position text with padding
             )
 
-        # blit tmp self.screen to the actual display (screen form the argument)
+        # blit tmp self.screen to the actual display (screen forms the argument)
         screen.blit(self.screen, dest=(0, 0))
         pygame.display.flip()  # Update the display

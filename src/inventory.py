@@ -39,14 +39,10 @@ class Inventory:
         """Add an item to the inventory"""
         if item_name in self.items:
             self.items[item_name] += quantity
-            return get_message(
-                "inventory", "add_success", item=item_name, quantity=quantity
-            )
+            return get_message("inventory", "add_success", item=item_name, quantity=quantity)
         else:
             self.items[item_name] = quantity
-            return get_message(
-                "inventory", "add_success", item=item_name, quantity=quantity
-            )
+            return get_message("inventory", "add_success", item=item_name, quantity=quantity)
 
     def remove_item(self, item_name: str, quantity: int) -> str:
         """Remove an item from the inventory. Return True if successful."""
@@ -54,20 +50,30 @@ class Inventory:
             self.items[item_name] -= quantity
             if self.items[item_name] == 0:
                 del self.items[item_name]
-            return get_message(
-                "inventory", "remove_success", item=item_name, quantity=quantity
-            )
-        return get_message(
-            "inventory", "remove_fail", item=item_name, quantity=quantity
-        )
+            return get_message("inventory", "remove_success", item=item_name, quantity=quantity)
+        return get_message("inventory", "remove_fail", item=item_name, quantity=quantity)
 
     def use_item(self, item_name: str) -> str:
         """Use an item, applying its effect. Return a message."""
-        if self.remove_item(item_name, 1) == get_message(
-            "inventory", "remove_success", item=item_name, quantity=1
-        ):
+        if self.remove_item(item_name, 1) == get_message("inventory", "remove_success", item=item_name, quantity=1):
             return get_message("inventory", "use_success", item=item_name)
         return get_message("inventory", "use_fail", item=item_name)
+
+    def buy_item(self, item_name, quantity):
+        if item_name in self.items:
+            self.items[item_name] += quantity
+            return get_message("shop_inventory", "buy_success", item=item_name, quantity=quantity)
+        else:
+            self.items[item_name] = quantity
+            return get_message("shop_inventory", "buy_success", item=item_name, quantity=quantity)
+
+    def sell_item(self, item_name, quantity):
+        if item_name in self.items and self.items[item_name] >= quantity:
+            self.items[item_name] -= quantity
+            if self.items[item_name] == 0:
+                del self.items[item_name]
+            return get_message("shop_inventory", "sell_success", item=item_name, quantity=quantity)
+        return get_message("shop_inventory", "sell_fail", item=item_name, quantity=quantity)
 
     def get_items(self) -> dict[str, int]:
         """Return a copy of the items dictionary."""
