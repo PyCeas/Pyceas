@@ -162,7 +162,7 @@ class GameRunning(BaseState):
         """
         update each sprites and handle events
         """
-        self.test_chest: Chest | None = None
+        self.test_chest: Chest = Chest("test_chest", 1000)
         self.island_collision = pygame.sprite.spritecollideany(self.player, self.island_group)
         collide: bool = (
                 self.player is not None
