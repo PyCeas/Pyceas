@@ -7,7 +7,7 @@ import sys
 
 import pygame  # type: ignore
 
-from src.settings import FPS, SCREEN_HEIGHT, SCREEN_WIDTH
+from src.settings import SCREEN_HEIGHT, SCREEN_WIDTH
 
 # import base state for typehint
 from src.states.base_state import BaseState
@@ -29,7 +29,7 @@ class GameStateManager:
         # init pygame
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption("PyCeas")
+        # pygame.display.set_caption("PyCeas")
 
         self.clock = pygame.Clock()
         self.running = True
@@ -83,4 +83,5 @@ class GameStateManager:
             self.states_stack[-1].render(self.screen)
 
             # magic value, use 'a' FPS const in settings or delta time
-            self.clock.tick(FPS)
+            self.clock.tick()
+            pygame.display.set_caption(f"{self.clock.get_fps():.2f} FPS")
