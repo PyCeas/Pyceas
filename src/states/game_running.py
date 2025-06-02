@@ -61,7 +61,7 @@ class GameRunning(BaseState):
         self.shop_window = pygame.Surface((800, 600))
         self.in_shop = False
 
-        self.obstacle_handler = ObstacleHandler(self.player, self.obstacle_group)
+        self.obstacle_handler = ObstacleHandler(self.player, self.obstacle_group,)
 
     def setup(self, player_start_pos: str, sprite_group=None) -> None:
         if sprite_group is None:
@@ -189,9 +189,8 @@ class GameRunning(BaseState):
         )
         self.obstacle_collision = pygame.sprite.spritecollideany(self.player, self.obstacle_group)
         dt = self.clock.tick() / 1000
-        dt2 = self.clock.tick(60)
         self.all_sprites.update(dt)
-        self.obstacle_handler.update(dt2)
+        self.obstacle_handler.update()
 
         # Handle player movement and grid snapping
         if isinstance(self.all_sprites, PlayerCamera):

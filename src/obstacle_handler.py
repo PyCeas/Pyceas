@@ -2,19 +2,17 @@ import pygame
 
 
 class ObstacleHandler:
-    def __init__(self, player, obstacles, dt):
+    def __init__(self, player, obstacles):
         self.player = player
         self.obstacles = obstacles
         self.obstacle_damage = 15
         self.font = pygame.font.Font(None, 36)
         self.screen: pygame.Surface = pygame.Surface((600, 100), pygame.SRCALPHA)
-        self.clock = pygame.time.Clock()
 
         self.collide = None
         self.damage_applied = False
         self.message_end_time = 0
 
-        self.dt = dt
         self.is_flashing = False
         self.flashing_duration = 2000
         self.flashing_start_time = 0
@@ -50,7 +48,9 @@ class ObstacleHandler:
         if self.is_flashing and (current_time - self.flashing_start_time > self.flashing_duration):
             self.is_flashing = False
 
-        color = self.flash_color if self.is_flashing else self.player.player_square.fill("red")
-        self.player.player_square.fill(color)
+        if self.is_flashing:
+            self.player.player_square.fill(self.flash_color)
+        else:
+            self.player.player_square.fill("red")
 
         screen.blit(self.screen, (155, 155))
