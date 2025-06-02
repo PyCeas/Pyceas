@@ -17,6 +17,9 @@ class ObstacleHandler:
         self.flashing_duration = 2000
         self.flashing_start_time = 0
         self.flash_color = "white"
+        self.flash_toggle_interval = 200
+        self.last_flash_toggle_time = 0
+        self.current_flash_color = "red"
 
     def update(self):
         self.collide = pygame.sprite.spritecollideany(self.player, self.obstacles)
@@ -41,15 +44,23 @@ class ObstacleHandler:
             self.screen.blit(message, (50, self.screen.get_height() - 100))
 
         if self.collide:
-            self.is_flashing = True
-            self.flashing_start_time = pygame.time.get_ticks()
+            if not self.is_flashing:
+                self.is_flashing = True
+                self.flashing_start_time = pygame.time.get_ticks()
+                self.last_flash_toggle_time = self.flash_toggle_interval
 
         current_time = pygame.time.get_ticks()
-        if self.is_flashing and (current_time - self.flashing_start_time > self.flashing_duration):
-            self.is_flashing = False
-
         if self.is_flashing:
-            self.player.player_square.fill(self.flash_color)
+            if current_time - self.last_flash_toggle_time >= self.flash_toggle_interval:
+                self.last_flash_toggle_time = current_time
+                self.current_flash_color = (
+                    "white" if self.current_flash_color == "red" else "red"
+                )
+            self.player.player_square.fill(self.current_flash_color)
+
+            if current_time - self.flashing_start_time > self.flashing_duration:
+                self.is_flashing = False
+                self.current_flash_color = "red"
         else:
             self.player.player_square.fill("red")
 
