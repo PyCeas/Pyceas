@@ -2,7 +2,7 @@ import pygame
 
 
 class ObstacleHandler:
-    def __init__(self, player, obstacles):
+    def __init__(self, player, obstacles, dt):
         self.player = player
         self.obstacles = obstacles
         self.obstacle_damage = 15
@@ -14,7 +14,7 @@ class ObstacleHandler:
         self.damage_applied = False
         self.message_end_time = 0
 
-        self.dt = self.clock.tick(60)
+        self.dt = dt
         self.is_flashing = False
         self.flashing_duration = 2000
         self.flashing_start_time = 0
@@ -54,4 +54,3 @@ class ObstacleHandler:
         self.player.player_square.fill(color)
 
         screen.blit(self.screen, (155, 155))
-        # pygame.display.flip()

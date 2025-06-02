@@ -189,8 +189,9 @@ class GameRunning(BaseState):
         )
         self.obstacle_collision = pygame.sprite.spritecollideany(self.player, self.obstacle_group)
         dt = self.clock.tick() / 1000
+        dt2 = self.clock.tick(60)
         self.all_sprites.update(dt)
-        self.obstacle_handler.update()
+        self.obstacle_handler.update(dt2)
 
         # Handle player movement and grid snapping
         if isinstance(self.all_sprites, PlayerCamera):
