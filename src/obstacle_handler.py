@@ -59,9 +59,7 @@ class ObstacleHandler:
         if self.is_flashing:
             if current_time - self.last_flash_toggle_time >= self.flash_toggle_interval:
                 self.last_flash_toggle_time = current_time
-                self.current_flash_color = (
-                    "white" if self.current_flash_color == "red" else "red"
-                )
+                self.current_flash_color = "white" if self.current_flash_color == "red" else "red"
             self.player.player_square.fill(self.current_flash_color)
 
             if current_time - self.flashing_start_time > self.flashing_duration:

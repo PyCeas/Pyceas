@@ -61,7 +61,10 @@ class GameRunning(BaseState):
         self.shop_window = pygame.Surface((800, 600))
         self.in_shop = False
 
-        self.obstacle_handler = ObstacleHandler(self.player, self.obstacle_group,)
+        self.obstacle_handler = ObstacleHandler(
+            self.player,
+            self.obstacle_group,
+        )
 
     def setup(self, player_start_pos: str, sprite_group=None) -> None:
         if sprite_group is None:

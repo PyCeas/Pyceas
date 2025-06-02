@@ -26,7 +26,9 @@ class Player(BaseSprite):
         """
 
         # Initialize the player sprite
-        self.player_square = frames[0] if isinstance(frames, (list, tuple)) and frames else Surface((TILE_SIZE, TILE_SIZE))
+        self.player_square = (
+            frames[0] if isinstance(frames, (list, tuple)) and frames else Surface((TILE_SIZE, TILE_SIZE))
+        )
         self.player_square.fill("red")
         super().__init__(pos=pos, surf=self.player_square, groups=groups)
 
