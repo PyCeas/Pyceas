@@ -117,7 +117,7 @@ class GameRunning(BaseState):
             BaseSprite(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
-                groups=(self.all_sprites, self.obstacle_group),
+                groups=(sprite_group, self.obstacle_group),
                 z=WORLD_LAYERS["bg"],
             )
 
@@ -127,7 +127,7 @@ class GameRunning(BaseState):
             BaseSprite(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
-                groups=(self.all_sprites, self.obstacle_group),
+                groups=(sprite_group, self.obstacle_group),
                 z=WORLD_LAYERS["bg"],
             )
 
