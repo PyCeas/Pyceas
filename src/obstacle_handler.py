@@ -8,10 +8,17 @@ class ObstacleHandler:
         self.obstacle_damage = 15
         self.font = pygame.font.Font(None, 36)
         self.screen: pygame.Surface = pygame.Surface((600, 100), pygame.SRCALPHA)
+        self.clock = pygame.time.Clock()
 
         self.collide = None
         self.damage_applied = False
         self.message_end_time = 0
+
+        self.dt = self.clock.tick(60)
+        self.is_flashing = False
+        self.flashing_duration = 2000
+        self.flashing_start_time = 0
+        self.flash_color = "white"
 
     def update(self):
         self.collide = pygame.sprite.spritecollideany(self.player, self.obstacles)
@@ -34,6 +41,17 @@ class ObstacleHandler:
         if self.collide and pygame.time.get_ticks() < self.message_end_time:
             message = self.font.render(f"The player has received -{self.obstacle_damage} damage!", True, "red2")
             self.screen.blit(message, (50, self.screen.get_height() - 100))
+
+        if self.collide:
+            self.is_flashing = True
+            self.flashing_start_time = pygame.time.get_ticks()
+
+        current_time = pygame.time.get_ticks()
+        if self.is_flashing and (current_time - self.flashing_start_time > self.flashing_duration):
+            self.is_flashing = False
+
+        color = self.flash_color if self.is_flashing else self.player.player_square.fill("red")
+        self.player.player_square.fill(color)
 
         screen.blit(self.screen, (155, 155))
         # pygame.display.flip()
