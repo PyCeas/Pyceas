@@ -24,6 +24,10 @@ class ObstacleHandler:
         if not self.collide and self.damage_applied:
             self.damage_applied = False
 
+        if self.player.player_hp <= 0:
+            self.damage_applied = False
+            self.player.player_hp = 0
+
     def render(self, screen: pygame.Surface):
         self.screen.fill((0, 0, 0, 0))  # Clear UI
 
