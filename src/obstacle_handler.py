@@ -1,5 +1,6 @@
 import pygame
 
+
 class ObstacleHandler:
     def __init__(self, player, obstacles):
         self.player = player
@@ -27,14 +28,8 @@ class ObstacleHandler:
         self.screen.fill((0, 0, 0, 0))  # Clear UI
 
         if self.collide and pygame.time.get_ticks() < self.message_end_time:
-            message = self.font.render(
-                f"The player has received -{self.obstacle_damage} damage!",
-                True,
-                "red2"
-            )
+            message = self.font.render(f"The player has received -{self.obstacle_damage} damage!", True, "red2")
             self.screen.blit(message, (50, self.screen.get_height() - 100))
 
         screen.blit(self.screen, (155, 155))
         # pygame.display.flip()
-
-

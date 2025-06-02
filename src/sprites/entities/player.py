@@ -91,8 +91,7 @@ class Player(BaseSprite):
             self.path = path[1:]
 
     def update(
-            self, dt: float, grid=None, camera_offset: pygame.math.Vector2 | None = None,
-            camera_scale: float | None = None
+        self, dt: float, grid=None, camera_offset: pygame.math.Vector2 | None = None, camera_scale: float | None = None
     ) -> None:
         """Update the player's position and state."""
         if grid:

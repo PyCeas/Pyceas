@@ -9,6 +9,7 @@ import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
 from src.inventory import Inventory
+from src.obstacle_handler import ObstacleHandler
 from src.settings import TILE_SIZE, WORLD_LAYERS
 from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
@@ -16,7 +17,6 @@ from src.sprites.camera.player_camera import PlayerCamera
 from src.sprites.entities.player import Player
 from src.sprites.tiles.grid_manager import GridManager
 from src.states.base_state import BaseState
-from src.obstacle_handler import ObstacleHandler
 from src.states.paused import Paused
 from src.states.shop_state import ShowShop, WindowShop
 from src.support import all_character_import, coast_importer, import_folder
@@ -121,7 +121,6 @@ class GameRunning(BaseState):
                 z=WORLD_LAYERS["bg"],
             )
 
-        self.obstacle_group: pygame.sprite.Group = pygame.sprite.Group()
         obstacles = self.tmx_map["map"].get_layer_by_name("Obstacles")
         for x, y, surface in obstacles.tiles():
             BaseSprite(
@@ -182,11 +181,11 @@ class GameRunning(BaseState):
         """
 
         collide: bool = (
-                self.player is not None
-                and self.shop is not None
-                and isinstance(self.player.rect, (pygame.Rect, pygame.FRect))
-                and isinstance(self.shop.rect, (pygame.Rect, pygame.FRect))
-                and self.player.rect.colliderect(self.shop.rect)
+            self.player is not None
+            and self.shop is not None
+            and isinstance(self.player.rect, (pygame.Rect, pygame.FRect))
+            and isinstance(self.shop.rect, (pygame.Rect, pygame.FRect))
+            and self.player.rect.colliderect(self.shop.rect)
         )
         self.obstacle_collision = pygame.sprite.spritecollideany(self.player, self.obstacle_group)
         dt = self.clock.tick() / 1000
@@ -213,8 +212,6 @@ class GameRunning(BaseState):
                     self.game_state_manager.enter_state(
                         WindowShop(self.game_state_manager, self.player, self.shop, self.player_inventory)
                     )
-            # if self.obstacle_collision:
-            #     self.game_state_manager.enter_state(ObstacleState(self.game_state_manager, self.player, self.obstacle_group))
 
     def render(self, screen) -> None:
         """Draw sprites to the canvas."""
@@ -222,9 +219,7 @@ class GameRunning(BaseState):
         if isinstance(self.all_sprites, PlayerCamera):
             self.all_sprites.draw(self.player.rect.center, show_grid=self.show_grid)
         self.obstacle_handler.render(screen)
-        self.message = self.font.render(
-            f"Player's Health: {self.player.player_hp}", True, (0, 0, 0)
-        )
+        self.message = self.font.render(f"Player's Health: {self.player.player_hp}", True, (0, 0, 0))
         screen.blit(self.message, (50, screen.get_height() - 100))
 
         # Pass the player's position to the draw method

@@ -9,7 +9,7 @@ from src.sprites.tiles.pathfinding import PathFinder
 
 class GridManager:
     def __init__(
-            self, tmx_map: pytmx.TiledMap = None, tile_size: int = TILE_SIZE, grid_matrix: np.ndarray | None = None
+        self, tmx_map: pytmx.TiledMap = None, tile_size: int = TILE_SIZE, grid_matrix: np.ndarray | None = None
     ):
         if grid_matrix is not None:
             self.grid_matrix = grid_matrix
@@ -60,10 +60,10 @@ class GridManager:
         return self.path_finder.find_path(start, end)
 
     def get_tile_coordinates(
-            self,
-            mouse_pos: tuple[int, int],
-            camera_offset: pygame.math.Vector2 | None = None,
-            camera_scale: float | None = None,
+        self,
+        mouse_pos: tuple[int, int],
+        camera_offset: pygame.math.Vector2 | None = None,
+        camera_scale: float | None = None,
     ) -> tuple[int, int]:
         """
         Get the tile indices (x, y) based on mouse position.
@@ -84,7 +84,7 @@ class GridManager:
 
     @staticmethod
     def _convert_mouse_to_world(
-            mouse_pos: tuple[int, int], camera_offset: pygame.math.Vector2, camera_scale: float
+        mouse_pos: tuple[int, int], camera_offset: pygame.math.Vector2, camera_scale: float
     ) -> tuple[float, float]:
         # Adjust the mouse position to world coordinates by reversing the camera's position and scale
         world_x = (mouse_pos[0] - camera_offset.x) / camera_scale
@@ -104,12 +104,12 @@ class GridManager:
         return grid_x, grid_y
 
     def draw(
-            self,
-            player_pos: tuple[int, int],
-            mouse_pos: tuple[int, int],
-            camera_offset: pygame.math.Vector2 | None = None,
-            camera_scale: float | None = None,
-            visible_radius: int | None = None,
+        self,
+        player_pos: tuple[int, int],
+        mouse_pos: tuple[int, int],
+        camera_offset: pygame.math.Vector2 | None = None,
+        camera_scale: float | None = None,
+        visible_radius: int | None = None,
     ) -> None:
         """
         Draw the grid on the screen.
@@ -144,7 +144,7 @@ class GridManager:
         self._draw_mouse_indicator(mouse_grid_x, mouse_grid_y, camera_offset, camera_scale)
 
     def _calculate_visible_area(
-            self, player_grid_x: int, player_grid_y: int, visible_radius: int
+        self, player_grid_x: int, player_grid_y: int, visible_radius: int
     ) -> tuple[int, int, int, int]:
         visible_start_x = max(0, player_grid_x - visible_radius)
         visible_start_y = max(0, player_grid_y - visible_radius)
@@ -153,13 +153,13 @@ class GridManager:
         return visible_start_x, visible_start_y, visible_end_x, visible_end_y
 
     def _draw_grid_lines(
-            self,
-            visible_start_x: int,
-            visible_start_y: int,
-            visible_end_x: int,
-            visible_end_y: int,
-            camera_offset: pygame.math.Vector2,
-            camera_scale: float,
+        self,
+        visible_start_x: int,
+        visible_start_y: int,
+        visible_end_x: int,
+        visible_end_y: int,
+        camera_offset: pygame.math.Vector2,
+        camera_scale: float,
     ) -> None:
         for y in range(visible_start_y, visible_end_y):
             for x in range(visible_start_x, visible_end_x):
@@ -176,7 +176,7 @@ class GridManager:
                 self.display_surface.blit(text_surface, text_rect)
 
     def _convert_to_screen_coordinates(
-            self, x: int, y: int, camera_offset: pygame.math.Vector2, camera_scale: float
+        self, x: int, y: int, camera_offset: pygame.math.Vector2, camera_scale: float
     ) -> tuple[float, float]:
         world_x = x * self.tile_size
         world_y = y * self.tile_size
@@ -185,13 +185,13 @@ class GridManager:
         return screen_x, screen_y
 
     def _draw_path(
-            self,
-            start_x: int,
-            start_y: int,
-            end_x: int,
-            end_y: int,
-            camera_offset: pygame.math.Vector2,
-            camera_scale: float,
+        self,
+        start_x: int,
+        start_y: int,
+        end_x: int,
+        end_y: int,
+        camera_offset: pygame.math.Vector2,
+        camera_scale: float,
     ) -> None:
         start = (start_x, start_y)
         end = (end_x, end_y)
@@ -206,7 +206,7 @@ class GridManager:
                 pygame.draw.rect(self.display_surface, "green", rect, 2)  # Draw path tiles
 
     def _draw_mouse_indicator(
-            self, mouse_grid_x: int, mouse_grid_y: int, camera_offset: pygame.math.Vector2, camera_scale: float
+        self, mouse_grid_x: int, mouse_grid_y: int, camera_offset: pygame.math.Vector2, camera_scale: float
     ) -> None:
         if self.display_surface is None:
             raise RuntimeError("Display surface must be initialized")
