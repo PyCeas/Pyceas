@@ -152,6 +152,7 @@ class GameRunning(BaseState):
                     frames=self.world_frames["ships"]["player_test_ship"],
                     groups=(sprite_group,),
                 )
+                self.player_start_pos = (grid_x, grid_y)
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
@@ -190,7 +191,7 @@ class GameRunning(BaseState):
         self.obstacle_collision = pygame.sprite.spritecollideany(self.player, self.obstacle_group)
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
-        self.obstacle_handler.update()
+        self.obstacle_handler.update(self.player_start_pos)
 
         # Handle player movement and grid snapping
         if isinstance(self.all_sprites, PlayerCamera):
@@ -219,7 +220,7 @@ class GameRunning(BaseState):
         if isinstance(self.all_sprites, PlayerCamera):
             self.all_sprites.draw(self.player.rect.center, show_grid=self.show_grid)
         self.obstacle_handler.render(screen)
-        self.message = self.font.render(f"Player's Health: {self.player.player_hp}", True, (0, 0, 0))
+        self.message = self.font.render(f"Player's Health: {self.player.player_hp}", True, "grey40")
         screen.blit(self.message, (50, screen.get_height() - 100))
 
         # Pass the player's position to the draw method

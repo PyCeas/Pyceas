@@ -21,7 +21,7 @@ class ObstacleHandler:
         self.last_flash_toggle_time = 0
         self.current_flash_color = "red"
 
-    def update(self):
+    def update(self, start_pos):
         self.collide = pygame.sprite.spritecollideany(self.player, self.obstacles)
 
         if self.collide and not self.damage_applied:
@@ -35,6 +35,12 @@ class ObstacleHandler:
         if self.player.player_hp <= 0:
             self.damage_applied = False
             self.player.player_hp = 0
+
+            if hasattr(self.player, "rect"):
+                self.player.rect.topleft = start_pos
+
+        if self.player.rect.topleft == start_pos:
+            self.player.player_hp = 100
 
     def render(self, screen: pygame.Surface):
         self.screen.fill((0, 0, 0, 0))  # Clear UI
