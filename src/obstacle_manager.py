@@ -1,7 +1,7 @@
 import pygame
 
 
-class ObstacleHandler:
+class ObstacleManager:
     def __init__(self, player, obstacles):
         self.player = player
         self.obstacles = obstacles

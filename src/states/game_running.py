@@ -9,7 +9,7 @@ import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
 from src.inventory import Inventory
-from src.obstacle_handler import ObstacleHandler
+from src.obstacle_manager import ObstacleManager
 from src.settings import TILE_SIZE, WORLD_LAYERS
 from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
@@ -61,7 +61,7 @@ class GameRunning(BaseState):
         self.shop_window = pygame.Surface((800, 600))
         self.in_shop = False
 
-        self.obstacle_handler = ObstacleHandler(
+        self.obstacle_handler = ObstacleManager(
             self.player,
             self.obstacle_group,
         )
