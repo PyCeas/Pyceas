@@ -118,6 +118,15 @@ class GameRunning(BaseState):
                 z=WORLD_LAYERS["bg"],
             )
 
+        island_boarder = self.tmx_map["map"].get_layer_by_name("Water")
+        for obj in island_boarder:
+            BaseSprite(
+                pos=(obj.x, obj.y),
+                surf=surface,
+                groups=(sprite_group,),
+                z=WORLD_LAYERS["bg"]
+            )
+
         # Entities
         for obj in self.tmx_map["map"].get_layer_by_name("Ships"):
             if obj.name == "Player" and obj.properties["pos"] == player_start_pos:
