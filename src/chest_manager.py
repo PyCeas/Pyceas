@@ -12,7 +12,10 @@ class ChestManager:
         self.screen = pygame.Surface((500, 600), pygame.SRCALPHA)
 
     def update(self):
-        pass
+        self.collide = pygame.sprite.spritecollideany(self.player, self.islands)
+
+        if self.collide:
+            print("Collision")
 
     def render(self):
         pass
