@@ -181,8 +181,9 @@ class GameRunning(BaseState):
                 and self.player.rect.colliderect(self.shop.rect)
         )
         dt = self.clock.tick() / 1000
+        if self.chest_manager:
+            self.chest_manager.update()
         self.all_sprites.update(dt)
-        self.chest_manager.update()
 
         # Handle player movement and grid snapping
         if isinstance(self.all_sprites, PlayerCamera):
@@ -208,7 +209,8 @@ class GameRunning(BaseState):
     def render(self, screen) -> None:
         """Draw sprites to the canvas."""
         screen.fill("#000000")
-        self.chest_manager.render()
+        if self.chest_manager:
+            self.chest_manager.render(screen)
         if isinstance(self.all_sprites, PlayerCamera):
             self.all_sprites.draw(self.player.rect.center, show_grid=self.show_grid)
 
