@@ -109,12 +109,13 @@ class GameRunning(BaseState):
             )
 
         # Islands
+        self.test_island_group: pygame.sprite.Group = pygame.sprite.Group()
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
             BaseSprite(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surf=surface,
-                groups=(sprite_group,),
+                groups=(sprite_group, self.test_island_group),
                 z=WORLD_LAYERS["bg"],
             )
 
@@ -123,7 +124,7 @@ class GameRunning(BaseState):
             BaseSprite(
                 pos=(obj.x, obj.y),
                 surf=surface,
-                groups=(sprite_group,),
+                groups=(sprite_group, self.test_island_group),
                 z=WORLD_LAYERS["bg"]
             )
 
