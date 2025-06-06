@@ -1,5 +1,6 @@
 import pygame
 
+from pygame import Surface
 from src.inventory import Inventory
 
 class ChestManager:
@@ -17,5 +18,13 @@ class ChestManager:
         if self.collide:
             print("Collision")
 
-    def render(self):
-        pass
+    def render(self, screen: Surface):
+        self.screen.fill((0, 0, 0, 0))
+
+        if self.collide:
+            self.message = self.font.render("TEST MESSAGE", True, (0, 0, 0))
+            self.screen.blit(self.message, (155, 155))
+
+
+        
+        screen.blit(self.screen, (250, 250))
