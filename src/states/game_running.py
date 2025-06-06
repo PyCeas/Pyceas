@@ -46,15 +46,22 @@ class GameRunning(BaseState):
         self.show_grid: bool = True
 
         sprite_group: pygame.sprite.Group = pygame.sprite.Group()  # Initialize sprite group
-        self.all_sprites: PlayerCamera  # Initialize all_sprites as PlayerCamera
+
+        self.tmx_map = {"map": load_pygame(os.path.join(".", "data", "new_maps", "100x100_map.tmx"))}
+        if not self.tmx_map:
+            raise ValueError("Failed to load the TMX map")
+        
+        self.all_sprites = PlayerCamera(self.tmx_map["map"], pygame.Vector2(0, 0))  # Initialize all_sprites as PlayerCamera
 
         # The start positions will be one of the 4 islands in the corners of the board
         self.setup(player_start_pos="top_left_island", sprite_group=sprite_group)
 
+        self.all_sprites.player_start_pos = self.player.rect.topleft
+
         # Create the player camera and add all sprites to it
-        sprites = list(sprite_group)
-        self.all_sprites = PlayerCamera(self.tmx_map["map"], self.player.rect.topleft)
-        for sprite in sprites:
+        # sprites = list(sprite_group)
+        # self.all_sprites = PlayerCamera(self.tmx_map["map"], self.player.rect.topleft)
+        for sprite in sprite_group:
             self.all_sprites.add(sprite)
 
         self.font = pygame.font.Font(None, 36)
@@ -124,10 +131,12 @@ class GameRunning(BaseState):
 
         island_boarder = self.tmx_map["map"].get_layer_by_name("Water")
         for obj in island_boarder:
+            surface = pygame.Surface((obj.width, obj.height), pygame.SRCALPHA)
+            surface.fill((0, 0, 0, 0))
             BaseSprite(
                 pos=(obj.x, obj.y),
                 surf=surface,
-                groups=(sprite_group, self.test_island_group),
+                groups=(sprite_group, self.test_island_group, self.all_sprites),
                 z=WORLD_LAYERS["bg"]
             )
 
@@ -211,6 +220,16 @@ class GameRunning(BaseState):
         screen.fill("#000000")
         if self.chest_manager:
             self.chest_manager.render(screen)
+
+        camera_offset = self.all_sprites.offset
+
+        for island in self.test_island_group:
+            adjusted_rect = island.rect.copy()
+            adjusted_rect.topleft -= camera_offset
+            pygame.draw.rect(screen, (0, 255, 0), adjusted_rect, 1)
+
+        pygame.draw.rect(screen, (0, 255, 0), adjusted_rect, 1)
+
         if isinstance(self.all_sprites, PlayerCamera):
             self.all_sprites.draw(self.player.rect.center, show_grid=self.show_grid)
 
