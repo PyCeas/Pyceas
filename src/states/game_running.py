@@ -9,6 +9,7 @@ import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
 from src.inventory import Inventory
+from src.chest_manager import ChestManager
 from src.settings import TILE_SIZE, WORLD_LAYERS
 from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
@@ -59,6 +60,8 @@ class GameRunning(BaseState):
         self.font = pygame.font.Font(None, 36)
         self.shop_window = pygame.Surface((800, 600))
         self.in_shop = False
+
+        self.chest_manager: ChestManager | None = None
 
     def setup(self, player_start_pos: str, sprite_group=None) -> None:
         if sprite_group is None:
@@ -141,6 +144,8 @@ class GameRunning(BaseState):
                     groups=(sprite_group,),
                 )
 
+        self.chest_manager = ChestManager(self.player, self.test_island_group, self.player_inventory)
+
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
             terrain = obj.properties["terrain"]
@@ -177,6 +182,7 @@ class GameRunning(BaseState):
         )
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
+        self.chest_manager.update()
 
         # Handle player movement and grid snapping
         if isinstance(self.all_sprites, PlayerCamera):
@@ -202,6 +208,7 @@ class GameRunning(BaseState):
     def render(self, screen) -> None:
         """Draw sprites to the canvas."""
         screen.fill("#000000")
+        self.chest_manager.render()
         if isinstance(self.all_sprites, PlayerCamera):
             self.all_sprites.draw(self.player.rect.center, show_grid=self.show_grid)
 
