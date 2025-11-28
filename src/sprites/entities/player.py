@@ -26,9 +26,11 @@ class Player(BaseSprite):
         """
 
         # Initialize the player sprite
-        player_square = frames[0] if isinstance(frames, (list, tuple)) and frames else Surface((TILE_SIZE, TILE_SIZE))
-        player_square.fill("red")
-        super().__init__(pos=pos, surf=player_square, groups=groups)
+        self.player_square = (
+            frames[0] if isinstance(frames, (list, tuple)) and frames else Surface((TILE_SIZE, TILE_SIZE))
+        )
+        self.player_square.fill("red")
+        super().__init__(pos=pos, surf=self.player_square, groups=groups)
 
         # Animation frames
         self.frames = frames
@@ -43,6 +45,9 @@ class Player(BaseSprite):
 
         # Input handling
         self.mouse_have_been_pressed: bool = False
+
+        # Hp points
+        self.player_hp = 100
 
     # def get_neighbor_tiles(self, grid, blocked_tiles=None):
     #     """Calculate and return all valid adjacent (neighbor) tiles for the player."""
@@ -88,8 +93,7 @@ class Player(BaseSprite):
             self.path = path[1:]
 
     def update(
-            self, dt: float, grid=None, camera_offset: pygame.math.Vector2 | None = None,
-            camera_scale: float | None = None
+        self, dt: float, grid=None, camera_offset: pygame.math.Vector2 | None = None, camera_scale: float | None = None
     ) -> None:
         """Update the player's position and state."""
         if grid:

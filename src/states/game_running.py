@@ -9,6 +9,7 @@ import pygame  # type: ignore
 from pytmx.util_pygame import load_pygame  # type: ignore
 
 from src.inventory import Inventory
+from src.obstacle_manager import ObstacleManager
 from src.settings import TILE_SIZE, WORLD_LAYERS
 from src.sprites.animations import AnimatedSprites
 from src.sprites.base import BaseSprite
@@ -60,6 +61,11 @@ class GameRunning(BaseState):
         self.shop_window = pygame.Surface((800, 600))
         self.in_shop = False
 
+        self.obstacle_handler = ObstacleManager(
+            self.player,
+            self.obstacle_group,
+        )
+
     def setup(self, player_start_pos: str, sprite_group=None) -> None:
         if sprite_group is None:
             sprite_group = pygame.sprite.Group()
@@ -108,6 +114,25 @@ class GameRunning(BaseState):
                 pos=(x * TILE_SIZE, y * TILE_SIZE), surface=surface, groups=(sprite_group,), z=WORLD_LAYERS["main"]
             )
 
+        self.obstacle_group: pygame.sprite.Group = pygame.sprite.Group()
+        obstacles = self.tmx_map["map"].get_layer_by_name("Obstacles")
+        for x, y, surface in obstacles.tiles():
+            BaseSprite(
+                pos=(x * TILE_SIZE, y * TILE_SIZE),
+                surf=surface,
+                groups=(sprite_group, self.obstacle_group),
+                z=WORLD_LAYERS["bg"],
+            )
+
+        obstacles = self.tmx_map["map"].get_layer_by_name("Obstacles")
+        for x, y, surface in obstacles.tiles():
+            BaseSprite(
+                pos=(x * TILE_SIZE, y * TILE_SIZE),
+                surf=surface,
+                groups=(sprite_group, self.obstacle_group),
+                z=WORLD_LAYERS["bg"],
+            )
+
         # Islands
         islands = self.tmx_map["map"].get_layer_by_name("Islands")
         for x, y, surface in islands.tiles():
@@ -130,6 +155,7 @@ class GameRunning(BaseState):
                     frames=self.world_frames["ships"]["player_test_ship"],
                     groups=(sprite_group,),
                 )
+                self.player_start_pos = (grid_x, grid_y)
 
         # Coast
         for obj in self.tmx_map["map"].get_layer_by_name("Coast"):
@@ -159,14 +185,16 @@ class GameRunning(BaseState):
         """
 
         collide: bool = (
-                self.player is not None
-                and self.shop is not None
-                and isinstance(self.player.rect, (pygame.Rect, pygame.FRect))
-                and isinstance(self.shop.rect, (pygame.Rect, pygame.FRect))
-                and self.player.rect.colliderect(self.shop.rect)
+            self.player is not None
+            and self.shop is not None
+            and isinstance(self.player.rect, (pygame.Rect, pygame.FRect))
+            and isinstance(self.shop.rect, (pygame.Rect, pygame.FRect))
+            and self.player.rect.colliderect(self.shop.rect)
         )
+        self.obstacle_collision = pygame.sprite.spritecollideany(self.player, self.obstacle_group)
         dt = self.clock.tick() / 1000
         self.all_sprites.update(dt)
+        self.obstacle_handler.update(self.player_start_pos)
 
         # Handle player movement and grid snapping
         if isinstance(self.all_sprites, PlayerCamera):
@@ -194,6 +222,9 @@ class GameRunning(BaseState):
         screen.fill("#000000")
         if isinstance(self.all_sprites, PlayerCamera):
             self.all_sprites.draw(self.player.rect.center, show_grid=self.show_grid)
+        self.obstacle_handler.render(screen)
+        self.message = self.font.render(f"Player's Health: {self.player.player_hp}", True, "grey40")
+        screen.blit(self.message, (50, screen.get_height() - 100))
 
         # Pass the player's position to the draw method
         if self.player and self.grid_manager is not None:
