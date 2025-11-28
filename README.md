@@ -1,5 +1,9 @@
 # PyCeas - Open Source Pirate (Adventure) Board Game
 
+> [!IMPORTANT]
+> This project was developed as part of a school project and is no longer actively maintained. Feel free to explore the code, but note that no further updates or support will be provided.
+>
+
 [![Discord](https://discord.com/api/guilds/1272287320934056066/widget.png)](https://discord.gg/s2P9fZbeZs)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://www.freecodecamp.org/news/how-to-make-your-first-pull-request-on-github-3/)
 [![License](https://img.shields.io/github/license/PyCeas/PyCeas)](https://github.com/PyCeas/Pyceas/blob/main/LICENSE)
